@@ -1,6 +1,6 @@
 # $Id$
 
-package CPU::Emulator::Z80::Assembler;
+package CPU::Z80::Assembler;
 
 use strict;
 use warnings;
@@ -10,17 +10,18 @@ use vars qw($VERSION @EXPORT);
 $VERSION = '1.0';
 
 use Data::Dumper;
+# use Tie::RegexpHash;
 use base qw(Exporter);
 
 @EXPORT = qw(z80asm);
 
 =head1 NAME
 
-CPU::Emulator::Z80::Assembler - a Z80 assembler
+CPU::Z80::Assembler - a Z80 assembler
 
 =head1 SYNOPSIS
 
-    use CPU::Emulator::Z80::Assembler;
+    use CPU::Z80::Assembler;
 
     my $binary = z80asm(q{
         ORG 0x1000
@@ -37,7 +38,7 @@ assembler.
 
 By default the 'z80asm' subroutine is exported.  To disable that, do:
 
-    use CPU::Emulator::Z80::Assembler ();
+    use CPU::Z80::Assembler ();
 
 =head1 FUNCTIONS
 
@@ -74,9 +75,9 @@ example would actually insert 0x34 followed by 0x12.
 
 =item DEFT "literal text", 0x00
 
-A literal string, double-quoted.  Can optionally be followed by a
-comma-seperated list of bytes.  The quoted text can not include
-double-quotes or new lines.
+A literal string, either single- or double-quoted.  Can optionally be
+followed by a comma-seperated list of bytes.  Quoted text can not
+include the quotes surrounding it or newlines.
 
 =item ORG 0x4567
 
@@ -105,11 +106,48 @@ another value, then you can say:
 sub z80asm {
     my $source = shift();
     my $dictionary = _build_dictionary();
-    my @instructions = split(/[\r\n]+/, $source);
+    my @instructions = map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
     my $address = 0x0000;
+    my $startaddr = 0x0000;
+    my $maxaddr = 0x0000;
+    my $code = chr(0) x 65536;
+
+    if($instructions[0] =~ /^org\s+(.*)/i) {
+        $address = $startaddr = _to_number($1);
+        shift(@instructions);
+    }
+    foreach my $instr (@instructions) {
+        if($instr =~ /^def([bwt])\s+(.*)/i) {
+            my($type, $data) = (lc($1), $2);
+            if($type eq 't') {
+                $data =~ /^(['"])(.*?)(\1)(\s*,\s*(.*))?/;
+                die("Bad DEFT quoting ($1...$3)\n") unless($1 eq $3);
+                my($text, $tail) = ($2, $5);
+                foreach my $c (split(//, $text)) {
+                    substr($code, $address++, 1) = $c;
+                }
+                foreach(split(/\s*,\s*/, $tail)) {
+                    substr($code, $address++, 1) = chr(_to_number($_));
+                }
+            } elsif($type eq 'b') {
+                substr($code, $address++, 1) = chr(_to_number($data));
+            } elsif($type eq 'w') {
+                substr($code, $address++, 1) = chr(_to_number($data) & 0xFF);
+                substr($code, $address++, 1) = chr((_to_number($data) >> 8) & 0xFF);
+            } else { die("Unknown DEF* instruction\n"); }
+        }
+        $maxaddr = $address - 1;
+    }
+    # return substr($code, $startaddr, 1 + $maxaddr - $startaddr);
+    return substr($code, 0, $maxaddr + 1);
 }
 
-my _build_dictionary {
+sub _to_number {
+    my $number = shift;
+    $number = oct($number) if($number =~ /^0[xb]/);
+    $number;
+}
+sub _build_dictionary {
     local $/ = "\n";
     my %mapping = ();
     while(my $line = <DATA>) {
@@ -120,7 +158,9 @@ my _build_dictionary {
         my @bytes = split(/\s+/, $bytes);
         while(@words) {
             my $word = shift(@words);
-            $localmapping->{$word} = {} unless($localmapping->{$word});
+            if(!$localmapping->{$word}) {
+                $localmapping->{$word} = {};
+            }
             if(@words) {
                 $localmapping = $localmapping->{$word};
             } else {
