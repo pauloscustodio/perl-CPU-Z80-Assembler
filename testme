@@ -1,1 +1,23 @@
-perl -Ilib -e 'use CPU::Z80::Assembler;print z80asm("ORG 0x08\n.hlagh=\$\$ + 2 ; gobble\nDEFT \"gibbet\", 65, 0x42, 0b01000011\nDEFB 65\nDEFW 0x4243\nDEFW hlagh\nDEFW \$\$\n;hlagh\nNOP\nDEFW other\n.label = \$\$\n.other = (2 + \$label)/2\nDEFW other\nNOP\nINC A\nDEFT \"hlagh\", 1, 2, ;3")'
+#!/usr/local/bin/perl
+
+use warnings;
+use strict;
+use lib 'lib';
+use CPU::Z80::Assembler;
+
+z80asm('
+    ORG 0x08
+      DEFT "flibertigibbet", 65, 0x42, 0b01000011
+      DEFB 65
+      DEFW 0x4243
+      DEFW $org
+      DEFW $$
+      NOP
+      DEFW $other
+    $label = $$
+    $other = (2 + $label)/2
+      DEFW $other
+      NOP
+      INC A
+      DEFT "start", 1, 2, ;3
+');

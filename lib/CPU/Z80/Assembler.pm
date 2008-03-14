@@ -14,6 +14,11 @@ use base qw(Exporter);
 
 @EXPORT = qw(z80asm);
 
+my $i = 0; my %TABLE_R   = map { $_ => $i++ } (qw(B C D E H L (HL) A));
+   $i = 0; my %TABLE_RP  = map { $_ => $i++ } (qw(BC DE HL SP));
+   $i = 0; my %TABLE_RP2 = map { $_ => $i++ } (qw(BC DE HL AF));
+   $i = 0; my %TABLE_CC  = map { $_ => $i++ } (qw(NZ Z NC C PO PE P M));
+
 =head1 NAME
 
 CPU::Z80::Assembler - a Z80 assembler
@@ -52,7 +57,10 @@ with NULLs if necessary.
 Instructions are seperated by new lines, and have the following
 format.  They must be ASCII:
 
-[.label] INSTRUCTION [; optional comments]
+    INSTRUCTION [; optional comments]
+
+or
+    $label [= ...] [; ...]
 
 =head2 Numbers
 
@@ -85,7 +93,8 @@ same line as a DEFT
 
 Tell the assembler to start building the code at this address.  Must
 be the first instruction and can only appear once.  If absent,
-defaults to 0x0000.
+defaults to 0x0000.  This value is available in an assembler label called
+'org'.
 
 =back
 
@@ -96,25 +105,25 @@ IX and IY registers are called HIX, LIX, HIY and HIY.
 
 =head2 Labels
 
-Labels are preceded by a dot, must start with a letter or underscore,
+Labels are preceded by a dollar sign, must start with a letter or underscore,
 and consist solely of letters, underscores and numbers.  They default
 to having the value of the address they are at.  If you want to assign
 another value, then you can say:
 
-    .label = 0x1234
+    $label = 0x1234
 
 You can use $$ to refer to the current address.  Mathemagical
 operations are allowed too - the value is parsed as perl, and you
 can refer to other labels as $name:
 
-    .label      = $$ + 8
-    .otherlabel = $label / 2 + 3
+    $label      = $$ + 8
+    $otherlabel = $label / 2 + 3
 
 =cut
 
 my $address = 0x0000;
 my $pass = 0;
-my %labels = ();
+my %labels = (org => 0);
 my $code = '';
 my $bytes_this_instr = 0;
 
@@ -122,13 +131,13 @@ sub z80asm {
     my $source = shift;
     $pass = shift;
     $pass ||= 1;
-    my @instructions = map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
+    my @instructions = grep { $_ } map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
     my $startaddr = 0x0000;
     my $maxaddr = 0x0000;
     $code = chr(0) x 65536;
 
     if($instructions[0] =~ /^org\s+(.*)/i) {
-        $address = $startaddr = _to_number($1);
+        $labels{org} = $address = $startaddr = _to_number($1);
         shift(@instructions);
         if($pass == 2) {
             my $instr_to_print = "ORG $1";
@@ -152,7 +161,6 @@ sub z80asm {
             my($text, $tail) = ($2, $5);
             foreach my $c (split(//, $text)) {
                 _write($address++, ord($c));
-                # substr($code, $address++, 1) = $c;
             }
             foreach(split(/\s*,\s*/, $tail)) {
                 last if(/^;/);
@@ -163,13 +171,10 @@ sub z80asm {
             $instr =~ s/\s*;.*//; # de-comment
             if(!$instr) {
                 # do nothing
-            } elsif($instr =~ /^\.([_a-z]\w*)\s*((=)\s*(.*))?$/) { # label
+            } elsif($instr =~ /^\$([_a-z]\w*)\s*((=)\s*(.*))?$/) { # label
                 my($label, $value) = ($1, $4);
                 if($3) {
-                    $value =~ s/\$\$/$address/;
-                    $value =~ s/\$$_/$labels{$_}/
-                        foreach (keys %labels);
-                    $value = eval $value;
+                    $value = _to_number($value);
                 } else {
                     $value = $address;
                 }
@@ -188,6 +193,17 @@ sub z80asm {
                     $address += 2;
                 } elsif($instr eq 'NOP') {
                     _write($address++, 0);
+                } elsif($instr eq 'EX' && uc($params) eq "AF,AF'") {
+                    _write($address++, 0b00001000);
+                } elsif($instr eq 'DJNZ') {
+                    _write($address, 0b00010000);
+                    die("DJNZ doesn't yet insert address");
+                    $address += 2;
+                } elsif($instr eq 'JR' && $params !~ /,/) {
+                    _write($address, 0b00011000);
+                    die("JR doesn't yet insert address");
+                    $address += 2;
+
                 } elsif($instr eq 'DEC') {
                      my %table = (
                          A      => [0x3D],
@@ -226,26 +242,37 @@ sub _write {
     my($address, $byte) = @_;
     $bytes_this_instr++;
     substr($code, $address, 1) = chr($byte & 0xFF);
-    printf("%02X ", $byte) if($pass == 2 && $bytes_this_instr < 10);
-    print "..." if($pass == 2 && $bytes_this_instr == 10);
+    # printf("%02X ", $byte) if($pass == 2 && $bytes_this_instr < 10);
+    # print "..." if($pass == 2 && $bytes_this_instr == 10);
+    print "\n".(' ' x 47).'| ' if($pass == 2 && $bytes_this_instr && !($bytes_this_instr % 10));
+    printf("%02X ", $byte) if($pass == 2);
 }
 
 sub _to_number {
     my $number = shift;
     $number =~ s/\s*;.*//;
-    if($number =~ /^0[xb]/) {       # hex or binary
-        $number = oct($number);
-    } elsif($number eq '$$') {
-        $number = _to_number($address);
-    } elsif($number !~ /^-?\d+$/) { # not a decimal int, must be a label
-        die("$number isn't a valid label")
-            unless($number =~ /^[_a-z]\w*$/i);
-        if(!exists($labels{$number})) {  # if the label doesn't exist
-            $labels{$number} = 0         # create it
-        }
-        $number = $labels{$number};
+
+    $number =~ s/\$\$/$address/;
+    $number =~ s/\$$_/$labels{$_}/
+        foreach (keys %labels);
+    if($pass == 2 && $number =~ /\$(\w+)/) {
+        die("Unknown label \$$1 in $number\n")
     }
-    $number;
+    $number = eval "0 + ($number)";
+
+    # if($number =~ /^0[xb]/) {       # hex or binary
+    #     $number = oct($number);
+    # } elsif($number eq '$$') {
+    #     $number = _to_number($address);
+    # } elsif($number !~ /^-?\d+$/) { # not a decimal int, must be a label
+    #     die("$number isn't a valid label")
+    #         unless($number =~ /^[_a-z]\w*$/i);
+    #     if(!exists($labels{$number})) {  # if the label doesn't exist
+    #         $labels{$number} = 0         # create it
+    #     }
+    #     $number = $labels{$number};
+    # }
+    $number || 0;
 }
 
 1;
