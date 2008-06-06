@@ -187,55 +187,153 @@ sub z80asm {
                 
                 if($instr eq 'DEFB') {
                     _write($address++, _to_number($params));
-                } elsif($instr eq 'DEFW') {
+                }
+                elsif($instr eq 'DEFW') {
                     _write($address, _to_number($params) & 0xFF);
                     _write($address + 1, (_to_number($params) >> 8) & 0xFF);
                     $address += 2;
-		} elsif($instr eq 'CALL') {
-
-		 # CALL, CPDR, CPIR, DJNZ, HALT, INDR, INIR, LDDR, LDIR, OTDR, OTIR, OUTD,
-		 # OUTI, PUSH, RETI, RETN, RLCA, RRCA,
-		 # ADC, ADD, AND, BIT, CCF, CPD, CPI, CPL, DAA, DEC, EQU, EXX, INC, IND, INI,
-		 # LDD, LDI, NEG, OUT, POP, RES, RET, RLA, RLC, RLD, RRA, RRC, RRD, RST,
-		 # SBC, SCF, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
-		 # CP, DI, EI, EX, IM, IN, JP, JR, LD, OR, RL, RR
-                } elsif($instr eq 'NOP') {
-                    _write($address++, 0);
-                } elsif($instr eq 'EX' && uc($params) eq "AF,AF'") {
-                    _write($address++, 0b00001000);
-                } elsif($instr eq 'DJNZ') {
-                    _write($address, 0b00010000);
-                    die("DJNZ doesn't yet insert address");
-                    $address += 2;
-                } elsif($instr eq 'JR' && $params !~ /,/) {
-                    _write($address, 0b00011000);
-                    die("JR doesn't yet insert address");
-                    $address += 2;
-
-                } elsif($instr eq 'DEC') {
-                     if(exists($TABLE_R{$params})) {
-                         _write($address++, 0b00000101 + ($TABLE_R{$params} << 3));
-                     } elsif(exists($TABLE_RP{$params})) {
-                         _write($address++, 0b00001011 + ($TABLE_R{$params} << 4));
-                     } elsif($params =~ /^\(I([XY])\+(.*)\)$/) {
-                         _write($address, ($1 eq 'X' ? 0xDD : 0xFD));
-                         _write($address + 1, 0x35);
-                         _write($address + 2, _to_number($2));
-                         $address += 3;
-                     } else { die "DEC $params ??\n"; }
-                 } elsif($instr eq 'INC') {
-                     if(exists($TABLE_R{$params})) {
-                         _write($address++, 0b00000100 + ($TABLE_R{$params} << 3));
-                     } elsif(exists($TABLE_RP{$params})) {
-                         _write($address++, 0b00000011 + ($TABLE_R{$params} << 4));
-                     } elsif($params =~ /^\(I([XY])\+(.*)\)$/) {
-                         _write($address, ($1 eq 'X' ? 0xDD : 0xFD));
-                         _write($address + 1, 0x34);
-                         _write($address + 2, _to_number($2));
-                         $address += 3;
-                     } else { die "INC $params ??\n"; }
-                 }
-                 else {
+		}
+                # DJNZ
+                # PUSH
+                # ADC, ADD, AND, BIT, DEC, INC
+                # OUT, POP, RES, RET, RLC, RRC, RST,
+                # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
+                # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
+                elsif($instr eq 'CALL') {
+                    if($params =~ /(.*),(.*)/) {
+                        my($cond, $params) = ($1, $2);
+                        _write($address, 0xC4 + $TABLE_CC{$cond} << 3);
+                    } else {
+                        _write($address, 0xCD);
+                    }
+                    _write($address + 1, _to_number($params) & 0xFF);
+                    _write($address + 2, (_to_number($params) >> 8) & 0xFF);
+                    $address += 3;
+                }
+                elsif($instr eq 'CCF') {
+                    _write($address++, 0x3F);
+                }
+                elsif($instr eq 'CPD') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA9);
+                }
+                elsif($instr eq 'CPDR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB9);
+                }
+                elsif($instr eq 'CPI') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA1);
+                }
+                elsif($instr eq 'CPIR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB1);
+                }
+                elsif($instr eq 'CPL') {
+                    _write($address++, 0x2F);
+                }
+                elsif($instr eq 'DAA') {
+                    _write($address++, 0x27);
+                }
+                elsif($instr eq 'DI') {
+                    _write($address++, 0xF3);
+                }
+                elsif($instr eq 'EI') {
+                    _write($address++, 0xFB);
+                }
+                elsif($instr eq 'EXX') {
+                    _write($address++, 0xD9);
+                }
+                elsif($instr eq 'HALT') {
+                    _write($address++, 0x76);
+                }
+                elsif($instr eq 'IND') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xAA);
+                }
+                elsif($instr eq 'INDR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xBA);
+                }
+                elsif($instr eq 'INI') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA2);
+                }
+                elsif($instr eq 'INIR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB2);
+                }
+                elsif($instr eq 'LDD') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA8);
+                }
+                elsif($instr eq 'LDDR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB8);
+                }
+                elsif($instr eq 'LDI') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA0);
+                }
+                elsif($instr eq 'LDIR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB0);
+                }
+                elsif($instr eq 'NEG') {
+                    _write($address++, 0xED);
+                    _write($address++, 0x44);
+                }
+                elsif($instr eq 'NOP') {
+                    _write($address++, 0x00);
+                }
+                elsif($instr eq 'OTDR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xBB);
+                }
+                elsif($instr eq 'OTIR') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xB3);
+                }
+                elsif($instr eq 'OUTD') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xAB);
+                }
+                elsif($instr eq 'OUTI') {
+                    _write($address++, 0xED);
+                    _write($address++, 0xA3);
+                }
+                elsif($instr eq 'RETI') {
+                    _write($address++, 0xED);
+                    _write($address++, 0x4D);
+                }
+                elsif($instr eq 'RETN') {
+                    _write($address++, 0xED);
+                    _write($address++, 0x45);
+                }
+                elsif($instr eq 'RLA') {
+                    _write($address++, 0x17);
+                }
+                elsif($instr eq 'RLCA') {
+                    _write($address++, 0x07);
+                }
+                elsif($instr eq 'RLD') {
+                    _write($address++, 0xED);
+                    _write($address++, 0x6F);
+                }
+                elsif($instr eq 'RRA') {
+                    _write($address++, 0x1F);
+                }
+                elsif($instr eq 'RRCA') {
+                    _write($address++, 0x0F);
+                }
+                elsif($instr eq 'RRD') {
+                    _write($address++, 0xED);
+                    _write($address++, 0x67);
+                }
+                elsif($instr eq 'SCF') {
+                    _write($address++, 0x37);
+                }
+                else {
                     die("$instr $params not yet handled\n");
                 }
             }
