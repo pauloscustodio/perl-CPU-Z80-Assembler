@@ -191,6 +191,14 @@ sub z80asm {
                     _write($address, _to_number($params) & 0xFF);
                     _write($address + 1, (_to_number($params) >> 8) & 0xFF);
                     $address += 2;
+		} elsif($instr eq 'CALL') {
+
+		 # CALL, CPDR, CPIR, DJNZ, HALT, INDR, INIR, LDDR, LDIR, OTDR, OTIR, OUTD,
+		 # OUTI, PUSH, RETI, RETN, RLCA, RRCA,
+		 # ADC, ADD, AND, BIT, CCF, CPD, CPI, CPL, DAA, DEC, EQU, EXX, INC, IND, INI,
+		 # LDD, LDI, NEG, OUT, POP, RES, RET, RLA, RLC, RLD, RRA, RRC, RRD, RST,
+		 # SBC, SCF, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
+		 # CP, DI, EI, EX, IM, IN, JP, JR, LD, OR, RL, RR
                 } elsif($instr eq 'NOP') {
                     _write($address++, 0);
                 } elsif($instr eq 'EX' && uc($params) eq "AF,AF'") {
@@ -209,7 +217,7 @@ sub z80asm {
                          _write($address++, 0b00000101 + ($TABLE_R{$params} << 3));
                      } elsif(exists($TABLE_RP{$params})) {
                          _write($address++, 0b00001011 + ($TABLE_R{$params} << 4));
-                     } elsif($params =~ /^\(I([XY])+(.*)\)$/) {
+                     } elsif($params =~ /^\(I([XY])\+(.*)\)$/) {
                          _write($address, ($1 eq 'X' ? 0xDD : 0xFD));
                          _write($address + 1, 0x35);
                          _write($address + 2, _to_number($2));
@@ -220,7 +228,7 @@ sub z80asm {
                          _write($address++, 0b00000100 + ($TABLE_R{$params} << 3));
                      } elsif(exists($TABLE_RP{$params})) {
                          _write($address++, 0b00000011 + ($TABLE_R{$params} << 4));
-                     if($params =~ /^\(I([XY])+(.*)\)$/) {
+                     } elsif($params =~ /^\(I([XY])\+(.*)\)$/) {
                          _write($address, ($1 eq 'X' ? 0xDD : 0xFD));
                          _write($address + 1, 0x34);
                          _write($address + 2, _to_number($2));
@@ -228,7 +236,7 @@ sub z80asm {
                      } else { die "INC $params ??\n"; }
                  }
                  else {
-                    die("$instr not yet handled\n");
+                    die("$instr $params not yet handled\n");
                 }
             }
         }
