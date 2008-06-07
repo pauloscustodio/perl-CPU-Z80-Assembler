@@ -6,3 +6,5 @@ t/pod-coverage.t
 t/pod.t
 testme
 MANIFEST
+CHANGES
+README
