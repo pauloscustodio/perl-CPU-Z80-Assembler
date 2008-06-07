@@ -1,0 +1,8 @@
+bin/z80masm
+lib/CPU/Z80/Assembler.pm
+Makefile.PL
+t/00-opcodes.t
+t/pod-coverage.t
+t/pod.t
+testme
+MANIFEST
