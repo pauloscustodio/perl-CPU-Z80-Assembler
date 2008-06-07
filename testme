@@ -18,6 +18,6 @@ z80asm('
     $other = (2 + $label)/2
       DEFW $other
       NOP
-      INC A
+;      INC A
       DEFT "start", 1, 2, ;3
 ');

@@ -49,8 +49,7 @@ By default the 'z80asm' subroutine is exported.  To disable that, do:
 =head2 z80asm
 
 This takes one parameter, a string of Z80 assembler source.  It
-returns the assembled version as a string, with any gaps padded
-with NULLs if necessary.
+returns the assembled version as a string.
 
 =head1 SYNTAX
 
@@ -189,8 +188,7 @@ sub z80asm {
                     _write($address++, _to_number($params));
                 }
                 elsif($instr eq 'DEFW') {
-                    _write($address, _to_number($params) & 0xFF);
-                    _write($address + 1, (_to_number($params) >> 8) & 0xFF);
+                    _write16($address, _to_number($params));
                     $address += 2;
 		}
                 # DJNZ
@@ -206,8 +204,7 @@ sub z80asm {
                     } else {
                         _write($address, 0xCD);
                     }
-                    _write($address + 1, _to_number($params) & 0xFF);
-                    _write($address + 2, (_to_number($params) >> 8) & 0xFF);
+                    _write16($address + 1, _to_number($params));
                     $address += 3;
                 }
                 elsif($instr eq 'CCF') {
@@ -342,18 +339,21 @@ sub z80asm {
         print "\n" if($pass == 2);
     }
     z80asm($source, 2) if($pass == 1);
-    # return substr($code, $startaddr, 1 + $maxaddr - $startaddr);
-    return substr($code, 0, $maxaddr + 1);
+    return substr($code, $startaddr, 1 + $maxaddr - $startaddr);
+    # return substr($code, 0, $maxaddr + 1);
 }
 
 sub _write {
     my($address, $byte) = @_;
     $bytes_this_instr++;
     substr($code, $address, 1) = chr($byte & 0xFF);
-    # printf("%02X ", $byte) if($pass == 2 && $bytes_this_instr < 10);
-    # print "..." if($pass == 2 && $bytes_this_instr == 10);
     print "\n".(' ' x 47).'| ' if($pass == 2 && $bytes_this_instr && !($bytes_this_instr % 10));
     printf("%02X ", $byte) if($pass == 2);
+}
+sub _write16 {
+    my($address, $word) = @_;
+    _write($address, $word & 0xFF);
+    _write($address, ($word & 0xFF00) >> 8);
 }
 
 sub _to_number {
