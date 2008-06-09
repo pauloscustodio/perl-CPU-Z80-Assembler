@@ -20,7 +20,7 @@ foreach my $code (@codes) {
     my $binary = eval { z80asm("ORG 0x6789\n$code") } || 'xxxxxx';
     print "not " unless($binary eq $expectedbinary);
     print "ok ".($test++)." - $code\n";
-    # print "# $@" if($@);
+    print "# $@" if($@);
 }
 
 __DATA__

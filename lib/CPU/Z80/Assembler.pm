@@ -171,6 +171,7 @@ sub z80asm {
                 last if(/;/);
             }
         } else {  # real instruction or a label
+            my $addr_at_start_of_instr = $address;
             $instr =~ s/\s*;.*//; # de-comment
             if(!$instr) {
                 # do nothing
@@ -197,13 +198,26 @@ sub z80asm {
 		}
                 # DJNZ
                 # PUSH
-                # ADC, ADD, AND, BIT, DEC, INC
+                # ADD, AND, BIT, DEC, INC
                 # OUT, POP, RES, RET, RLC, RRC, RST,
                 # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
                 # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
 		elsif($instr eq 'ADC') {
                     my($r1, $r2) = split(/,/, $params);
     		    if($r1 eq 'A') {
+                        if(exists($TABLE_R{$r2})) {
+                            _write($address, 0b10001000 + $TABLE_R{$r2});
+                            $address++;
+                        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
+                            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+                            _write($address + 1, 0x8E);
+                            _write($address + 2, _to_number($2));
+                            $address += 3;
+                        } else {
+                            _write($address,     0xCE);
+                            _write($address + 1, _to_number($r2));
+                            $address += 2;
+                        }
 		    } elsif($r1 eq 'HL') {
 		        _write($address, 0xED);
 			_write($address + 1, 0x4A + ($TABLE_RP{$r2} << 4));
@@ -345,7 +359,11 @@ sub z80asm {
                 }
                 else {
 		    no warnings;
-                    _die_unknown("$instr $params\n");
+                    _die_unknown("$instr $params");
+                }
+                if($addr_at_start_of_instr == $address) {
+		    no warnings;
+                    die("Invalid instruction: $instr $params\n");
                 }
             }
         }
