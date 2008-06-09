@@ -51,7 +51,9 @@ By default the 'z80asm' subroutine is exported.  To disable that, do:
 
 This takes one parameter, a string of Z80 assembler source.  It
 returns the assembled version as a string.  If you set the C<$verbose>
-package variable it will also spit out an assembler listing.
+variable it will also spit out an assembler listing:
+
+    $CPU::Z80::Assembler::verbose = 1;
 
 =head1 SYNTAX
 
@@ -145,7 +147,7 @@ sub z80asm {
             substr($instr_to_print, 34) = ' ...'
                 if(length($instr_to_print) > 37);
             printf("0x%04X: %-38s |\n", $address, $instr_to_print)
-	        if($verbose);
+                if($verbose);
         }
     }
     foreach my $instr (@instructions) {
@@ -154,7 +156,7 @@ sub z80asm {
             substr($instr_to_print, 34) = ' ...'
                 if(length($instr_to_print) > 37);
             printf("0x%04X: %-38s | ", $address, $instr_to_print)
-	        if($verbose);
+                if($verbose);
             $bytes_this_instr = 0;
         }
         if($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
@@ -195,76 +197,22 @@ sub z80asm {
                 elsif($instr eq 'DEFW') {
                     _write16($address, _to_number($params));
                     $address += 2;
-		}
+                }
                 # DJNZ
                 # PUSH
-                # AND, BIT, DEC, INC
+                # BIT, DEC, INC
                 # OUT, POP, RES, RET, RLC, RRC, RST,
                 # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
                 # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
-		elsif($instr eq 'ADC') {
-                    my($r1, $r2) = split(/,/, $params);
-    		    if($r1 eq 'A') {
-                        if(exists($TABLE_R{$r2})) {
-                            _write($address, 0b10001000 + $TABLE_R{$r2});
-                            $address++;
-                        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
-                            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
-                            _write($address + 1, 0x8E);
-                            _write($address + 2, _to_number($2));
-                            $address += 3;
-                        } else {
-                            _write($address,     0xCE);
-                            _write($address + 1, _to_number($r2));
-                            $address += 2;
-                        }
-		    } elsif($r1 eq 'HL') {
-		        _write($address, 0xED);
-			_write($address + 1, 0x4A + ($TABLE_RP{$r2} << 4));
-                        $address += 2;
-		    }
-		}
-		elsif($instr eq 'ADD') {
-                    my($r1, $r2) = split(/,/, $params);
-    		    if($r1 eq 'A') {
-                        if(exists($TABLE_R{$r2})) {
-                            _write($address, 0b10000000 + $TABLE_R{$r2});
-                            $address++;
-                        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
-                            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
-                            _write($address + 1, 0x86);
-                            _write($address + 2, _to_number($2));
-                            $address += 3;
-                        } else {
-                            _write($address,     0xC6);
-                            _write($address + 1, _to_number($r2));
-                            $address += 2;
-                        }
-		    } elsif($r1 =~ /^I[XY]$/) {
-                        local $TABLE_RP{$r1} = $TABLE_RP{'HL'};
-                        _write($address,     $r1 eq 'IX' ? 0xDD : 0xFD);
-		        _write($address + 1, 0b00001001 + ($TABLE_RP{$r2} << 4));
-                        $address += 2;
-		    } elsif($r1 eq 'HL') {
-		        _write($address, 0b00001001 + ($TABLE_RP{$r2} << 4));
-                        $address += 1;
-		    }
-		}
-		elsif($instr eq 'AND') {
-                    if(exists($TABLE_R{$params})) {
-                        _write($address, 0b10100000 + $TABLE_R{$params});
-                        $address++;
-                    } elsif($params =~ /\((I[XY])(.*?)\)/) {
-                        _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
-                        _write($address + 1, 0xA6);
-                        _write($address + 2, _to_number($2));
-                        $address += 3;
-                    } else {
-                        _write($address,     0xE6);
-                        _write($address + 1, _to_number($params));
-                        $address += 2;
-                    }
-		}
+                elsif($instr eq 'ADC') {
+                    ADC($params);
+                }
+                elsif($instr eq 'ADD') {
+                    ADD($params);
+                }
+                elsif($instr eq 'AND') {
+                    AND($params);
+                }
                 elsif($instr eq 'CALL') {
                     if($params =~ /(.*),(.*)/) {
                         my($cond, $params) = ($1, $2);
@@ -275,135 +223,47 @@ sub z80asm {
                     _write16($address + 1, _to_number($params));
                     $address += 3;
                 }
-                elsif($instr eq 'CCF') {
-                    _write($address++, 0x3F);
-                }
-                elsif($instr eq 'CPD') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA9);
-                }
-                elsif($instr eq 'CPDR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB9);
-                }
-                elsif($instr eq 'CPI') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA1);
-                }
-                elsif($instr eq 'CPIR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB1);
-                }
-                elsif($instr eq 'CPL') {
-                    _write($address++, 0x2F);
-                }
-                elsif($instr eq 'DAA') {
-                    _write($address++, 0x27);
-                }
-                elsif($instr eq 'DI') {
-                    _write($address++, 0xF3);
-                }
-                elsif($instr eq 'EI') {
-                    _write($address++, 0xFB);
-                }
-                elsif($instr eq 'EXX') {
-                    _write($address++, 0xD9);
-                }
-                elsif($instr eq 'HALT') {
-                    _write($address++, 0x76);
-                }
-                elsif($instr eq 'IND') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xAA);
-                }
-                elsif($instr eq 'INDR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xBA);
-                }
-                elsif($instr eq 'INI') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA2);
-                }
-                elsif($instr eq 'INIR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB2);
-                }
-                elsif($instr eq 'LDD') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA8);
-                }
-                elsif($instr eq 'LDDR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB8);
-                }
-                elsif($instr eq 'LDI') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA0);
-                }
-                elsif($instr eq 'LDIR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB0);
-                }
-                elsif($instr eq 'NEG') {
-                    _write($address++, 0xED);
-                    _write($address++, 0x44);
-                }
-                elsif($instr eq 'NOP') {
-                    _write($address++, 0x00);
-                }
-                elsif($instr eq 'OTDR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xBB);
-                }
-                elsif($instr eq 'OTIR') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xB3);
-                }
-                elsif($instr eq 'OUTD') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xAB);
-                }
-                elsif($instr eq 'OUTI') {
-                    _write($address++, 0xED);
-                    _write($address++, 0xA3);
-                }
-                elsif($instr eq 'RETI') {
-                    _write($address++, 0xED);
-                    _write($address++, 0x4D);
-                }
-                elsif($instr eq 'RETN') {
-                    _write($address++, 0xED);
-                    _write($address++, 0x45);
-                }
-                elsif($instr eq 'RLA') {
-                    _write($address++, 0x17);
-                }
-                elsif($instr eq 'RLCA') {
-                    _write($address++, 0x07);
-                }
-                elsif($instr eq 'RLD') {
-                    _write($address++, 0xED);
-                    _write($address++, 0x6F);
-                }
-                elsif($instr eq 'RRA') {
-                    _write($address++, 0x1F);
-                }
-                elsif($instr eq 'RRCA') {
-                    _write($address++, 0x0F);
-                }
-                elsif($instr eq 'RRD') {
-                    _write($address++, 0xED);
-                    _write($address++, 0x67);
-                }
-                elsif($instr eq 'SCF') {
-                    _write($address++, 0x37);
-                }
+                elsif($instr eq "CCF") { CCF() }
+                elsif($instr eq "CPD") { CPD() }
+                elsif($instr eq "CPDR") { CPDR() }
+                elsif($instr eq "CPI") { CPI() }
+                elsif($instr eq "CPIR") { CPIR() }
+                elsif($instr eq "CPL") { CPL() }
+                elsif($instr eq "DAA") { DAA() }
+                elsif($instr eq "DI") { DI() }
+                elsif($instr eq "EI") { EI() }
+                elsif($instr eq "EXX") { EXX() }
+                elsif($instr eq "HALT") { HALT() }
+                elsif($instr eq "IND") { IND() }
+                elsif($instr eq "INDR") { INDR() }
+                elsif($instr eq "INI") { INI() }
+                elsif($instr eq "INIR") { INIR() }
+                elsif($instr eq "LDD") { LDD() }
+                elsif($instr eq "LDDR") { LDDR() }
+                elsif($instr eq "LDI") { LDI() }
+                elsif($instr eq "LDIR") { LDIR() }
+                elsif($instr eq "NEG") { NEG() }
+                elsif($instr eq "NOP") { NOP() }
+                elsif($instr eq "OTDR") { OTDR() }
+                elsif($instr eq "OTIR") { OTIR() }
+                elsif($instr eq "OUTD") { OUTD() }
+                elsif($instr eq "OUTI") { OUTI() }
+                elsif($instr eq "RETI") { RETI() }
+                elsif($instr eq "RETN") { RETN() }
+                elsif($instr eq "RLA") { RLA() }
+                elsif($instr eq "RLCA") { RLCA() }
+                elsif($instr eq "RLD") { RLD() }
+                elsif($instr eq "RRA") { RRA() }
+                elsif($instr eq "RRCA") { RRCA() }
+                elsif($instr eq "RRD") { RRD() }
+                elsif($instr eq "SCF") { SCF() }
+
                 else {
-		    no warnings;
+                    no warnings;
                     _die_unknown("$instr $params");
                 }
                 if($addr_at_start_of_instr == $address) {
-		    no warnings;
+                    no warnings;
                     die("Invalid instruction: $instr $params\n");
                 }
             }
@@ -416,6 +276,196 @@ sub z80asm {
     # return substr($code, 0, $maxaddr + 1);
 }
 
+sub ADC {
+    my $params = shift;
+    my($r1, $r2) = split(/,/, $params);
+        if($r1 eq 'A') {
+        if(exists($TABLE_R{$r2})) {
+            _write($address, 0b10001000 + $TABLE_R{$r2});
+            $address++;
+        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
+            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+            _write($address + 1, 0x8E);
+            _write($address + 2, _to_number($2));
+            $address += 3;
+        } else {
+            _write($address,     0xCE);
+            _write($address + 1, _to_number($r2));
+            $address += 2;
+        }
+    } elsif($r1 eq 'HL') {
+        _write($address, 0xED);
+        _write($address + 1, 0x4A + ($TABLE_RP{$r2} << 4));
+        $address += 2;
+    }
+}
+sub ADD {
+    my $params = shift;
+    my($r1, $r2) = split(/,/, $params);
+    if($r1 eq 'A') {
+        if(exists($TABLE_R{$r2})) {
+            _write($address, 0b10000000 + $TABLE_R{$r2});
+            $address++;
+        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
+            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+            _write($address + 1, 0x86);
+            _write($address + 2, _to_number($2));
+            $address += 3;
+        } else {
+            _write($address,     0xC6);
+            _write($address + 1, _to_number($r2));
+            $address += 2;
+        }
+    } elsif($r1 =~ /^I[XY]$/) {
+        local $TABLE_RP{$r1} = $TABLE_RP{'HL'};
+        _write($address,     $r1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0b00001001 + ($TABLE_RP{$r2} << 4));
+        $address += 2;
+    } elsif($r1 eq 'HL') {
+        _write($address, 0b00001001 + ($TABLE_RP{$r2} << 4));
+        $address += 1;
+    }
+}
+sub AND {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address, 0b10100000 + $TABLE_R{$params});
+        $address++;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+        _write($address + 1, 0xA6);
+        _write($address + 2, _to_number($2));
+        $address += 3;
+    } else {
+        _write($address,     0xE6);
+        _write($address + 1, _to_number($params));
+        $address += 2;
+    }
+}
+
+sub CCF {
+    _write($address++, 0x3F);
+}
+sub CPD {
+    _write($address++, 0xED);
+    _write($address++, 0xA9);
+}
+sub CPDR {
+    _write($address++, 0xED);
+    _write($address++, 0xB9);
+}
+sub CPI {
+    _write($address++, 0xED);
+    _write($address++, 0xA1);
+}
+sub CPIR {
+    _write($address++, 0xED);
+    _write($address++, 0xB1);
+}
+sub CPL {
+    _write($address++, 0x2F);
+}
+sub DAA {
+    _write($address++, 0x27);
+}
+sub DI {
+    _write($address++, 0xF3);
+}
+sub EI {
+    _write($address++, 0xFB);
+}
+sub EXX {
+    _write($address++, 0xD9);
+}
+sub HALT {
+    _write($address++, 0x76);
+}
+sub IND {
+    _write($address++, 0xED);
+    _write($address++, 0xAA);
+}
+sub INDR {
+    _write($address++, 0xED);
+    _write($address++, 0xBA);
+}
+sub INI {
+    _write($address++, 0xED);
+    _write($address++, 0xA2);
+}
+sub INIR {
+    _write($address++, 0xED);
+    _write($address++, 0xB2);
+}
+sub LDD {
+    _write($address++, 0xED);
+    _write($address++, 0xA8);
+}
+sub LDDR {
+    _write($address++, 0xED);
+    _write($address++, 0xB8);
+}
+sub LDI {
+    _write($address++, 0xED);
+    _write($address++, 0xA0);
+}
+sub LDIR {
+    _write($address++, 0xED);
+    _write($address++, 0xB0);
+}
+sub NEG {
+    _write($address++, 0xED);
+    _write($address++, 0x44);
+}
+sub NOP {
+    _write($address++, 0x00);
+}
+sub OTDR {
+    _write($address++, 0xED);
+    _write($address++, 0xBB);
+}
+sub OTIR {
+    _write($address++, 0xED);
+    _write($address++, 0xB3);
+}
+sub OUTD {
+    _write($address++, 0xED);
+    _write($address++, 0xAB);
+}
+sub OUTI {
+    _write($address++, 0xED);
+    _write($address++, 0xA3);
+}
+sub RETI {
+    _write($address++, 0xED);
+    _write($address++, 0x4D);
+}
+sub RETN {
+    _write($address++, 0xED);
+    _write($address++, 0x45);
+}
+sub RLA {
+    _write($address++, 0x17);
+}
+sub RLCA {
+    _write($address++, 0x07);
+}
+sub RLD {
+    _write($address++, 0xED);
+    _write($address++, 0x6F);
+}
+sub RRA {
+    _write($address++, 0x1F);
+}
+sub RRCA {
+    _write($address++, 0x0F);
+}
+sub RRD {
+    _write($address++, 0xED);
+    _write($address++, 0x67);
+}
+sub SCF {
+    _write($address++, 0x37);
+}
 sub _die_unknown {
     die(sprintf("unknown instruction near 0x%04X: %s\n", $address, $_[0]));
 }
