@@ -198,7 +198,7 @@ sub z80asm {
 		}
                 # DJNZ
                 # PUSH
-                # ADD, AND, BIT, DEC, INC
+                # AND, BIT, DEC, INC
                 # OUT, POP, RES, RET, RLC, RRC, RST,
                 # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
                 # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
@@ -223,6 +223,47 @@ sub z80asm {
 			_write($address + 1, 0x4A + ($TABLE_RP{$r2} << 4));
                         $address += 2;
 		    }
+		}
+		elsif($instr eq 'ADD') {
+                    my($r1, $r2) = split(/,/, $params);
+    		    if($r1 eq 'A') {
+                        if(exists($TABLE_R{$r2})) {
+                            _write($address, 0b10000000 + $TABLE_R{$r2});
+                            $address++;
+                        } elsif($r2 =~ /\((I[XY])(.*?)\)/) {
+                            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+                            _write($address + 1, 0x86);
+                            _write($address + 2, _to_number($2));
+                            $address += 3;
+                        } else {
+                            _write($address,     0xC6);
+                            _write($address + 1, _to_number($r2));
+                            $address += 2;
+                        }
+		    } elsif($r1 =~ /^I[XY]$/) {
+                        local $TABLE_RP{$r1} = $TABLE_RP{'HL'};
+                        _write($address,     $r1 eq 'IX' ? 0xDD : 0xFD);
+		        _write($address + 1, 0b00001001 + ($TABLE_RP{$r2} << 4));
+                        $address += 2;
+		    } elsif($r1 eq 'HL') {
+		        _write($address, 0b00001001 + ($TABLE_RP{$r2} << 4));
+                        $address += 1;
+		    }
+		}
+		elsif($instr eq 'AND') {
+                    if(exists($TABLE_R{$params})) {
+                        _write($address, 0b10100000 + $TABLE_R{$params});
+                        $address++;
+                    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+                        _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+                        _write($address + 1, 0xA6);
+                        _write($address + 2, _to_number($2));
+                        $address += 3;
+                    } else {
+                        _write($address,     0xE6);
+                        _write($address + 1, _to_number($params));
+                        $address += 2;
+                    }
 		}
                 elsif($instr eq 'CALL') {
                     if($params =~ /(.*),(.*)/) {
