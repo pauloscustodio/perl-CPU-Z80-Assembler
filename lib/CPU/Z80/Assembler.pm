@@ -201,6 +201,19 @@ sub z80asm {
                 # OUT, POP, RES, RET, RLC, RRC, RST,
                 # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
                 # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
+		elsif($instr eq 'ADC') {
+                    my($r1, $r2) = split(/,/, $params);
+    		    if($r1 eq 'A') {
+		    } elsif($r1 eq 'HL') {
+		        _write($address, 0xED);
+			$r2 eq 'BC' ? _write($address + 1, 0x4A) :
+			$r2 eq 'DE' ? _write($address + 1, 0x5A) :
+			$r2 eq 'HL' ? _write($address + 1, 0x6A) :
+			$r2 eq 'SP' ? _write($address + 1, 0x7A) :
+			              _die_unknown("$instr $params");
+                        $address += 2;
+		    }
+		}
                 elsif($instr eq 'CALL') {
                     if($params =~ /(.*),(.*)/) {
                         my($cond, $params) = ($1, $2);
@@ -335,7 +348,8 @@ sub z80asm {
                     _write($address++, 0x37);
                 }
                 else {
-                    die("$instr $params not yet handled\n");
+		    no warnings;
+                    _die_unknown("$instr $params\n");
                 }
             }
         }
@@ -347,6 +361,9 @@ sub z80asm {
     # return substr($code, 0, $maxaddr + 1);
 }
 
+sub _die_unknown {
+    die(sprintf("unknown instruction near 0x%04X: %s\n", $address, $_[0]));
+}
 sub _write {
     my($address, $byte) = @_;
     $bytes_this_instr++;
