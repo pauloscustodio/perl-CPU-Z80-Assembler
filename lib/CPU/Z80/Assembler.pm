@@ -206,11 +206,7 @@ sub z80asm {
     		    if($r1 eq 'A') {
 		    } elsif($r1 eq 'HL') {
 		        _write($address, 0xED);
-			$r2 eq 'BC' ? _write($address + 1, 0x4A) :
-			$r2 eq 'DE' ? _write($address + 1, 0x5A) :
-			$r2 eq 'HL' ? _write($address + 1, 0x6A) :
-			$r2 eq 'SP' ? _write($address + 1, 0x7A) :
-			              _die_unknown("$instr $params");
+			_write($address + 1, 0x4A + ($TABLE_RP{$r2} << 4));
                         $address += 2;
 		    }
 		}
