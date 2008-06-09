@@ -204,59 +204,44 @@ sub z80asm {
                 # OUT, POP, RES, RET, RLC, RRC, RST,
                 # SBC, SET, SLA, SLL, SLI, SRA, SRL, SUB, XOR, ORG,
                 # CP, EX, IM, IN, JP, JR, LD, OR, RL, RR
-                elsif($instr eq 'ADC') {
-                    ADC($params);
-                }
-                elsif($instr eq 'ADD') {
-                    ADD($params);
-                }
-                elsif($instr eq 'AND') {
-                    AND($params);
-                }
-                elsif($instr eq 'CALL') {
-                    if($params =~ /(.*),(.*)/) {
-                        my($cond, $params) = ($1, $2);
-                        _write($address, 0xC4 + $TABLE_CC{$cond} << 3);
-                    } else {
-                        _write($address, 0xCD);
-                    }
-                    _write16($address + 1, _to_number($params));
-                    $address += 3;
-                }
-                elsif($instr eq "CCF") { CCF() }
-                elsif($instr eq "CPD") { CPD() }
-                elsif($instr eq "CPDR") { CPDR() }
-                elsif($instr eq "CPI") { CPI() }
-                elsif($instr eq "CPIR") { CPIR() }
-                elsif($instr eq "CPL") { CPL() }
-                elsif($instr eq "DAA") { DAA() }
-                elsif($instr eq "DI") { DI() }
-                elsif($instr eq "EI") { EI() }
-                elsif($instr eq "EXX") { EXX() }
-                elsif($instr eq "HALT") { HALT() }
-                elsif($instr eq "IND") { IND() }
-                elsif($instr eq "INDR") { INDR() }
-                elsif($instr eq "INI") { INI() }
-                elsif($instr eq "INIR") { INIR() }
-                elsif($instr eq "LDD") { LDD() }
-                elsif($instr eq "LDDR") { LDDR() }
-                elsif($instr eq "LDI") { LDI() }
-                elsif($instr eq "LDIR") { LDIR() }
-                elsif($instr eq "NEG") { NEG() }
-                elsif($instr eq "NOP") { NOP() }
-                elsif($instr eq "OTDR") { OTDR() }
-                elsif($instr eq "OTIR") { OTIR() }
-                elsif($instr eq "OUTD") { OUTD() }
-                elsif($instr eq "OUTI") { OUTI() }
-                elsif($instr eq "RETI") { RETI() }
-                elsif($instr eq "RETN") { RETN() }
-                elsif($instr eq "RLA") { RLA() }
-                elsif($instr eq "RLCA") { RLCA() }
-                elsif($instr eq "RLD") { RLD() }
-                elsif($instr eq "RRA") { RRA() }
-                elsif($instr eq "RRCA") { RRCA() }
-                elsif($instr eq "RRD") { RRD() }
-                elsif($instr eq "SCF") { SCF() }
+                elsif($instr eq 'ADC')  { _ADC($params) }
+                elsif($instr eq 'ADD')  { _ADD($params) }
+                elsif($instr eq 'AND')  { _AND($params) }
+                elsif($instr eq 'CALL') { _CALL($params) }
+                elsif($instr eq "CCF")  { _CCF() }
+                elsif($instr eq "CPD")  { _CPD() }
+                elsif($instr eq "CPDR") { _CPDR() }
+                elsif($instr eq "CPI")  { _CPI() }
+                elsif($instr eq "CPIR") { _CPIR() }
+                elsif($instr eq "CPL")  { _CPL() }
+                elsif($instr eq "DAA")  { _DAA() }
+                elsif($instr eq "DI")   { _DI() }
+                elsif($instr eq "EI")   { _EI() }
+                elsif($instr eq "EXX")  { _EXX() }
+                elsif($instr eq "HALT") { _HALT() }
+                elsif($instr eq "IND")  { _IND() }
+                elsif($instr eq "INDR") { _INDR() }
+                elsif($instr eq "INI")  { _INI() }
+                elsif($instr eq "INIR") { _INIR() }
+                elsif($instr eq "LDD")  { _LDD() }
+                elsif($instr eq "LDDR") { _LDDR() }
+                elsif($instr eq "LDI")  { _LDI() }
+                elsif($instr eq "LDIR") { _LDIR() }
+                elsif($instr eq "NEG")  { _NEG() }
+                elsif($instr eq "NOP")  { _NOP() }
+                elsif($instr eq "OTDR") { _OTDR() }
+                elsif($instr eq "OTIR") { _OTIR() }
+                elsif($instr eq "OUTD") { _OUTD() }
+                elsif($instr eq "OUTI") { _OUTI() }
+                elsif($instr eq "RETI") { _RETI() }
+                elsif($instr eq "RETN") { _RETN() }
+                elsif($instr eq "RLA")  { _RLA() }
+                elsif($instr eq "RLCA") { _RLCA() }
+                elsif($instr eq "RLD")  { _RLD() }
+                elsif($instr eq "RRA")  { _RRA() }
+                elsif($instr eq "RRCA") { _RRCA() }
+                elsif($instr eq "RRD")  { _RRD() }
+                elsif($instr eq "SCF")  { _SCF() }
 
                 else {
                     no warnings;
@@ -276,7 +261,7 @@ sub z80asm {
     # return substr($code, 0, $maxaddr + 1);
 }
 
-sub ADC {
+sub _ADC {
     my $params = shift;
     my($r1, $r2) = split(/,/, $params);
         if($r1 eq 'A') {
@@ -299,7 +284,7 @@ sub ADC {
         $address += 2;
     }
 }
-sub ADD {
+sub _ADD {
     my $params = shift;
     my($r1, $r2) = split(/,/, $params);
     if($r1 eq 'A') {
@@ -326,7 +311,7 @@ sub ADD {
         $address += 1;
     }
 }
-sub AND {
+sub _AND {
     my $params = shift;
     if(exists($TABLE_R{$params})) {
         _write($address, 0b10100000 + $TABLE_R{$params});
@@ -342,128 +327,138 @@ sub AND {
         $address += 2;
     }
 }
-
-sub CCF {
+sub _CALL {
+    my $params = shift;
+    if($params =~ /(.*),(.*)/) {
+        my($cond, $params) = ($1, $2);
+        _write($address, 0xC4 + $TABLE_CC{$cond} << 3);
+    } else {
+        _write($address, 0xCD);
+    }
+    _write16($address + 1, _to_number($params));
+    $address += 3;
+}
+sub _CCF {
     _write($address++, 0x3F);
 }
-sub CPD {
+sub _CPD {
     _write($address++, 0xED);
     _write($address++, 0xA9);
 }
-sub CPDR {
+sub _CPDR {
     _write($address++, 0xED);
     _write($address++, 0xB9);
 }
-sub CPI {
+sub _CPI {
     _write($address++, 0xED);
     _write($address++, 0xA1);
 }
-sub CPIR {
+sub _CPIR {
     _write($address++, 0xED);
     _write($address++, 0xB1);
 }
-sub CPL {
+sub _CPL {
     _write($address++, 0x2F);
 }
-sub DAA {
+sub _DAA {
     _write($address++, 0x27);
 }
-sub DI {
+sub _DI {
     _write($address++, 0xF3);
 }
-sub EI {
+sub _EI {
     _write($address++, 0xFB);
 }
-sub EXX {
+sub _EXX {
     _write($address++, 0xD9);
 }
-sub HALT {
+sub _HALT {
     _write($address++, 0x76);
 }
-sub IND {
+sub _IND {
     _write($address++, 0xED);
     _write($address++, 0xAA);
 }
-sub INDR {
+sub _INDR {
     _write($address++, 0xED);
     _write($address++, 0xBA);
 }
-sub INI {
+sub _INI {
     _write($address++, 0xED);
     _write($address++, 0xA2);
 }
-sub INIR {
+sub _INIR {
     _write($address++, 0xED);
     _write($address++, 0xB2);
 }
-sub LDD {
+sub _LDD {
     _write($address++, 0xED);
     _write($address++, 0xA8);
 }
-sub LDDR {
+sub _LDDR {
     _write($address++, 0xED);
     _write($address++, 0xB8);
 }
-sub LDI {
+sub _LDI {
     _write($address++, 0xED);
     _write($address++, 0xA0);
 }
-sub LDIR {
+sub _LDIR {
     _write($address++, 0xED);
     _write($address++, 0xB0);
 }
-sub NEG {
+sub _NEG {
     _write($address++, 0xED);
     _write($address++, 0x44);
 }
-sub NOP {
+sub _NOP {
     _write($address++, 0x00);
 }
-sub OTDR {
+sub _OTDR {
     _write($address++, 0xED);
     _write($address++, 0xBB);
 }
-sub OTIR {
+sub _OTIR {
     _write($address++, 0xED);
     _write($address++, 0xB3);
 }
-sub OUTD {
+sub _OUTD {
     _write($address++, 0xED);
     _write($address++, 0xAB);
 }
-sub OUTI {
+sub _OUTI {
     _write($address++, 0xED);
     _write($address++, 0xA3);
 }
-sub RETI {
+sub _RETI {
     _write($address++, 0xED);
     _write($address++, 0x4D);
 }
-sub RETN {
+sub _RETN {
     _write($address++, 0xED);
     _write($address++, 0x45);
 }
-sub RLA {
+sub _RLA {
     _write($address++, 0x17);
 }
-sub RLCA {
+sub _RLCA {
     _write($address++, 0x07);
 }
-sub RLD {
+sub _RLD {
     _write($address++, 0xED);
     _write($address++, 0x6F);
 }
-sub RRA {
+sub _RRA {
     _write($address++, 0x1F);
 }
-sub RRCA {
+sub _RRCA {
     _write($address++, 0x0F);
 }
-sub RRD {
+sub _RRD {
     _write($address++, 0xED);
     _write($address++, 0x67);
 }
-sub SCF {
+sub _SCF {
     _write($address++, 0x37);
 }
 sub _die_unknown {
@@ -478,8 +473,8 @@ sub _write {
 }
 sub _write16 {
     my($address, $word) = @_;
-    _write($address, $word & 0xFF);
-    _write($address, ($word & 0xFF00) >> 8);
+    _write($address,     $word & 0xFF);
+    _write($address + 1, ($word & 0xFF00) >> 8);
 }
 
 sub _to_number {
