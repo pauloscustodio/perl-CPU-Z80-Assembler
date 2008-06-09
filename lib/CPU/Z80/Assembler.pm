@@ -7,6 +7,7 @@ use warnings;
 
 use vars qw($VERSION @EXPORT);
 
+my $verbose = 0;
 $VERSION = '1.0';
 
 use Data::Dumper;
@@ -49,7 +50,8 @@ By default the 'z80asm' subroutine is exported.  To disable that, do:
 =head2 z80asm
 
 This takes one parameter, a string of Z80 assembler source.  It
-returns the assembled version as a string.
+returns the assembled version as a string.  If you set the C<$verbose>
+package variable it will also spit out an assembler listing.
 
 =head1 SYNTAX
 
@@ -142,7 +144,8 @@ sub z80asm {
             my $instr_to_print = "ORG $1";
             substr($instr_to_print, 34) = ' ...'
                 if(length($instr_to_print) > 37);
-            printf("0x%04X: %-38s |\n", $address, $instr_to_print);
+            printf("0x%04X: %-38s |\n", $address, $instr_to_print)
+	        if($verbose);
         }
     }
     foreach my $instr (@instructions) {
@@ -150,7 +153,8 @@ sub z80asm {
             my $instr_to_print = $instr;
             substr($instr_to_print, 34) = ' ...'
                 if(length($instr_to_print) > 37);
-            printf("0x%04X: %-38s | ", $address, $instr_to_print);
+            printf("0x%04X: %-38s | ", $address, $instr_to_print)
+	        if($verbose);
             $bytes_this_instr = 0;
         }
         if($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
@@ -336,7 +340,7 @@ sub z80asm {
             }
         }
         $maxaddr = $address - 1;
-        print "\n" if($pass == 2);
+        print "\n" if($verbose && $pass == 2)
     }
     z80asm($source, 2) if($pass == 1);
     return substr($code, $startaddr, 1 + $maxaddr - $startaddr);
@@ -347,8 +351,8 @@ sub _write {
     my($address, $byte) = @_;
     $bytes_this_instr++;
     substr($code, $address, 1) = chr($byte & 0xFF);
-    print "\n".(' ' x 47).'| ' if($pass == 2 && $bytes_this_instr && !($bytes_this_instr % 10));
-    printf("%02X ", $byte) if($pass == 2);
+    print "\n".(' ' x 47).'| ' if($verbose && $pass == 2 && $bytes_this_instr && !($bytes_this_instr % 10));
+    printf("%02X ", $byte) if($verbose && $pass == 2);
 }
 sub _write16 {
     my($address, $word) = @_;

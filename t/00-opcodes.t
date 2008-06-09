@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-use Test::More tests => 692;
+print "1..692\n";
+my $test = 1;
 
 my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { /\S/ } <DATA>;
 
@@ -16,8 +17,9 @@ foreach my $code (@codes) {
             chr(eval "0x$_")
         } split(/\s+/, $expectedbytes)
     );
-    my $binary = eval { z80asm("ORG 0x6789\n$code"); };
-    ok($binary eq $expectedbinary, $code);
+    my $binary = eval { z80asm("ORG 0x6789\n$code") } || 'xxxxxx';
+    print "not " unless($binary eq $expectedbinary);
+    print "ok ".($test++)." - $code\n";
 }
 
 __DATA__
