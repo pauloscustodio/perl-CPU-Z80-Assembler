@@ -5,9 +5,8 @@ package CPU::Z80::Assembler;
 use strict;
 use warnings;
 
-use vars qw($VERSION @EXPORT);
+use vars qw($VERSION @EXPORT $verbose);
 
-my $verbose = 0;
 $VERSION = '1.0';
 
 use Data::Dumper;

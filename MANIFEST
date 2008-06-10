@@ -8,3 +8,4 @@ testme
 MANIFEST
 CHANGES
 README
+t/01-DEF-instrs.t

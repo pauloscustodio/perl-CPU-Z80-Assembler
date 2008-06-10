@@ -1,12 +1,26 @@
-#!/usr/local/bin/perl
+#!perl
 
 use warnings;
 use strict;
-use lib 'lib';
 use CPU::Z80::Assembler;
 
-$CPU::Z80::Assembler::verbose = 1;
+use Test::More tests => 100;
 
+is_deeply(z80asm('
+    ORG 0x08
+    DEFW $$
+'), chr(8).chr(0), "ORG");
+is_deeply(z80asm('
+    ORG 0x08
+    DEFW $$
+    DEFW $$
+'), chr(8).chr(0).chr(10).chr(0), '$$');
+
+
+
+
+
+exit(0);
 z80asm('
     ORG 0x08
       DEFT "flibertigibbet", 65, 0x42, 0b01000011
