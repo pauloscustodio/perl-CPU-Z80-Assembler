@@ -269,7 +269,7 @@ sub z80asm {
 sub _ADC {
     my $params = shift;
     my($r1, $r2) = split(/,/, $params);
-        if($r1 eq 'A') {
+    if($r1 eq 'A') {
         if(exists($TABLE_R{$r2})) {
             _write($address, 0b10001000 + $TABLE_R{$r2});
             $address++;

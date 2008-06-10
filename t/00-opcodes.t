@@ -201,7 +201,7 @@ __DATA__
         DEC L                   ; 2D
         DEC SP                  ; 3B
         DI                      ; F3
-        DJNZ $+2                ; 10
+        DJNZ $+2                ; 10    NB -2 == this instr
         E56                     ; D9
         EI                      ; FB
         EX (SP),HL              ; E3
