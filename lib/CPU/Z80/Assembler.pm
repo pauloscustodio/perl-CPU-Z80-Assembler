@@ -17,7 +17,7 @@ use base qw(Exporter);
 
 my $i = 0; my %TABLE_R   = map { $_ => $i++ } (qw(B C D E H L (HL) A));
    $i = 0; my %TABLE_RP  = map { $_ => $i++ } (qw(BC DE HL SP));
-   $i = 0; my %TABLE_RP2 = map { $_ => $i++ } (qw(BC DE HL AF));
+              $TABLE_RP{'AF'} = $TABLE_RP{'SP'};
    $i = 0; my %TABLE_CC  = map { $_ => $i++ } (qw(NZ Z NC C PO PE P M));
 
 =head1 NAME
@@ -407,23 +407,23 @@ sub _OR {
 }
 sub _POP {
     my $params = shift;
-    if(exists($TABLE_RP2{$params})) {
-        _write($address, 0b11000001 + ($TABLE_RP2{$params} << 4));
+    if(exists($TABLE_RP{$params})) {
+        _write($address, 0b11000001 + ($TABLE_RP{$params} << 4));
         $address += 1;
     } elsif($params =~ /^I[XY]$/) {
         _write($address,     $params eq 'IX' ? 0xDD : 0xFD);
-        _write($address + 1, 0b11000001 + ($TABLE_RP2{'HL'} << 4));
+        _write($address + 1, 0b11000001 + ($TABLE_RP{'HL'} << 4));
         $address += 2;
     }
 }
 sub _PUSH {
     my $params = shift;
-    if(exists($TABLE_RP2{$params})) {
-        _write($address, 0b11000101 + ($TABLE_RP2{$params} << 4));
+    if(exists($TABLE_RP{$params})) {
+        _write($address, 0b11000101 + ($TABLE_RP{$params} << 4));
         $address += 1;
     } elsif($params =~ /^I[XY]$/) {
         _write($address,     $params eq 'IX' ? 0xDD : 0xFD);
-        _write($address + 1, 0b11000101 + ($TABLE_RP2{'HL'} << 4));
+        _write($address + 1, 0b11000101 + ($TABLE_RP{'HL'} << 4));
         $address += 2;
     }
 }
