@@ -19,7 +19,9 @@ foreach my $code (@codes) {
     );
     my $binary = eval { z80asm("ORG 0x6789\n$code") } || 'xxxxxx';
     print "not " unless($binary eq $expectedbinary);
-    print "ok ".($test++)." - $code\n";
+    print "ok ".($test++)." - $code";
+    print ' (got '.join(' ', map { sprintf("0x%02X", ord($_)) } split(//, $binary)).')' unless($binary eq $expectedbinary);
+    print "\n";
     print "# $@" if($@);
 }
 

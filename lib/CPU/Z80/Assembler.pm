@@ -330,8 +330,8 @@ sub _AND {
 sub _CALL {
     my $params = shift;
     if($params =~ /(.*),(.*)/) {
-        my($cond, $params) = ($1, $2);
-        _write($address, 0xC4 + $TABLE_CC{$cond} << 3);
+        (my $cond, $params) = ($1, $2);
+        _write($address, 0xC4 + ($TABLE_CC{$cond} << 3));
     } else {
         _write($address, 0xCD);
     }
