@@ -25,6 +25,7 @@ foreach my $code (@codes) {
     print "# $@" if($@);
 }
 
+# for DJNZ and JR, -2 == this instr
 __DATA__
 
 
@@ -201,7 +202,7 @@ __DATA__
         DEC L                   ; 2D
         DEC SP                  ; 3B
         DI                      ; F3
-        DJNZ $+2                ; 10    NB -2 == this instr
+        DJNZ $+2                ; 10    
         E56                     ; D9
         EI                      ; FB
         EX (SP),HL              ; E3

@@ -207,6 +207,7 @@ sub z80asm {
                 elsif($instr eq 'AND')  { _AND($params) }
                 elsif($instr eq 'BIT')  { _BIT($params) }
                 elsif($instr eq 'CALL') { _CALL($params) }
+                elsif($instr eq 'CP')   { _CP($params) }
                 elsif($instr eq 'OR')   { _OR($params) }
                 elsif($instr eq 'POP')  { _POP($params) }
                 elsif($instr eq 'PUSH') { _PUSH($params) }
@@ -387,6 +388,22 @@ sub _CALL {
     }
     _write16($address + 1, _to_number($params));
     $address += 3;
+}
+sub _CP {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address, 0b10111000 + $TABLE_R{$params});
+        $address += 1;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0b10111110);
+        _write($address + 2, _to_number($2));
+        $address += 3;
+    } else {
+        _write($address,     0b11111110);
+        _write($address + 1, _to_number($params));
+        $address += 2;
+    }
 }
 sub _OR {
     my $params = shift;
