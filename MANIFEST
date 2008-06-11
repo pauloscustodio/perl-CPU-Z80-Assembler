@@ -10,3 +10,4 @@ CHANGES
 README
 t/01-DEF-instrs.t
 t/02-labels.t
+t/03-macros.t

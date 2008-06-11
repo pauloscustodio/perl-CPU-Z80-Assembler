@@ -5,7 +5,7 @@ use strict;
 use CPU::Z80::Assembler;
 # $CPU::Z80::Assembler::verbose =1;
 
-use Test::More tests => 15;
+use Test::More tests => 19;
 
 is_deeply(z80asm('DEFB 0x45'),       chr(0x45), 'hex  DEFB');
 is_deeply(z80asm('DEFB 69'),         chr(0x45), 'dec  DEFB');
@@ -19,8 +19,12 @@ is_deeply(z80asm('DEFW 0b0100011001000101'), chr(0x45).chr(0x46), 'bin  DEFB');
 is_deeply(z80asm('DEFW 043105'),             chr(0x45).chr(0x46), 'oct  DEFB');
 is_deeply(z80asm('DEFW 17988+1'),            chr(0x45).chr(0x46), 'calc DEFW');
 
+is_deeply(z80asm("DEFT ''\nDEFT 'text'"), "text", "DEFT ''");
+is_deeply(z80asm("DEFT 'text'"), "text", "DEFT 'text'");
+is_deeply(z80asm("DEFT 'text';cock"), "text", "DEFT 'text';comment");
 is_deeply(z80asm('DEFT "text", 0x45'), "text".chr(0x45), 'DEFT "text", byte');
 is_deeply(z80asm("DEFT 'text', 0x45"), "text".chr(0x45), "DEFT 'text', byte");
+is_deeply(z80asm("DEFT 'te;xt'"), "te;xt", "DEFT 'te;xt'");
 
 is_deeply(z80asm("ORG 0x1234\nDEFW \$\$"),
           chr(0x34).chr(0x12),

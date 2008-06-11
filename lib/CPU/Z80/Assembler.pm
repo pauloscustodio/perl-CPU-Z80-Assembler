@@ -88,9 +88,6 @@ A literal string, either single- or double-quoted.  Can optionally be
 followed by a comma-seperated list of bytes.  Quoted text can not
 include the quotes surrounding it or newlines.
 
-NB because the parser is stupid, you can't have a comment on the
-same line as a DEFT
-
 =item ORG 0x4567
 
 Tell the assembler to start building the code at this address.  Must
@@ -114,16 +111,19 @@ This means that, for example, RST 0x28 == RST 5.
 =head2 DJNZ and JR
 
 The DJNZ and JR instructions take an address as their destination,
-not an offset.  If you need an offset, do sums on $$.  Note that $$
+not an offset.  If you need to use an offset, do sums on $$.  Note
+that $$
 is the address of the *current* instruction.  The offset needs to
 be calculated from the address of the *next* instruction, which for
 these instructions is always $$ + 2.
 
 =head2 Labels
 
-Labels are preceded by a dollar sign, must start with a letter or underscore,
+Labels are preceded by a dollar sign, must start with a letter or
+underscore,
 and consist solely of letters, underscores and numbers.  They default
-to having the value of the address they are at.  If you want to assign
+to having the value of the address they are created at.  If you want
+to assign
 another value, then you can say:
 
     $label = 0x1234
@@ -178,11 +178,11 @@ sub z80asm {
             my $data = $1;
             $data =~ /^(['"])(.*?)(\1)(\s*,\s*(.*))?/;
             die("Bad DEFT quoting ($1...$3)\n") unless($1 eq $3);
-            my($text, $tail) = ($2, $5);
+            my($text, $tail) = ($2, $5 || '');
             foreach my $c (split(//, $text)) {
                 _write($address++, ord($c));
             }
-            foreach(split(/\s*,\s*/, $tail)) {
+            foreach(split(/\s*,\s*/, "$tail;")) {
                 last if(/^;/);
                 _write($address++, _to_number($_));
                 last if(/;/);
