@@ -288,7 +288,7 @@ __DATA__
         LD (HL),E               ; 73
         LD (HL),H               ; 74
         LD (HL),L               ; 75
-        LD (IX+0x56),0x56       ; DD 36 34 12
+        LD (IX+0x56),0x56       ; DD 36 56
         LD (IX+0x56),A          ; DD 77 56
         LD (IX+0x56),B          ; DD 70 56
         LD (IX+0x56),C          ; DD 71 56
@@ -296,7 +296,7 @@ __DATA__
         LD (IX+0x56),E          ; DD 73 56
         LD (IX+0x56),H          ; DD 74 56
         LD (IX+0x56),L          ; DD 75 56
-        LD (IY+0x56),0x56       ; FD 36 34 12
+        LD (IY+0x56),0x56       ; FD 36 56
         LD (IY+0x56),A          ; FD 77 56
         LD (IY+0x56),B          ; FD 70 56
         LD (IY+0x56),C          ; FD 71 56
@@ -304,7 +304,7 @@ __DATA__
         LD (IY+0x56),E          ; FD 73 56
         LD (IY+0x56),H          ; FD 74 56
         LD (IY+0x56),L          ; FD 75 56
-        LD A,(0x1234)            ; 3A 34 12
+        LD A,(0x1234)           ; 3A 34 12
         LD A,(BC)               ; 0A
         LD A,(DE)               ; 1A
         LD A,(HL)               ; 7E

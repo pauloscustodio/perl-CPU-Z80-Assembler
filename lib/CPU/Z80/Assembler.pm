@@ -111,6 +111,14 @@ to or the reset vector number - this is just the address / 8.
 
 This means that, for example, RST 0x28 == RST 5.
 
+=head2 DJNZ and JR
+
+The DJNZ and JR instructions take an address as their destination,
+not an offset.  If you need an offset, do sums on $$.  Note that $$
+is the address of the *current* instruction.  The offset needs to
+be calculated from the address of the *next* instruction, which for
+these instructions is always $$ + 2.
+
 =head2 Labels
 
 Labels are preceded by a dollar sign, must start with a letter or underscore,
@@ -648,6 +656,151 @@ sub _DJNZ {
 sub _LD {
     (my $params = shift) =~ /(.*),(.*)/;
     my($r1, $r2) = ($1, $2);
+    if(exists($TABLE_R{$r1})) {                # target 8bit reg
+        if(exists($TABLE_R{$r2})) {
+            _write($address, 0b01000000 +
+                             ($TABLE_R{$r1} << 3) +
+                             $TABLE_R{$r2});
+            $address++;
+        } elsif($r1 eq 'A' && $r2 eq 'I') {
+            _write($address,     0xED);
+            _write($address + 1, 0x57);
+            $address += 2;
+        } elsif($r2 =~ /\((.*)\)/) {
+            $r2 = $1;
+            if($r2 eq 'BC') {
+                _write($address, 0x0A);
+                $address++;
+            } elsif($r2 eq 'DE') {
+                _write($address, 0x1A);
+                $address++;
+            } elsif($r2 =~ /(I[XY])(.*)/) {
+                my($idx, $offset) = ($1, $2);
+                _write($address,     ($idx eq 'IX') ? 0xDD : 0xFD);
+                _write($address + 1, 0x46 + ($TABLE_R{$r1} << 3));
+                _write($address + 2, _to_number($offset));
+                $address += 3;
+            } else {
+                _write($address,       0x3A);
+                _write16($address + 1, _to_number($r2));
+                $address += 3;
+            }
+        } else {
+            _write($address,     0x06 + ($TABLE_R{$r1} << 3));
+            _write($address + 1, _to_number($r2));
+            $address += 2;
+        }
+    } elsif(                                   # target 16bit reg
+        $r1 eq 'IX' || $r1 eq 'IY' ||
+        exists($TABLE_RP{$r1})
+    ) {
+        if($r1 eq 'SP') {
+            if($r2 eq 'HL') {
+                _write($address, 0xF9);
+                $address++;
+            } elsif($r2 =~ /I[XY]/) {
+                _write($address,     ($r2 eq 'IX') ? 0xDD : 0xFD);
+                _write($address + 1, 0xF9);
+                $address += 2;
+            } elsif($r2 =~ /\((.*)\)/) {
+                _write($address,       0xED);
+                _write($address + 1,   0x7B);
+                _write16($address + 2, _to_number($1));
+                $address += 4;
+            } else {
+                _write($address,       0x31);
+                _write16($address + 1, _to_number($r2));
+                $address += 3;
+            }
+        } else {
+            if($r1 eq 'HL' && $r2 =~ /\((.*)\)/) {
+                _write($address,       0x2A);
+                _write16($address + 1, _to_number($1));
+                $address += 3;
+            } elsif($r1 eq 'HL') {
+                _write($address,       0x21);
+                _write16($address + 1, _to_number($r2));
+                $address += 3;
+            } elsif($r1 =~ /I[XY]/ && $r2 =~ /\((.*)\)/) {
+                _write($address, ($r1 eq 'IX') ? 0xDD : 0xFD);
+                _write($address + 1,   0x2A);
+                _write16($address + 2, _to_number($1));
+                $address += 4;
+            } elsif($r1 =~ /I[XY]/) {
+                _write($address, ($r1 eq 'IX') ? 0xDD : 0xFD);
+                _write($address + 1,   0x21);
+                _write16($address + 2, _to_number($r2));
+                $address += 4;
+            } elsif($r1 eq 'BC' && $r2 =~ /\((.*)\)/) {
+                _write($address,       0xED);
+                _write($address + 1,   0x4B);
+                _write16($address + 2, _to_number($1));
+                $address += 4;
+            } elsif($r1 eq 'BC') {
+                _write($address,       0x01);
+                _write16($address + 1, _to_number($r2));
+                $address += 3;
+            } elsif($r1 eq 'DE' && $r2 =~ /\((.*)\)/) {
+                _write($address,       0xED);
+                _write($address + 1,   0x5B);
+                _write16($address + 2, _to_number($1));
+                $address += 4;
+            } elsif($r1 eq 'DE') {
+                _write($address,       0x11);
+                _write16($address + 1, _to_number($r2));
+                $address += 3;
+            }
+        }
+    } elsif($r1 eq '(BC)' && $r2 eq 'A') {
+        _write($address, 0x02);
+        $address++;
+    } elsif($r1 eq '(DE)' && $r2 eq 'A') {
+        _write($address, 0x12);
+        $address++;
+    } elsif($r1 =~ /\((I[XY])(.*)\)/) {
+        my($idx, $offset) = ($1, $2);
+        _write($address, ($idx eq 'IX') ? 0xDD : 0xFD);
+        if(exists($TABLE_R{$r2})) {
+            _write($address + 1, 0x70 + $TABLE_R{$r2});
+            _write($address + 2, _to_number($offset));
+            $address += 3;
+        } elsif(exists($TABLE_RP{$r2})) { # FIXME
+        } else {
+            _write($address + 1, 0x36);
+            _write($address + 2, _to_number($offset));
+            $address += 3;
+        }
+    } elsif($r1 =~ /\((.*)\)/) {               # target (addr)
+        my $target = $1;
+        if($r2 eq 'A') {
+            _write($address,       0x32);
+            _write16($address + 1, _to_number($target));
+            $address += 3;
+        } elsif($r2 eq 'HL') {
+            _write($address,       0x22);
+            _write16($address + 1, _to_number($target));
+            $address += 3;
+        } elsif($r2 eq 'IX') {
+            _write($address,       0xDD);
+            _write($address + 1,   0x22);
+            _write16($address + 2, _to_number($target));
+            $address += 4;
+        } elsif($r2 eq 'IY') {
+            _write($address,       0xFD);
+            _write($address + 1,   0x22);
+            _write16($address + 2, _to_number($target));
+            $address += 4;
+        } elsif(exists($TABLE_RP{$r2})) {
+            _write($address,       0xED);
+            _write($address + 1,   0x43 + ($TABLE_RP{$r2} << 4));
+            _write16($address + 2, _to_number($target));
+            $address += 4;
+        }
+    } elsif($r1 eq 'I' && $r2 eq 'A') {
+        _write($address,     0xED);
+        _write($address + 1, 0x47);
+        $address += 2;
+    }
 }
 sub _CP {
     my $params = shift;
