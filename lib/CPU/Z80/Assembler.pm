@@ -208,6 +208,7 @@ sub z80asm {
                 elsif($instr eq 'BIT')  { _BIT($params) }
                 elsif($instr eq 'CALL') { _CALL($params) }
                 elsif($instr eq 'CP')   { _CP($params) }
+                elsif($instr eq 'IM')   { _IM($params) }
                 elsif($instr eq 'OR')   { _OR($params) }
                 elsif($instr eq 'POP')  { _POP($params) }
                 elsif($instr eq 'PUSH') { _PUSH($params) }
@@ -347,6 +348,16 @@ sub _BIT {
         _write($address + 3, 0b01000000 + ($b << 3) + $TABLE_R{'(HL)'});
         $address += 4;
     }
+}
+sub _IM {
+    my $mode = shift;
+    _write($address,     0xED);
+    _write($address + 1,
+            $mode == 0 ? 0x46 :
+            $mode == 1 ? 0x56 :
+                         0x5E
+    );
+    $address += 2;
 }
 sub _RES {
     (my $params = shift) =~ /(.*),(.*)/;
