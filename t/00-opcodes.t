@@ -4,10 +4,10 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-print "1..692\n";
+print "1..711\n";
 my $test = 1;
 
-my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { /\S/ } <DATA>;
+my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { /\S/ && $_ !~ /^\s+#/ } <DATA>;
 
 foreach my $code (@codes) {
     (my $expectedbytes = $code) =~ s/^.*;\s+//;
@@ -25,7 +25,6 @@ foreach my $code (@codes) {
     print "# $@" if($@);
 }
 
-# for DJNZ and JR, -2 == this instr
 __DATA__
 
 
@@ -202,8 +201,7 @@ __DATA__
         DEC L                   ; 2D
         DEC SP                  ; 3B
         DI                      ; F3
-        DJNZ $+2                ; 10    
-        E56                     ; D9
+        EXX                     ; D9
         EI                      ; FB
         EX (SP),HL              ; E3
         EX (SP),IX              ; DD E3
@@ -242,23 +240,37 @@ __DATA__
         INDR                    ; ED BA
         INI                     ; ED A2
         INIR                    ; ED B2
-        JP $+3                  ; C3
+        JP 0x1234               ; C3 34 12
         JP (HL)                 ; E9
         JP (IX)                 ; DD E9
         JP (IY)                 ; FD E9
-        JP C,$+3                ; DA
-        JP M,$+3                ; FA
-        JP NC,$+3               ; D2
-        JP NZ,$+3               ; C2
-        JP P,$+3                ; F2
-        JP PE,$+3               ; EA
-        JP PO,$+3               ; E2
-        JP Z,$+3                ; CA
-        JR $+2                  ; 18
-        JR C,$+2                ; 38
-        JR NC,$+2               ; 30
-        JR NZ,$+2               ; 20
-        JR Z,$+2                ; 28
+        JP C,0x1234             ; DA 34 12
+        JP M,0x1234             ; FA 34 12
+        JP NC,0x1234            ; D2 34 12
+        JP NZ,0x1234            ; C2 34 12
+        JP P,0x1234             ; F2 34 12
+        JP PE,0x1234            ; EA 34 12
+        JP PO,0x1234            ; E2 34 12
+        JP Z,0x1234             ; CA 34 12
+      # 0x6789 is ORG, ie this instr
+        DJNZ 0x6789             ; 10 FE
+        DJNZ 0x678B             ; 10 00
+        DJNZ 0x678D             ; 10 02
+        JR 0x6789               ; 18 FE
+        JR C,0x6789             ; 38 FE
+        JR NC,0x6789            ; 30 FE
+        JR NZ,0x6789            ; 20 FE
+        JR Z,0x6789             ; 28 FE
+        JR 0x678B               ; 18 00
+        JR C,0x678B             ; 38 00
+        JR NC,0x678B            ; 30 00
+        JR NZ,0x678B            ; 20 00
+        JR Z,0x678B             ; 28 00
+        JR 0x678D               ; 18 02
+        JR C,0x678D             ; 38 02
+        JR NC,0x678D            ; 30 02
+        JR NZ,0x678D            ; 20 02
+        JR Z,0x678D             ; 28 02
         LD (0x1234),A           ; 32 34 12
         LD (0x1234),BC          ; ED 43 34 12
         LD (0x1234),DE          ; ED 53 34 12
@@ -415,7 +427,7 @@ __DATA__
         OUT (C),E               ; ED 59
         OUT (C),H               ; ED 61
         OUT (C),L               ; ED 69
-        OUT (N),A               ; D3 56
+        OUT (0x56),A            ; D3 56
         OUTD                    ; ED AB
         OUTI                    ; ED A3
         POP AF                  ; F1
@@ -568,13 +580,20 @@ __DATA__
         RRCA                    ; 0F
         RRD                     ; ED 67
         RST 0                   ; C7
-        RST 10H                 ; D7
-        RST 18H                 ; DF
-        RST 20H                 ; E7
-        RST 28H                 ; EF
-        RST 30H                 ; F7
-        RST 38H                 ; FF
-        RST 8H                  ; CF 
+        RST 0x8                 ; CF 
+        RST 0x10                ; D7
+        RST 0x18                ; DF
+        RST 0x20                ; E7
+        RST 0x28                ; EF
+        RST 0x30                ; F7
+        RST 0x38                ; FF
+        RST 1                   ; CF 
+        RST 2                   ; D7
+        RST 3                   ; DF
+        RST 4                   ; E7
+        RST 5                   ; EF
+        RST 6                   ; F7
+        RST 7                   ; FF
         SBC (HL)                ; 9E
         SBC A                   ; 9F
         SBC A,(IX+0x56)         ; DD 9E 56

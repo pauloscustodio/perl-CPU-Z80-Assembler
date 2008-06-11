@@ -102,8 +102,14 @@ defaults to 0x0000.  This value is available in an assembler label called
 
 =head2 Mnemonics
 
-Standard Z80 mnemonics are used.  The high and low halfs of the
-IX and IY registers are called HIX, LIX, HIY and HIY.
+Standard Z80 mnemonics are used.
+
+=head2 RST vectors
+
+The RST instruction takes as its parameter either the address to jump
+to or the reset vector number - this is just the address / 8.
+
+This means that, for example, RST 0x28 == RST 5.
 
 =head2 Labels
 
@@ -200,23 +206,39 @@ sub z80asm {
                     _write16($address, _to_number($params));
                     $address += 2;
                 }
-                # DJNZ
-                # DEC, INC
-                # OUT, RET, RLC, RRC, RST,
-                # SBC, SLA, SLL, SLI, SRA, SRL, SUB
-                # EX, IN, JP, JR, LD, RL, RR
+                # LD
                 elsif($instr eq 'ADC')  { _ADC($params) }
                 elsif($instr eq 'ADD')  { _ADD($params) }
                 elsif($instr eq 'AND')  { _AND($params) }
                 elsif($instr eq 'BIT')  { _BIT($params) }
                 elsif($instr eq 'CALL') { _CALL($params) }
                 elsif($instr eq 'CP')   { _CP($params) }
+                elsif($instr eq 'DEC')  { _DEC($params) }
+                elsif($instr eq 'DJNZ') { _DJNZ($params) }
+                elsif($instr eq 'EX')   { _EX($params) }
                 elsif($instr eq 'IM')   { _IM($params) }
+                elsif($instr eq 'IN')   { _IN($params) }
+                elsif($instr eq 'JP')   { _JP($params) }
+                elsif($instr eq 'JR')   { _JR($params) }
+                elsif($instr eq 'INC')  { _INC($params) }
+                elsif($instr eq 'LD')   { _LD($params) }
                 elsif($instr eq 'OR')   { _OR($params) }
+                elsif($instr eq 'OUT')  { _OUT($params) }
                 elsif($instr eq 'POP')  { _POP($params) }
                 elsif($instr eq 'PUSH') { _PUSH($params) }
                 elsif($instr eq 'RES')  { _RES($params) }
+                elsif($instr eq 'RET')  { _RET($params) }
+                elsif($instr eq 'RL')   { _RL($params) }
+                elsif($instr eq 'RLC')  { _RLC($params) }
+                elsif($instr eq 'RR')   { _RR($params) }
+                elsif($instr eq 'RRC')  { _RRC($params) }
+                elsif($instr eq 'RST')  { _RST($params) }
+                elsif($instr eq 'SBC')  { _SBC($params) }
                 elsif($instr eq 'SET')  { _SET($params) }
+                elsif($instr eq 'SLA')  { _SLA($params) }
+                elsif($instr eq 'SRA')  { _SRA($params) }
+                elsif($instr eq 'SRL')  { _SRL($params) }
+                elsif($instr eq 'SUB')  { _SUB($params) }
                 elsif($instr eq 'XOR')  { _XOR($params) }
                 elsif($instr eq "CCF")  { _CCF() }
                 elsif($instr eq "CPD")  { _CPD() }
@@ -352,6 +374,51 @@ sub _BIT {
         $address += 4;
     }
 }
+sub _DEC {
+    my $r = shift;
+    if(exists($TABLE_R{$r})) {
+        _write($address, 0x05 + ($TABLE_R{$r} << 3));
+        $address++;
+    } elsif(exists($TABLE_RP{$r})) {
+        _write($address, 0x0B + ($TABLE_RP{$r} << 4));
+        $address++;
+    } elsif($r eq 'IX') {
+        _write($address,     0xDD);
+        _write($address + 1, 0x2B);
+        $address += 2;
+    } elsif($r eq 'IY') {
+        _write($address,     0xFD);
+        _write($address + 1, 0x2B);
+        $address += 2;
+    } elsif($r =~ /\((I[XY])(.*)\)/) {
+        _write($address,     ($1 eq 'IX') ? 0xDD : 0xFD);
+        _write($address + 1, 0x35);
+        _write($address + 2, _to_number($2));
+        $address += 3;
+    }
+}
+sub _EX {
+    (my $params = shift) =~ /(.*),(.*)/;
+    my($r1, $r2) = ($1, $2);
+    if($r1 eq '(SP)' && $r2 eq 'HL') {
+        _write($address, 0xE3);
+        $address++;
+    } elsif($r1 eq '(SP)' && $r2 eq 'IX') {
+        _write($address,     0xDD);
+        _write($address + 1, 0xE3);
+        $address += 2;
+    } elsif($r1 eq '(SP)' && $r2 eq 'IY') {
+        _write($address,     0xFD);
+        _write($address + 1, 0xE3);
+        $address += 2;
+    } elsif($r1 eq "AF" && $r2 eq "AF'") {
+        _write($address, 0x08);
+        $address++;
+    } elsif($r1 eq 'DE' && $r2 eq 'HL') {
+        _write($address, 0xEB);
+        $address++;
+    }
+}
 sub _IM {
     my $mode = shift;
     _write($address,     0xED);
@@ -361,6 +428,41 @@ sub _IM {
                          0x5E
     );
     $address += 2;
+}
+sub _IN {
+    (my $params = shift) =~ /(.*),\((.*)\)/;
+    if($2 eq 'C') {
+        _write($address,     0xED);
+        _write($address + 1, 0x40 + ($TABLE_R{$1} << 3));
+        $address += 2;
+    } else {
+        _write($address,     0xDB);
+        _write($address + 1, _to_number($2));
+        $address += 2;
+    }
+}
+sub _INC {
+    my $r = shift;
+    if(exists($TABLE_R{$r})) {
+        _write($address, 0x04 + ($TABLE_R{$r} << 3));
+        $address++;
+    } elsif(exists($TABLE_RP{$r})) {
+        _write($address, 0x03 + ($TABLE_RP{$r} << 4));
+        $address++;
+    } elsif($r eq 'IX') {
+        _write($address,     0xDD);
+        _write($address + 1, 0x23);
+        $address += 2;
+    } elsif($r eq 'IY') {
+        _write($address,     0xFD);
+        _write($address + 1, 0x23);
+        $address += 2;
+    } elsif($r =~ /\((I[XY])(.*)\)/) {
+        _write($address,     ($1 eq 'IX') ? 0xDD : 0xFD);
+        _write($address + 1, 0x34);
+        _write($address + 2, _to_number($2));
+        $address += 3;
+    }
 }
 sub _RES {
     (my $params = shift) =~ /(.*),(.*)/;
@@ -375,6 +477,104 @@ sub _RES {
         _write($address + 2, _to_number($2));
         _write($address + 3, 0b10000000 + ($b << 3) + $TABLE_R{'(HL)'});
         $address += 4;
+    }
+}
+sub _RET {
+    my $c = shift;
+    if($c) {
+        _write($address, 0xC0 + ($TABLE_CC{$c} << 3));
+    } else {
+        _write($address, 0xC9);
+    }
+    $address += 1;
+}
+sub _RL {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address,     0xCB);
+        _write($address + 1, 0x10 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x16);
+        $address += 4;
+    }
+}
+sub _RLC {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address,     0xCB);
+        _write($address + 1, 0x00 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x06);
+        $address += 4;
+    }
+}
+sub _RR {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address,     0xCB);
+        _write($address + 1, 0x18 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x1E);
+        $address += 4;
+    }
+}
+sub _RRC {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address,     0xCB);
+        _write($address + 1, 0x08 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x0E);
+        $address += 4;
+    }
+}
+sub _RST {
+    my $r = _to_number(shift);
+    if($r / 0x08 == int($r / 0x08)) {
+        _write($address, 0xC7 + $r);
+        $address++;
+    } else {
+        _write($address, 0xC7 + 8 * $r);
+        $address++;
+    }
+}
+sub _SBC {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address, 0x98 + $TABLE_R{$params});
+        $address += 1;
+    } elsif($params =~ /(.*),(.*)/) {
+        my($r1, $r2) = ($1, $2);
+        if($r1 eq 'A' && $r2 =~ /\((I[XY])(.*?)\)/) {
+            _write($address, ($1 eq 'IX') ? 0xDD : 0xFD);
+            _write($address + 1, 0x9E);
+            _write($address + 2, _to_number($2));
+            $address += 3;
+        } elsif($r1 eq 'A') {
+            _write($address,     0xDE);
+            _write($address + 1, _to_number($r2));
+            $address += 2;
+        } elsif(exists($TABLE_RP{$r2}) && $r1 eq 'HL') {
+            _write($address    , 0xED);
+            _write($address + 1, 0x42 + ($TABLE_RP{$r2} << 4));
+            $address += 2;
+        }
     }
 }
 sub _SET {
@@ -402,6 +602,52 @@ sub _CALL {
     }
     _write16($address + 1, _to_number($params));
     $address += 3;
+}
+sub _JP {
+    my $params = shift;
+    if($params eq '(HL)') {
+        _write($address, 0xE9);
+        $address++;
+    } elsif($params eq '(IX)') {
+        _write($address,     0xDD);
+        _write($address + 1, 0xE9);
+        $address += 2;
+    } elsif($params eq '(IY)') {
+        _write($address,     0xFD);
+        _write($address + 1, 0xE9);
+        $address += 2;
+    } elsif($params =~ /(.*),(.*)/) {
+        (my $cond, $params) = ($1, $2);
+        _write($address, 0xC2 + ($TABLE_CC{$cond} << 3));
+        _write16($address + 1, _to_number($params));
+        $address += 3;
+    } else {
+        _write($address, 0xC3);
+        _write16($address + 1, _to_number($params));
+        $address += 3;
+    }
+}
+sub _JR {
+    my $params = shift;
+    if($params =~ /(.*),(.*)/) {
+        _write($address,     0x20 + ($TABLE_CC{$1} << 3));
+        _write($address + 1, _to_number($2) - $address - 2);
+        $address += 2;
+    } else {
+        _write($address,     0x18);
+        _write($address + 1, _to_number($params) - $address - 2);
+        $address += 2;
+    }
+}
+sub _DJNZ {
+    my $target = shift;
+    _write($address,     0x10);
+    _write($address + 1, _to_number($target) - $address - 2);
+    $address += 2;
+}
+sub _LD {
+    (my $params = shift) =~ /(.*),(.*)/;
+    my($r1, $r2) = ($1, $2);
 }
 sub _CP {
     my $params = shift;
@@ -435,6 +681,18 @@ sub _OR {
         $address += 2;
     }
 }
+sub _OUT {
+    (my $params = shift) =~ /\((.*)\),(.*)/;
+    if($1 eq 'C') {
+        _write($address,     0xED);
+        _write($address + 1, 0x41 + ($TABLE_R{$2} << 3));
+        $address += 2;
+    } else {
+        _write($address,     0xD3);
+        _write($address + 1, _to_number($1));
+        $address += 2;
+    }
+}
 sub _POP {
     my $params = shift;
     if(exists($TABLE_RP{$params})) {
@@ -454,6 +712,58 @@ sub _PUSH {
     } elsif($params =~ /^I[XY]$/) {
         _write($address,     $params eq 'IX' ? 0xDD : 0xFD);
         _write($address + 1, 0b11000101 + ($TABLE_RP{'HL'} << 4));
+        $address += 2;
+    }
+}
+sub _SLA {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address    , 0xCB);
+        _write($address + 1, 0x20 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x26);
+        $address += 4;
+    }
+}
+sub _SRA {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address    , 0xCB);
+        _write($address + 1, 0x28 + $TABLE_R{$params});
+        $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x2E);
+        $address += 4;
+    }
+}
+sub _SRL {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address    , 0xCB);
+        _write($address + 1, 0x38 + $TABLE_R{$params});
+        $address += 2;
+    }
+}
+sub _SUB {
+    my $params = shift;
+    if(exists($TABLE_R{$params})) {
+        _write($address, 0x90 + $TABLE_R{$params});
+        $address += 1;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0x96);
+        _write($address + 2, _to_number($2));
+        $address += 3;
+    } else {
+        _write($address,     0xD6);
+        _write($address + 1, _to_number($params));
         $address += 2;
     }
 }
