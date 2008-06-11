@@ -204,7 +204,7 @@ sub z80asm {
                 # DEC, INC
                 # OUT, RET, RLC, RRC, RST,
                 # SBC, SLA, SLL, SLI, SRA, SRL, SUB
-                # CP, EX, IM, IN, JP, JR, LD, RL, RR
+                # EX, IN, JP, JR, LD, RL, RR
                 elsif($instr eq 'ADC')  { _ADC($params) }
                 elsif($instr eq 'ADD')  { _ADD($params) }
                 elsif($instr eq 'AND')  { _AND($params) }
