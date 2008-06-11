@@ -123,14 +123,16 @@ can refer to other labels as $name:
 
 =cut
 
-my $address = 0x0000;
 my $pass = 0;
+my $address = 0x0000;
 my %labels = (org => 0);
 my $code = '';
 my $bytes_this_instr = 0;
 
 sub z80asm {
     my $source = shift;
+    $address = 0x0000;
+    %labels = (org => 0);
     $pass = shift;
     $pass ||= 1;
     my @instructions = grep { $_ } map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
@@ -191,7 +193,8 @@ sub z80asm {
                 $params =~ s/\s//g if($params);
                 
                 if($instr eq 'DEFB') {
-                    _write($address++, _to_number($params));
+                    _write($address, _to_number($params));
+		    $address++; 
                 }
                 elsif($instr eq 'DEFW') {
                     _write16($address, _to_number($params));
