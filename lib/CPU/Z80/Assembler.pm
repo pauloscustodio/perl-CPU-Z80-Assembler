@@ -139,19 +139,23 @@ can refer to other labels as $name:
 
 my $pass = 0;
 my $address = 0x0000;
-my %labels = (org => 0);
+my %labels = ();
+my %macros = ();
 my $code = '';
 my $bytes_this_instr = 0;
+my $maxaddr = 0x0000;
+my $in_macro_definition = 0;
 
 sub z80asm {
     my $source = shift;
     $address = 0x0000;
-    %labels = (org => 0);
-    $pass = shift;
-    $pass ||= 1;
+    $pass = shift || 1;
+    %labels = (org => 0) if($pass == 1);
+    %macros = ()         if($pass == 1);
     my @instructions = grep { $_ } map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
     my $startaddr = 0x0000;
-    my $maxaddr = 0x0000;
+    $maxaddr = 0x0000;
+    $in_macro_definition = 0;
     $code = chr(0) x 65536;
 
     if($instructions[0] =~ /^org\s+(.*)/i) {
@@ -166,139 +170,153 @@ sub z80asm {
         }
     }
     foreach my $instr (@instructions) {
-        if($pass == 2) {
-            my $instr_to_print = $instr;
-            substr($instr_to_print, 34) = ' ...'
-                if(length($instr_to_print) > 37);
-            printf("0x%04X: %-38s | ", $address, $instr_to_print)
-                if($verbose);
-            $bytes_this_instr = 0;
-        }
-        if($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
-            my $data = $1;
-            $data =~ /^(['"])(.*?)(\1)(\s*,\s*(.*))?/;
-            die("Bad DEFT quoting ($1...$3)\n") unless($1 eq $3);
-            my($text, $tail) = ($2, $5 || '');
-            foreach my $c (split(//, $text)) {
-                _write($address++, ord($c));
-            }
-            foreach(split(/\s*,\s*/, "$tail;")) {
-                last if(/^;/);
-                _write($address++, _to_number($_));
-                last if(/;/);
-            }
-        } else {  # real instruction or a label
-            my $addr_at_start_of_instr = $address;
-            $instr =~ s/\s*;.*//; # de-comment
-            if(!$instr) {
-                # do nothing
-            } elsif($instr =~ /^\$([_a-z]\w*)\s*((=)\s*(.*))?$/) { # label
-                my($label, $value) = ($1, $4);
-                if($3) {
-                    $value = _to_number($value);
-                } else {
-                    $value = $address;
-                }
-                $labels{$label} = $value;
-            } else {
-                my $params;
-                ($instr, $params) = split(/\s+/, $instr, 2);
-                $instr = uc($instr);
-                $params =~ s/\s//g if($params);
-                
-                if($instr eq 'DEFB') {
-                    _write($address, _to_number($params));
-		    $address++; 
-                }
-                elsif($instr eq 'DEFW') {
-                    _write16($address, _to_number($params));
-                    $address += 2;
-                }
-                # LD
-                elsif($instr eq 'ADC')  { _ADC($params) }
-                elsif($instr eq 'ADD')  { _ADD($params) }
-                elsif($instr eq 'AND')  { _AND($params) }
-                elsif($instr eq 'BIT')  { _BIT($params) }
-                elsif($instr eq 'CALL') { _CALL($params) }
-                elsif($instr eq 'CP')   { _CP($params) }
-                elsif($instr eq 'DEC')  { _DEC($params) }
-                elsif($instr eq 'DJNZ') { _DJNZ($params) }
-                elsif($instr eq 'EX')   { _EX($params) }
-                elsif($instr eq 'IM')   { _IM($params) }
-                elsif($instr eq 'IN')   { _IN($params) }
-                elsif($instr eq 'JP')   { _JP($params) }
-                elsif($instr eq 'JR')   { _JR($params) }
-                elsif($instr eq 'INC')  { _INC($params) }
-                elsif($instr eq 'LD')   { _LD($params) }
-                elsif($instr eq 'OR')   { _OR($params) }
-                elsif($instr eq 'OUT')  { _OUT($params) }
-                elsif($instr eq 'POP')  { _POP($params) }
-                elsif($instr eq 'PUSH') { _PUSH($params) }
-                elsif($instr eq 'RES')  { _RES($params) }
-                elsif($instr eq 'RET')  { _RET($params) }
-                elsif($instr eq 'RL')   { _RL($params) }
-                elsif($instr eq 'RLC')  { _RLC($params) }
-                elsif($instr eq 'RR')   { _RR($params) }
-                elsif($instr eq 'RRC')  { _RRC($params) }
-                elsif($instr eq 'RST')  { _RST($params) }
-                elsif($instr eq 'SBC')  { _SBC($params) }
-                elsif($instr eq 'SET')  { _SET($params) }
-                elsif($instr eq 'SLA')  { _SLA($params) }
-                elsif($instr eq 'SRA')  { _SRA($params) }
-                elsif($instr eq 'SRL')  { _SRL($params) }
-                elsif($instr eq 'SUB')  { _SUB($params) }
-                elsif($instr eq 'XOR')  { _XOR($params) }
-                elsif($instr eq "CCF")  { _CCF() }
-                elsif($instr eq "CPD")  { _CPD() }
-                elsif($instr eq "CPDR") { _CPDR() }
-                elsif($instr eq "CPI")  { _CPI() }
-                elsif($instr eq "CPIR") { _CPIR() }
-                elsif($instr eq "CPL")  { _CPL() }
-                elsif($instr eq "DAA")  { _DAA() }
-                elsif($instr eq "DI")   { _DI() }
-                elsif($instr eq "EI")   { _EI() }
-                elsif($instr eq "EXX")  { _EXX() }
-                elsif($instr eq "HALT") { _HALT() }
-                elsif($instr eq "IND")  { _IND() }
-                elsif($instr eq "INDR") { _INDR() }
-                elsif($instr eq "INI")  { _INI() }
-                elsif($instr eq "INIR") { _INIR() }
-                elsif($instr eq "LDD")  { _LDD() }
-                elsif($instr eq "LDDR") { _LDDR() }
-                elsif($instr eq "LDI")  { _LDI() }
-                elsif($instr eq "LDIR") { _LDIR() }
-                elsif($instr eq "NEG")  { _NEG() }
-                elsif($instr eq "NOP")  { _NOP() }
-                elsif($instr eq "OTDR") { _OTDR() }
-                elsif($instr eq "OTIR") { _OTIR() }
-                elsif($instr eq "OUTD") { _OUTD() }
-                elsif($instr eq "OUTI") { _OUTI() }
-                elsif($instr eq "RETI") { _RETI() }
-                elsif($instr eq "RETN") { _RETN() }
-                elsif($instr eq "RLA")  { _RLA() }
-                elsif($instr eq "RLCA") { _RLCA() }
-                elsif($instr eq "RLD")  { _RLD() }
-                elsif($instr eq "RRA")  { _RRA() }
-                elsif($instr eq "RRCA") { _RRCA() }
-                elsif($instr eq "RRD")  { _RRD() }
-                elsif($instr eq "SCF")  { _SCF() }
-
-                else {
-                    no warnings;
-                    _die_unknown("$instr $params");
-                }
-                if($addr_at_start_of_instr == $address) {
-                    no warnings;
-                    die("Invalid instruction: $instr $params\n");
-                }
-            }
-        }
-        $maxaddr = $address - 1;
-        print "\n" if($verbose && $pass == 2)
+        _assemble_instr($instr);
     }
     z80asm($source, 2) if($pass == 1);
     return substr($code, $startaddr, 1 + $maxaddr - $startaddr);
     # return substr($code, 0, $maxaddr + 1);
+}
+
+sub _assemble_instr {
+    my $instr = shift;
+    if($pass == 2) {
+        my $instr_to_print = $instr;
+        substr($instr_to_print, 34) = ' ...'
+            if(length($instr_to_print) > 37);
+        printf("0x%04X: %-38s | ", $address, $instr_to_print)
+            if($verbose);
+        $bytes_this_instr = 0;
+    }
+    if($instr =~ /^macro\s+(.*)/i) {
+	my $macro = $in_macro_definition = $1;
+	
+    } elsif($in_macro_definition) {
+        if($instr =~ /^}/) {
+	    $in_macro_definition = 0;
+	} else {
+	}
+    } elsif($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
+        my $data = $1;
+        $data =~ /^(['"])(.*?)(\1)(\s*,\s*(.*))?/;
+        die("Bad DEFT quoting ($1...$3)\n") unless($1 eq $3);
+        my($text, $tail) = ($2, $5 || '');
+        foreach my $c (split(//, $text)) {
+            _write($address++, ord($c));
+        }
+        foreach(split(/\s*,\s*/, "$tail;")) {
+            last if(/^;/);
+            _write($address++, _to_number($_));
+            last if(/;/);
+        }
+    } else {  # real instruction, defb, defw, macro or a label
+        my $addr_at_start_of_instr = $address;
+        $instr =~ s/\s*;.*//; # de-comment
+        if(!$instr) {
+            # do nothing
+        } elsif($instr =~ /^\$([_a-z]\w*)\s*((=)\s*(.*))?$/) { # label
+            my($label, $value) = ($1, $4);
+            if($3) {
+                $value = _to_number($value);
+            } else {
+                $value = $address;
+            }
+            $labels{$label} = $value;
+        } else {
+            my $params;
+            ($instr, $params) = split(/\s+/, $instr, 2);
+            $instr = uc($instr);
+            $params =~ s/\s//g if($params);
+	    if(exists($macros{$instr})) {
+	        $params ||= '';
+	        my @params = split(/,/, $params);
+		# insert macro, calling _assemble_instr for each line
+            } elsif($instr eq 'DEFB') {
+                _write($address, _to_number($params));
+                $address++; 
+            } elsif($instr eq 'DEFW') {
+                _write16($address, _to_number($params));
+                $address += 2;
+            }
+            elsif($instr eq 'ADC')  { _ADC($params) }
+            elsif($instr eq 'ADD')  { _ADD($params) }
+            elsif($instr eq 'AND')  { _AND($params) }
+            elsif($instr eq 'BIT')  { _BIT($params) }
+            elsif($instr eq 'CALL') { _CALL($params) }
+            elsif($instr eq 'CP')   { _CP($params) }
+            elsif($instr eq 'DEC')  { _DEC($params) }
+            elsif($instr eq 'DJNZ') { _DJNZ($params) }
+            elsif($instr eq 'EX')   { _EX($params) }
+            elsif($instr eq 'IM')   { _IM($params) }
+            elsif($instr eq 'IN')   { _IN($params) }
+            elsif($instr eq 'JP')   { _JP($params) }
+            elsif($instr eq 'JR')   { _JR($params) }
+            elsif($instr eq 'INC')  { _INC($params) }
+            elsif($instr eq 'LD')   { _LD($params) }
+            elsif($instr eq 'OR')   { _OR($params) }
+            elsif($instr eq 'OUT')  { _OUT($params) }
+            elsif($instr eq 'POP')  { _POP($params) }
+            elsif($instr eq 'PUSH') { _PUSH($params) }
+            elsif($instr eq 'RES')  { _RES($params) }
+            elsif($instr eq 'RET')  { _RET($params) }
+            elsif($instr eq 'RL')   { _RL($params) }
+            elsif($instr eq 'RLC')  { _RLC($params) }
+            elsif($instr eq 'RR')   { _RR($params) }
+            elsif($instr eq 'RRC')  { _RRC($params) }
+            elsif($instr eq 'RST')  { _RST($params) }
+            elsif($instr eq 'SBC')  { _SBC($params) }
+            elsif($instr eq 'SET')  { _SET($params) }
+            elsif($instr eq 'SLA')  { _SLA($params) }
+            elsif($instr eq 'SRA')  { _SRA($params) }
+            elsif($instr eq 'SRL')  { _SRL($params) }
+            elsif($instr eq 'SUB')  { _SUB($params) }
+            elsif($instr eq 'XOR')  { _XOR($params) }
+            elsif($instr eq "CCF")  { _CCF() }
+            elsif($instr eq "CPD")  { _CPD() }
+            elsif($instr eq "CPDR") { _CPDR() }
+            elsif($instr eq "CPI")  { _CPI() }
+            elsif($instr eq "CPIR") { _CPIR() }
+            elsif($instr eq "CPL")  { _CPL() }
+            elsif($instr eq "DAA")  { _DAA() }
+            elsif($instr eq "DI")   { _DI() }
+            elsif($instr eq "EI")   { _EI() }
+            elsif($instr eq "EXX")  { _EXX() }
+            elsif($instr eq "HALT") { _HALT() }
+            elsif($instr eq "IND")  { _IND() }
+            elsif($instr eq "INDR") { _INDR() }
+            elsif($instr eq "INI")  { _INI() }
+            elsif($instr eq "INIR") { _INIR() }
+            elsif($instr eq "LDD")  { _LDD() }
+            elsif($instr eq "LDDR") { _LDDR() }
+            elsif($instr eq "LDI")  { _LDI() }
+            elsif($instr eq "LDIR") { _LDIR() }
+            elsif($instr eq "NEG")  { _NEG() }
+            elsif($instr eq "NOP")  { _NOP() }
+            elsif($instr eq "OTDR") { _OTDR() }
+            elsif($instr eq "OTIR") { _OTIR() }
+            elsif($instr eq "OUTD") { _OUTD() }
+            elsif($instr eq "OUTI") { _OUTI() }
+            elsif($instr eq "RETI") { _RETI() }
+            elsif($instr eq "RETN") { _RETN() }
+            elsif($instr eq "RLA")  { _RLA() }
+            elsif($instr eq "RLCA") { _RLCA() }
+            elsif($instr eq "RLD")  { _RLD() }
+            elsif($instr eq "RRA")  { _RRA() }
+            elsif($instr eq "RRCA") { _RRCA() }
+            elsif($instr eq "RRD")  { _RRD() }
+            elsif($instr eq "SCF")  { _SCF() }
+
+            else {
+                no warnings;
+                _die_unknown("$instr $params");
+            }
+            if($addr_at_start_of_instr == $address) {
+                no warnings;
+                die("Invalid instruction: $instr $params\n");
+            }
+        }
+    }
+    $maxaddr = $address - 1;
+    print "\n" if($verbose && $pass == 2)
 }
 
 sub _ADC {

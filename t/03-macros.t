@@ -9,14 +9,13 @@ use Test::More tests => 2;
 
 ok(
     z80asm('
-        : MUL8x8        ; takes three reg parms, multiplies 2 and 3,
-                        ; putting result into 1
-          PUSH HL
+        MACRO MUL8x8 target, r1, r2 {   ; takes three reg parms, multiplies r1
+	  PUSH HL                       ; and r2 with result into target
           PUSH AF
           PUSH BC
           PUSH DE
-          LD B, $_2
-          LD E, $_3
+          LD B, $r1
+          LD E, $r2
           LD HL, 0
           LD D, 0
         $mulloop
@@ -30,8 +29,8 @@ ok(
         $mulstore
           DEFW 0
         $mulexit
-          LD $_1, ($mulstore)
-        :
+          LD $target, ($mulstore)
+        }
         MUL8x8 HL, C, E
     ') == z80asm('
           PUSH HL
@@ -59,20 +58,18 @@ ok(
 );
 ok(
     z80asm('
-        : HLAGH
+        MACRO HLAGH {
           LD A,A
         $label
           DEFW $label
-        :
+        }
         HLAGH
         HLAGH
     ') == z80asm('
           LD A,A
-        $label1
-          DEFW $label1
+          DEFW $$
           LD A,A
-        $label2
-          DEFW $label2
+          DEFW $$
     '),
     'And can use the same labels without squishing each other'
 );
