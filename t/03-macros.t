@@ -21,18 +21,19 @@ ok(
         $mulloop
           ADD HL, DE
           DJNZ $mulloop
-          POP DE
-          POP BC
-          POP AF
-          POP HL
+	  LD ($mulstore), HL
           JR $mulexit
         $mulstore
           DEFW 0
         $mulexit
+          POP DE
+          POP BC
+          POP AF
+          POP HL
           LD $target, ($mulstore)
         }
         MUL8x8 HL, C, E
-    ') == z80asm('
+    ') eq z80asm('
           PUSH HL
           PUSH AF
           PUSH BC
@@ -44,14 +45,15 @@ ok(
         $mulloop
           ADD HL, DE
           DJNZ $mulloop
-          POP DE
-          POP BC
-          POP AF
-          POP HL
+	  LD ($mulstore), HL
           JR $mulexit
         $mulstore
           DEFW 0
         $mulexit
+          POP DE
+          POP BC
+          POP AF
+          POP HL
           LD HL, ($mulstore)
     '),
     'Macros work'
@@ -65,7 +67,7 @@ ok(
         }
         HLAGH
         HLAGH
-    ') == z80asm('
+    ') eq z80asm('
           LD A,A
           DEFW $$
           LD A,A

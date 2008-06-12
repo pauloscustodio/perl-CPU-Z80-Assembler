@@ -135,6 +135,33 @@ can refer to other labels as $name:
     $label      = $$ + 8
     $otherlabel = $label / 2 + 3
 
+=head2 Macros
+
+Macros are created thus.  This example creates an "instruction" called MAGIC
+that takes three parameters:
+
+    MACRO MAGIC param1, param2 {
+	LD $param1, 0
+	BIT $param2, L
+	$label = 0x1234
+        ... more real instructions go here.
+    }
+
+Within the macro, $param1, $param2 etc will be replaced with whatever
+parameters you pass to the macro.  So, for example, this:
+
+    MAGIC HL, 2
+
+Is the same as:
+
+    LD HL, 0
+    BIT 2, L
+    ...
+
+Any labels that you define inside a macro are local to that macro.  Actually
+they're not but they get renamed to $_macro_$$_... so that they
+effectively *are* local.
+
 =cut
 
 my $pass = 0;
@@ -179,6 +206,7 @@ sub z80asm {
 
 sub _assemble_instr {
     my $instr = shift;
+    my $start_of_macro = 0;
     if($pass == 2) {
         my $instr_to_print = $instr;
         substr($instr_to_print, 34) = ' ...'
@@ -188,12 +216,21 @@ sub _assemble_instr {
         $bytes_this_instr = 0;
     }
     if($instr =~ /^macro\s+(.*)/i) {
-	my $macro = $in_macro_definition = $1;
-	
+	my $macro = $1;
+        my($instr, $params) = split(/\s+/, $macro, 2);
+	$in_macro_definition = uc($instr);
+	$params ||= '';
+	$params =~ s/\s*{.*//;
+	my @params = split(/\s*,\s*/, $params);
+	$macros{uc($instr)} = {
+	    instrs => [],
+	    params => \@params
+	};
     } elsif($in_macro_definition) {
         if($instr =~ /^}/) {
 	    $in_macro_definition = 0;
 	} else {
+	    push @{$macros{$in_macro_definition}->{instrs}}, $instr;
 	}
     } elsif($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
         my $data = $1;
@@ -227,9 +264,23 @@ sub _assemble_instr {
             $instr = uc($instr);
             $params =~ s/\s//g if($params);
 	    if(exists($macros{$instr})) {
+	        $start_of_macro = 1;
+                print "\n" if($verbose && $pass == 2);
 	        $params ||= '';
-	        my @params = split(/,/, $params);
-		# insert macro, calling _assemble_instr for each line
+		my %param_substitutions;
+		@param_substitutions{
+		    map { '\\$'.$_ } @{$macros{$instr}->{params}}
+		} = split(/,/, $params);
+		my @instrs = map {
+		    my $instr = $_;
+		    $instr =~ s/$_/$param_substitutions{$_}/g
+		        foreach(keys %param_substitutions);
+                    $instr =~ s/\$([_a-z])/\$_macro_${address}_$1/g;
+		    $instr;
+		} @{$macros{$instr}->{instrs}};
+		foreach(@instrs) {
+		    _assemble_instr($_);
+		}
             } elsif($instr eq 'DEFB') {
                 _write($address, _to_number($params));
                 $address++; 
@@ -316,7 +367,7 @@ sub _assemble_instr {
         }
     }
     $maxaddr = $address - 1;
-    print "\n" if($verbose && $pass == 2)
+    print "\n" if($verbose && $pass == 2 && !$start_of_macro);
 }
 
 sub _ADC {
@@ -1083,7 +1134,8 @@ sub _die_unknown {
 sub _write {
     my($address, $byte) = @_;
     $bytes_this_instr++;
-    substr($code, $address, 1) = chr($byte & 0xFF);
+    $byte &= 0xFF;
+    substr($code, $address, 1) = chr($byte);
     print "\n".(' ' x 47).'| ' if($verbose && $pass == 2 && $bytes_this_instr && !($bytes_this_instr % 10));
     printf("%02X ", $byte) if($verbose && $pass == 2);
 }
