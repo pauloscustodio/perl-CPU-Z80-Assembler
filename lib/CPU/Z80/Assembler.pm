@@ -117,6 +117,11 @@ is the address of the *current* instruction.  The offset needs to
 be calculated from the address of the *next* instruction, which for
 these instructions is always $$ + 2.
 
+=head2 STOP
+
+This extra instruction (which assembles to 0xDD 0xDD 0x00) is provided
+for the convenience of those using the CPU::Emulator::Z80 module.
+
 =head2 Labels
 
 Labels are preceded by a dollar sign, must start with a letter or
@@ -319,6 +324,7 @@ sub _assemble_instr {
             elsif($instr eq 'SLA')  { _SLA($params) }
             elsif($instr eq 'SRA')  { _SRA($params) }
             elsif($instr eq 'SRL')  { _SRL($params) }
+            elsif($instr eq 'STOP') { _STOP($params) }
             elsif($instr eq 'SUB')  { _SUB($params) }
             elsif($instr eq 'XOR')  { _XOR($params) }
             elsif($instr eq "CCF")  { _CCF() }
@@ -972,6 +978,11 @@ sub _SRL {
         _write($address + 1, 0x38 + $TABLE_R{$params});
         $address += 2;
     }
+}
+sub _STOP {
+    _write16($address, 0xDDDD);
+    _write($address + 2, 0x00);
+    $address +=3;
 }
 sub _SUB {
     my $params = shift;

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-print "1..711\n";
+print "1..712\n";
 my $test = 1;
 
 my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { /\S/ && $_ !~ /^\s+#/ } <DATA>;
@@ -28,6 +28,7 @@ foreach my $code (@codes) {
 __DATA__
 
 
+        STOP                    ; DD DD 00
         ADC A,(HL)              ; 8E
         ADC A,(IX+0x56)         ; DD 8E 56
         ADC A,(IY+0x56)         ; FD 8E 56
