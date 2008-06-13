@@ -4,10 +4,11 @@ Makefile.PL
 t/00-opcodes.t
 t/pod-coverage.t
 t/pod.t
-testme
 MANIFEST
 CHANGES
 README
 t/01-DEF-instrs.t
 t/02-labels.t
 t/03-macros.t
+GPL2.txt
+ARTISTIC.txt

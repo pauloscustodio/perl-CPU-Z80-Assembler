@@ -9,7 +9,6 @@ use vars qw($VERSION @EXPORT $verbose);
 
 $VERSION = '1.0';
 
-use Data::Dumper;
 use base qw(Exporter);
 
 @EXPORT = qw(z80asm);
@@ -99,7 +98,8 @@ defaults to 0x0000.  This value is available in an assembler label called
 
 =head2 Mnemonics
 
-Standard Z80 mnemonics are used.
+Standard Z80 mnemonics are used.  The "unofficial" Z80 instructions
+are not yet implemented.
 
 =head2 RST vectors
 
@@ -143,12 +143,12 @@ can refer to other labels as $name:
 =head2 Macros
 
 Macros are created thus.  This example creates an "instruction" called MAGIC
-that takes three parameters:
+that takes two parameters:
 
     MACRO MAGIC param1, param2 {
-	LD $param1, 0
-	BIT $param2, L
-	$label = 0x1234
+        LD $param1, 0
+        BIT $param2, L
+        $label = 0x1234
         ... more real instructions go here.
     }
 
@@ -166,6 +166,8 @@ Is the same as:
 Any labels that you define inside a macro are local to that macro.  Actually
 they're not but they get renamed to $_macro_$$_... so that they
 effectively *are* local.
+
+See the test suite for examples.
 
 =cut
 
@@ -221,22 +223,22 @@ sub _assemble_instr {
         $bytes_this_instr = 0;
     }
     if($instr =~ /^macro\s+(.*)/i) {
-	my $macro = $1;
+        my $macro = $1;
         my($instr, $params) = split(/\s+/, $macro, 2);
-	$in_macro_definition = uc($instr);
-	$params ||= '';
-	$params =~ s/\s*{.*//;
-	my @params = split(/\s*,\s*/, $params);
-	$macros{uc($instr)} = {
-	    instrs => [],
-	    params => \@params
-	};
+        $in_macro_definition = uc($instr);
+        $params ||= '';
+        $params =~ s/\s*{.*//;
+        my @params = split(/\s*,\s*/, $params);
+        $macros{uc($instr)} = {
+            instrs => [],
+            params => \@params
+        };
     } elsif($in_macro_definition) {
         if($instr =~ /^}/) {
-	    $in_macro_definition = 0;
-	} else {
-	    push @{$macros{$in_macro_definition}->{instrs}}, $instr;
-	}
+            $in_macro_definition = 0;
+        } else {
+            push @{$macros{$in_macro_definition}->{instrs}}, $instr;
+        }
     } elsif($instr =~ /^deft\s+(.*)/i) { # DEFT - don't uncomment
         my $data = $1;
         $data =~ /^(['"])(.*?)(\1)(\s*,\s*(.*))?/;
@@ -268,24 +270,24 @@ sub _assemble_instr {
             ($instr, $params) = split(/\s+/, $instr, 2);
             $instr = uc($instr);
             $params =~ s/\s//g if($params);
-	    if(exists($macros{$instr})) {
-	        $start_of_macro = 1;
+            if(exists($macros{$instr})) {
+                $start_of_macro = 1;
                 print "\n" if($verbose && $pass == 2);
-	        $params ||= '';
-		my %param_substitutions;
-		@param_substitutions{
-		    map { '\\$'.$_ } @{$macros{$instr}->{params}}
-		} = split(/,/, $params);
-		my @instrs = map {
-		    my $instr = $_;
-		    $instr =~ s/$_/$param_substitutions{$_}/g
-		        foreach(keys %param_substitutions);
+                $params ||= '';
+                my %param_substitutions;
+                @param_substitutions{
+                    map { '\\$'.$_ } @{$macros{$instr}->{params}}
+                } = split(/,/, $params);
+                my @instrs = map {
+                    my $instr = $_;
+                    $instr =~ s/$_/$param_substitutions{$_}/g
+                        foreach(keys %param_substitutions);
                     $instr =~ s/\$([_a-z])/\$_macro_${address}_$1/g;
-		    $instr;
-		} @{$macros{$instr}->{instrs}};
-		foreach(@instrs) {
-		    _assemble_instr($_);
-		}
+                    $instr;
+                } @{$macros{$instr}->{instrs}};
+                foreach(@instrs) {
+                    _assemble_instr($_);
+                }
             } elsif($instr eq 'DEFB') {
                 _write($address, _to_number($params));
                 $address++; 
@@ -1184,3 +1186,30 @@ sub _to_number {
 }
 
 1;
+
+=head1 BUGS and FEEDBACK
+
+The "unofficial" instructions aren't supported.
+
+I welcome feedback about my code, including constructive criticism.
+Bug reports should be made using L<http://rt.cpan.org/> or by email.
+
+=head1 SEE ALSO
+
+L<CPU::Emulator::Z80>
+
+=head1 AUTHOR, COPYRIGHT and LICENCE
+
+Copyright 2008 David Cantrell E<lt>F<david@cantrell.org.uk>E<gt>
+
+This software is free-as-in-speech software, and may be used,
+distributed, and modified under the terms of either the GNU
+General Public Licence version 2 or the Artistic Licence.  It's
+up to you which one you use.  The full text of the licences can
+be found in the files GPL2.txt and ARTISTIC.txt, respectively.
+
+=head1 CONSPIRACY
+
+This software is also free-as-in-mason.
+
+=cut

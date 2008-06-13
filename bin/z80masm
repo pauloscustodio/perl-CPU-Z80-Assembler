@@ -15,5 +15,52 @@ print OUT z80asm(<IN>);
 close(OUT);
 close(IN);
 
-=head1 blah
+=head1 NAME
+
+z80masm - a macro assembler for the Z80 micro-processor
+
+=head1 DESCRIPTION
+
+A simple wrapper around the CPU::Z80::Assembler perl module
+
+=head1 SYNOPSIS
+
+    z80masm sourcefile
+
+    z80masm sourcefile destfile
+
+=head1 USAGE
+
+The source file is mandatory.  The destination file, if not
+specified, will be the same as the source file, with .o appended.
+
+For details of the assembler language, see
+L<CPU::Z80::Assembler>.
+
+=head1 BUGS and FEEDBACK
+
+The "unofficial" instructions aren't supported.
+
+I welcome feedback about my code, including constructive criticism.
+Bug reports should be made using L<http://rt.cpan.org/> or by email.
+
+=head1 SEE ALSO
+
+L<CPU::Emulator::Z80>
+
+=head1 AUTHOR, COPYRIGHT and LICENCE
+
+Copyright 2008 David Cantrell E<lt>F<david@cantrell.org.uk>E<gt>
+
+This software is free-as-in-speech software, and may be used,
+distributed, and modified under the terms of either the GNU
+General Public Licence version 2 or the Artistic Licence.  It's
+up to you which one you use.  The full text of the licences can
+be found in the files GPL2.txt and ARTISTIC.txt, respectively.
+
+=head1 CONSPIRACY
+
+This software is also free-as-in-mason.
+
+=cut
 
