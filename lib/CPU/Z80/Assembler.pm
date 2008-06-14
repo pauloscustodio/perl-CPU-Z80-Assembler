@@ -1163,12 +1163,15 @@ sub _to_number {
     $number =~ s/\s*;.*//;
 
     $number =~ s/\$\$/$address/;
-    $number =~ s/\$$_/$labels{$_}/
+    $number =~ s/\$$_\b/$labels{$_}/
         foreach (keys %labels);
     if($pass == 2 && $number =~ /\$(\w+)/) {
         die("Unknown label \$$1 in $number\n")
     }
+    my $oldwarn = $SIG{__WARN__};
+    $SIG{__WARN__} = sub { print STDERR @_; exit(1) };
     $number = eval "0 + ($number)";
+    $SIG{__WARN__} = $oldwarn;
 
     # if($number =~ /^0[xb]/) {       # hex or binary
     #     $number = oct($number);

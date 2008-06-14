@@ -3,6 +3,7 @@
 use warnings;
 use strict;
 use CPU::Z80::Assembler;
+# $CPU::Z80::Assembler::verbose = 1;
 
 use Test::More tests => 3;
 
