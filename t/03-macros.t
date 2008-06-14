@@ -3,10 +3,21 @@
 use warnings;
 use strict;
 use CPU::Z80::Assembler;
-# $CPU::Z80::Assembler::verbose =1;
+# $CPU::Z80::Assembler::verbose = 1;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
+ok(
+    z80asm('
+        MACRO HLAGH r {
+          $rr
+          DEFW 0
+          LD A, $r
+        }
+        HLAGH C
+    '),
+    "Macro parameter names don't clash with labels that start with them"
+);
 ok(
     z80asm('
         MACRO MUL8x8 target, r1, r2 {   ; takes three reg parms, multiplies r1

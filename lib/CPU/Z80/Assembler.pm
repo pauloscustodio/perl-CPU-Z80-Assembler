@@ -280,7 +280,7 @@ sub _assemble_instr {
                 } = split(/,/, $params);
                 my @instrs = map {
                     my $instr = $_;
-                    $instr =~ s/$_/$param_substitutions{$_}/g
+                    $instr =~ s/$_\b/$param_substitutions{$_}/g
                         foreach(keys %param_substitutions);
                     $instr =~ s/\$([_a-z])/\$_macro_${address}_$1/g;
                     $instr;
