@@ -4,10 +4,11 @@ package CPU::Z80::Assembler;
 
 use strict;
 use warnings;
+use 5.008;
 
 use vars qw($VERSION @EXPORT $verbose);
 
-$VERSION = '1.0';
+$VERSION = '1.01';
 
 use base qw(Exporter);
 

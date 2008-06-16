@@ -1,4 +1,6 @@
 use ExtUtils::MakeMaker;
+use 5.008;
+
 WriteMakefile(
     NAME         => 'CPU::Z80::Assembler',
     VERSION_FROM => 'lib/CPU/Z80/Assembler.pm',
