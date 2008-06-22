@@ -8,7 +8,7 @@ use 5.008;
 
 use vars qw($VERSION @EXPORT $verbose);
 
-$VERSION = '1.01';
+$VERSION = '1.02';
 
 use base qw(Exporter);
 
@@ -64,6 +64,9 @@ format.  They must be ASCII:
 or
     $label [= ...] [; ...]
 
+or
+    # comment beginning with # as first char on a line
+
 =head2 Numbers
 
 Numbers can be supplied in either decimal, hexadecimal, or binary.
@@ -94,6 +97,11 @@ Tell the assembler to start building the code at this address.  Must
 be the first instruction and can only appear once.  If absent,
 defaults to 0x0000.  This value is available in an assembler label called
 'org'.
+
+=item INCLUDE "filename"
+
+Include another file.  This is not recursive.  If you want recursion,
+use the C pre-processor.
 
 =back
 
@@ -187,7 +195,20 @@ sub z80asm {
     $pass = shift || 1;
     %labels = (org => 0) if($pass == 1);
     %macros = ()         if($pass == 1);
-    my @instructions = grep { $_ } map { s/^\s+|\s$//g; $_ } split(/[\r\n]+/, $source);
+    my @instructions = grep {
+        $_ && $_ !~ /^#/
+    } map {
+        my @retval = ($_);
+        if(/^\s*INCLUDE/i) {
+            local $/ = "\n";
+            $_ =~ /INCLUDE\s+"(.*?)"/;
+            die("Bad INCLUDE: $_\n") unless(-r $1);
+            open(my $file, $1) || die("Can't open $1 in INCLUDE\n");
+            @retval = <$file>;
+            close($file);
+        }
+        map { $_ =~ s/^\s+|\s$//g; $_; } @retval;
+    } split(/[\r\n]+/, $source);
     my $startaddr = 0x0000;
     $maxaddr = 0x0000;
     $in_macro_definition = 0;

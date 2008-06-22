@@ -12,3 +12,6 @@ t/02-labels.t
 t/03-macros.t
 GPL2.txt
 ARTISTIC.txt
+t/include.z80
+t/04-hash-comments.t
+t/05-include.t

@@ -1,3 +1,7 @@
+1.02  2008-06-22   Added INCLUDE
+                   Added support for #comments at start of line
+                     (for C pre-processor friendliness)
+
 1.01  2008-06-14   Macro parameters no longer clash with labels
                      whose names start the same as a parameter.
                      eg, a param $r no longer clashes with label
