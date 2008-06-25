@@ -1237,6 +1237,10 @@ L<CPU::Emulator::Z80>
 
 Paulo Custodio for numerous bugfixes
 
+=head1 CVS
+
+L<http://drhyde.cvs.sourceforge.net/drhyde/perlmodules/CPU-Z80-Assembler/>
+
 =head1 AUTHOR, COPYRIGHT and LICENCE
 
 Copyright 2008 David Cantrell E<lt>F<david@cantrell.org.uk>E<gt>
