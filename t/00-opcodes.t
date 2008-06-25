@@ -4,29 +4,30 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-print "1..712\n";
-my $test = 1;
+use Test::More tests => 1428;
 
-my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { /\S/ && $_ !~ /^\s+#/ } <DATA>;
+my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { s/\s*\#.*//; /\S/ } <DATA>;
 
 foreach my $code (@codes) {
-    (my $expectedbytes = $code) =~ s/^.*;\s+//;
+    (my $expectedbytes = $code) =~ s/^.*;\s*//;
     my $expectedbinary = join(
         '',
         map {
             chr(eval "0x$_")
-        } split(/\s+/, $expectedbytes)
+        } split(" ", $expectedbytes)
     );
-    my $binary = eval { z80asm("ORG 0x6789\n$code") } || 'xxxxxx';
-    print "not " unless($binary eq $expectedbinary);
-    print "ok ".($test++)." - $code";
-    print ' (got '.join(' ', map { sprintf("0x%02X", ord($_)) } split(//, $binary)).')' unless($binary eq $expectedbinary);
-    print "\n";
-    print "# $@" if($@);
+    my $binary = eval { z80asm("ORG 0x6789\n$code") };
+		is $@, "", 
+			"eval   $code";
+		is hexdump($binary), hexdump($expectedbinary), 
+			"result $code";
+}
+
+sub hexdump {
+	return join(' ', map { sprintf("0x%02X", ord($_)) } split(//, shift));
 }
 
 __DATA__
-
 
         STOP                    ; DD DD 00
         ADC A,(HL)              ; 8E
@@ -208,6 +209,7 @@ __DATA__
         EX (SP),IX              ; DD E3
         EX (SP),IY              ; FD E3
         EX AF,AF'               ; 08
+        	# close quote to keep editor happy'
         EX DE,HL                ; EB
         HALT                    ; 76
         IM 0                    ; ED 46
@@ -289,7 +291,7 @@ __DATA__
         LD (HL),E               ; 73
         LD (HL),H               ; 74
         LD (HL),L               ; 75
-        LD (IX+0x56),0x56       ; DD 36 56
+        LD (IX+0x56),0x26       ; DD 36 56 26
         LD (IX+0x56),A          ; DD 77 56
         LD (IX+0x56),B          ; DD 70 56
         LD (IX+0x56),C          ; DD 71 56
@@ -297,7 +299,7 @@ __DATA__
         LD (IX+0x56),E          ; DD 73 56
         LD (IX+0x56),H          ; DD 74 56
         LD (IX+0x56),L          ; DD 75 56
-        LD (IY+0x56),0x56       ; FD 36 56
+        LD (IY+0x56),0x26       ; FD 36 56 26
         LD (IY+0x56),A          ; FD 77 56
         LD (IY+0x56),B          ; FD 70 56
         LD (IY+0x56),C          ; FD 71 56
@@ -595,8 +597,8 @@ __DATA__
         RST 5                   ; EF
         RST 6                   ; F7
         RST 7                   ; FF
-        SBC (HL)                ; 9E
-        SBC A                   ; 9F
+        SBC A,(HL)              ; 9E
+        SBC A,A                 ; 9F
         SBC A,(IX+0x56)         ; DD 9E 56
         SBC A,(IY+0x56)         ; FD 9E 56
         SBC A,0x56              ; DE 56
@@ -712,6 +714,8 @@ __DATA__
         SRA H                   ; CB 2C
         SRA L                   ; CB 2D
         SRL (HL)                ; CB 3E
+        SRL (IX+0x56)           ; DD CB 56 3E
+        SRL (IY+0x56)           ; FD CB 56 3E
         SRL A                   ; CB 3F
         SRL B                   ; CB 38
         SRL C                   ; CB 39

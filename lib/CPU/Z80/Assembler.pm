@@ -8,7 +8,7 @@ use 5.008;
 
 use vars qw($VERSION @EXPORT $verbose);
 
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 use base qw(Exporter);
 
@@ -673,6 +673,9 @@ sub _SBC {
             _write($address + 1, 0x9E);
             _write($address + 2, _to_number($2));
             $address += 3;
+		} elsif($r1 eq 'A' && exists($TABLE_R{$r2})) {
+            _write($address, 0x98 + $TABLE_R{$r2});
+            $address += 1;
         } elsif($r1 eq 'A') {
             _write($address,     0xDE);
             _write($address + 1, _to_number($r2));
@@ -867,7 +870,8 @@ sub _LD {
         } else {
             _write($address + 1, 0x36);
             _write($address + 2, _to_number($offset));
-            $address += 3;
+            _write($address + 3, _to_number($r2));
+            $address += 4;
         }
     } elsif($r1 =~ /\((.*)\)/) {               # target (addr)
         my $target = $1;
@@ -1001,6 +1005,12 @@ sub _SRL {
         _write($address    , 0xCB);
         _write($address + 1, 0x38 + $TABLE_R{$params});
         $address += 2;
+    } elsif($params =~ /\((I[XY])(.*?)\)/) {
+        _write($address,     $1 eq 'IX' ? 0xDD : 0xFD);
+        _write($address + 1, 0xCB);
+        _write($address + 2, _to_number($2));
+        _write($address + 3, 0x3E);
+        $address += 4;
     }
 }
 sub _STOP {
@@ -1222,6 +1232,10 @@ Bug reports should be made using L<http://rt.cpan.org/> or by email.
 =head1 SEE ALSO
 
 L<CPU::Emulator::Z80>
+
+=head1 THANKS TO
+
+Paulo Custodio for numerous bugfixes
 
 =head1 AUTHOR, COPYRIGHT and LICENCE
 

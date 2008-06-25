@@ -11,6 +11,7 @@ $/ = undef;
 
 open(IN, $infile) || die("Can't open $infile\n");
 open(OUT, ">$outfile") || die("Can't open $outfile\n");
+binmode(OUT);
 print OUT z80asm(<IN>);
 close(OUT);
 close(IN);
