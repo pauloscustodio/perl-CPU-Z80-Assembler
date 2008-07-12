@@ -1,3 +1,5 @@
+# $Id$
+
 use ExtUtils::MakeMaker;
 use 5.008;
 
