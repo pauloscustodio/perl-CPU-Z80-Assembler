@@ -1,3 +1,12 @@
+2.00  2008-07-12   Re-implemented for speed improvement.
+                   Split into three layers - lexical scanner, instructions 
+                   parser and code generator.
+                   Added Z80 undocumented instructions.
+                   $ in front of labels is optional, accepts lower case 
+                   assembly instructions, improved error messages, 
+                   accepts multiple assembly instructions in a line 
+                   separated by ':'
+
 1.03  2008-06-25   Bugfixes from Paulo Custodio:
                      see https://rt.cpan.org/Ticket/Display.html?id=36991
 

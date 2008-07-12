@@ -7,14 +7,11 @@ $CPU::Z80::Assembler::verbose = 1;
 
 my $infile = shift();
 my $outfile = shift() || "$infile.o";
-$/ = undef;
-
-open(IN, $infile) || die("Can't open $infile\n");
+my $code = z80asm("#include '$infile'");
 open(OUT, ">$outfile") || die("Can't open $outfile\n");
 binmode(OUT);
-print OUT z80asm(<IN>);
+print OUT $code;
 close(OUT);
-close(IN);
 
 =head1 NAME
 

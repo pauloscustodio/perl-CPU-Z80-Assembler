@@ -4,7 +4,9 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-use Test::More tests => 1428;
+use Test::More tests => 3192;
+
+# $CPU::Z80::Assembler::verbose = 1;
 
 my @codes = map { $_ =~ s/^\s+|\s+$//g; $_ } grep { s/\s*\#.*//; /\S/ } <DATA>;
 
@@ -16,7 +18,17 @@ foreach my $code (@codes) {
             chr(eval "0x$_")
         } split(" ", $expectedbytes)
     );
-    my $binary = eval { z80asm("ORG 0x6789\n$code") };
+    
+    # test upper case
+    my $binary = eval { z80asm("\nORG 0x6789\n$code\n") };
+		is $@, "", 
+			"eval   $code";
+		is hexdump($binary), hexdump($expectedbinary), 
+			"result $code";
+			
+	# test lower case
+	$code = lc($code);
+    $binary = eval { z80asm("\nORG 0x6789\n$code\n") };
 		is $@, "", 
 			"eval   $code";
 		is hexdump($binary), hexdump($expectedbinary), 
@@ -27,9 +39,11 @@ sub hexdump {
 	return join(' ', map { sprintf("0x%02X", ord($_)) } split(//, shift));
 }
 
+
 __DATA__
 
         STOP                    ; DD DD 00
+
         ADC A,(HL)              ; 8E
         ADC A,(IX+0x56)         ; DD 8E 56
         ADC A,(IY+0x56)         ; FD 8E 56
@@ -40,6 +54,10 @@ __DATA__
         ADC A,D                 ; 8A
         ADC A,E                 ; 8B
         ADC A,H                 ; 8C
+        ADC A,IXH               ; DD 8C
+        ADC A,IXL               ; DD 8D
+        ADC A,IYH               ; FD 8C
+        ADC A,IYL               ; FD 8D
         ADC A,L                 ; 8D
         ADC HL,BC               ; ED 4A
         ADC HL,DE               ; ED 5A
@@ -55,6 +73,10 @@ __DATA__
         ADD A,D                 ; 82
         ADD A,E                 ; 83
         ADD A,H                 ; 84
+        ADD A,IXH               ; DD 84
+        ADD A,IXL               ; DD 85
+        ADD A,IYH               ; FD 84
+        ADD A,IYL               ; FD 85
         ADD A,L                 ; 85
         ADD HL,BC               ; 09
         ADD HL,DE               ; 19
@@ -78,6 +100,10 @@ __DATA__
         AND D                   ; A2
         AND E                   ; A3
         AND H                   ; A4
+        AND IXH                 ; DD A4
+        AND IXL                 ; DD A5
+        AND IYH                 ; FD A4
+        AND IYL                 ; FD A5
         AND L                   ; A5
         BIT 0,(HL)              ; CB 46
         BIT 0,(IX+0x56)         ; DD CB 56 46
@@ -179,6 +205,10 @@ __DATA__
         CP D                    ; BA
         CP E                    ; BB
         CP H                    ; BC
+        CP IXH                  ; DD BC
+        CP IXL                  ; DD BD
+        CP IYH                  ; FD BC
+        CP IYL                  ; FD BD
         CP L                    ; BD
         CPD                     ; ED A9
         CPDR                    ; ED B9
@@ -199,11 +229,18 @@ __DATA__
         DEC H                   ; 25
         DEC HL                  ; 2B
         DEC IX                  ; DD 2B
+        DEC IXH                 ; DD 25
+        DEC IXL                 ; DD 2D
         DEC IY                  ; FD 2B
+        DEC IYH                 ; FD 25
+        DEC IYL                 ; FD 2D
         DEC L                   ; 2D
         DEC SP                  ; 3B
         DI                      ; F3
-        EXX                     ; D9
+			# 0x6789 is ORG, ie this instr
+        DJNZ 0x6789             ; 10 FE
+        DJNZ 0x678B             ; 10 00
+        DJNZ 0x678D             ; 10 02
         EI                      ; FB
         EX (SP),HL              ; E3
         EX (SP),IX              ; DD E3
@@ -211,6 +248,7 @@ __DATA__
         EX AF,AF'               ; 08
         	# close quote to keep editor happy'
         EX DE,HL                ; EB
+        EXX                     ; D9
         HALT                    ; 76
         IM 0                    ; ED 46
         IM 1                    ; ED 56
@@ -236,17 +274,21 @@ __DATA__
         INC H                   ; 24
         INC HL                  ; 23
         INC IX                  ; DD 23
+        INC IXH                 ; DD 24
+        INC IXL                 ; DD 2C
         INC IY                  ; FD 23
+        INC IYH                 ; FD 24
+        INC IYL                 ; FD 2C
         INC L                   ; 2C
         INC SP                  ; 33
         IND                     ; ED AA
         INDR                    ; ED BA
         INI                     ; ED A2
         INIR                    ; ED B2
-        JP 0x1234               ; C3 34 12
         JP (HL)                 ; E9
         JP (IX)                 ; DD E9
         JP (IY)                 ; FD E9
+        JP 0x1234               ; C3 34 12
         JP C,0x1234             ; DA 34 12
         JP M,0x1234             ; FA 34 12
         JP NC,0x1234            ; D2 34 12
@@ -255,24 +297,21 @@ __DATA__
         JP PE,0x1234            ; EA 34 12
         JP PO,0x1234            ; E2 34 12
         JP Z,0x1234             ; CA 34 12
-      # 0x6789 is ORG, ie this instr
-        DJNZ 0x6789             ; 10 FE
-        DJNZ 0x678B             ; 10 00
-        DJNZ 0x678D             ; 10 02
+			# 0x6789 is ORG, ie this instr
         JR 0x6789               ; 18 FE
-        JR C,0x6789             ; 38 FE
-        JR NC,0x6789            ; 30 FE
-        JR NZ,0x6789            ; 20 FE
-        JR Z,0x6789             ; 28 FE
         JR 0x678B               ; 18 00
-        JR C,0x678B             ; 38 00
-        JR NC,0x678B            ; 30 00
-        JR NZ,0x678B            ; 20 00
-        JR Z,0x678B             ; 28 00
         JR 0x678D               ; 18 02
+        JR C,0x6789             ; 38 FE
+        JR C,0x678B             ; 38 00
         JR C,0x678D             ; 38 02
+        JR NC,0x6789            ; 30 FE
+        JR NC,0x678B            ; 30 00
         JR NC,0x678D            ; 30 02
+        JR NZ,0x6789            ; 20 FE
+        JR NZ,0x678B            ; 20 00
         JR NZ,0x678D            ; 20 02
+        JR Z,0x6789             ; 28 FE
+        JR Z,0x678B             ; 28 00
         JR Z,0x678D             ; 28 02
         LD (0x1234),A           ; 32 34 12
         LD (0x1234),BC          ; ED 43 34 12
@@ -321,6 +360,10 @@ __DATA__
         LD A,E                  ; 7B
         LD A,H                  ; 7C
         LD A,I                  ; ED 57
+        LD A,IXH                ; DD 7C
+        LD A,IXL                ; DD 7D
+        LD A,IYH                ; FD 7C
+        LD A,IYL                ; FD 7D
         LD A,L                  ; 7D
         LD B,(HL)               ; 46
         LD B,(IX+0x56)          ; DD 46 56
@@ -332,6 +375,10 @@ __DATA__
         LD B,D                  ; 42
         LD B,E                  ; 43
         LD B,H                  ; 44
+        LD B,IXH                ; DD 44
+        LD B,IXL                ; DD 45
+        LD B,IYH                ; FD 44
+        LD B,IYL                ; FD 45
         LD B,L                  ; 45
         LD BC,(0x1234)          ; ED 4B 34 12
         LD BC,0x1234            ; 01 34 12
@@ -345,6 +392,10 @@ __DATA__
         LD C,D                  ; 4A
         LD C,E                  ; 4B
         LD C,H                  ; 4C
+        LD C,IXH                ; DD 4C
+        LD C,IXL                ; DD 4D
+        LD C,IYH                ; FD 4C
+        LD C,IYL                ; FD 4D
         LD C,L                  ; 4D
         LD D,(HL)               ; 56
         LD D,(IX+0x56)          ; DD 56 56
@@ -356,6 +407,10 @@ __DATA__
         LD D,D                  ; 52
         LD D,E                  ; 53
         LD D,H                  ; 54
+        LD D,IXH                ; DD 54
+        LD D,IXL                ; DD 55
+        LD D,IYH                ; FD 54
+        LD D,IYL                ; FD 55
         LD D,L                  ; 55
         LD DE,(0x1234)          ; ED 5B 34 12
         LD DE,0x1234            ; 11 34 12
@@ -369,6 +424,10 @@ __DATA__
         LD E,D                  ; 5A
         LD E,E                  ; 5B
         LD E,H                  ; 5C
+        LD E,IXH                ; DD 5C
+        LD E,IXL                ; DD 5D
+        LD E,IYH                ; FD 5C
+        LD E,IYL                ; FD 5D
         LD E,L                  ; 5D
         LD H,(HL)               ; 66
         LD H,(IX+0x56)          ; DD 66 56
@@ -386,8 +445,32 @@ __DATA__
         LD I,A                  ; ED 47
         LD IX,(0x1234)          ; DD 2A 34 12
         LD IX,0x1234            ; DD 21 34 12
+        LD IXH,0x56             ; DD 26 56
+        LD IXH,A                ; DD 67
+        LD IXH,B                ; DD 60
+        LD IXH,C                ; DD 61
+        LD IXH,D                ; DD 62
+        LD IXH,E                ; DD 63
+        LD IXL,0x56             ; DD 2E 56
+        LD IXL,A                ; DD 6F
+        LD IXL,B                ; DD 68
+        LD IXL,C                ; DD 69
+        LD IXL,D                ; DD 6A
+        LD IXL,E                ; DD 6B
         LD IY,(0x1234)          ; FD 2A 34 12
         LD IY,0x1234            ; FD 21 34 12
+        LD IYH,0x56             ; FD 26 56
+        LD IYH,A                ; FD 67
+        LD IYH,B                ; FD 60
+        LD IYH,C                ; FD 61
+        LD IYH,D                ; FD 62
+        LD IYH,E                ; FD 63
+        LD IYL,0x56             ; FD 2E 56
+        LD IYL,A                ; FD 6F
+        LD IYL,B                ; FD 68
+        LD IYL,C                ; FD 69
+        LD IYL,D                ; FD 6A
+        LD IYL,E                ; FD 6B
         LD L,(HL)               ; 6E
         LD L,(IX+0x56)          ; DD 6E 56
         LD L,(IY+0x56)          ; FD 6E 56
@@ -420,9 +503,14 @@ __DATA__
         OR D                    ; B2
         OR E                    ; B3
         OR H                    ; B4
+        OR IXH                  ; DD B4
+        OR IXL                  ; DD B5
+        OR IYH                  ; FD B4
+        OR IYL                  ; FD B5
         OR L                    ; B5
         OTDR                    ; ED BB
         OTIR                    ; ED B3
+        OUT (0x56),A            ; D3 56
         OUT (C),A               ; ED 79
         OUT (C),B               ; ED 41
         OUT (C),C               ; ED 49
@@ -430,7 +518,6 @@ __DATA__
         OUT (C),E               ; ED 59
         OUT (C),H               ; ED 61
         OUT (C),L               ; ED 69
-        OUT (0x56),A            ; D3 56
         OUTD                    ; ED AB
         OUTI                    ; ED A3
         POP AF                  ; F1
@@ -583,14 +670,14 @@ __DATA__
         RRCA                    ; 0F
         RRD                     ; ED 67
         RST 0                   ; C7
-        RST 0x8                 ; CF 
         RST 0x10                ; D7
         RST 0x18                ; DF
         RST 0x20                ; E7
         RST 0x28                ; EF
         RST 0x30                ; F7
         RST 0x38                ; FF
-        RST 1                   ; CF 
+        RST 0x8                 ; CF
+        RST 1                   ; CF
         RST 2                   ; D7
         RST 3                   ; DF
         RST 4                   ; E7
@@ -598,20 +685,24 @@ __DATA__
         RST 6                   ; F7
         RST 7                   ; FF
         SBC A,(HL)              ; 9E
-        SBC A,A                 ; 9F
         SBC A,(IX+0x56)         ; DD 9E 56
         SBC A,(IY+0x56)         ; FD 9E 56
         SBC A,0x56              ; DE 56
-        SBC B                   ; 98
-        SBC C                   ; 99
-        SBC D                   ; 9A
-        SBC E                   ; 9B
-        SBC H                   ; 9C
+        SBC A,A                 ; 9F
+        SBC A,B                 ; 98
+        SBC A,C                 ; 99
+        SBC A,D                 ; 9A
+        SBC A,E                 ; 9B
+        SBC A,H                 ; 9C
+        SBC A,IXH               ; DD 9C
+        SBC A,IXL               ; DD 9D
+        SBC A,IYH               ; FD 9C
+        SBC A,IYL               ; FD 9D
+        SBC A,L                 ; 9D
         SBC HL,BC               ; ED 42
         SBC HL,DE               ; ED 52
         SBC HL,HL               ; ED 62
         SBC HL,SP               ; ED 72
-        SBC L                   ; 9D
         SCF                     ; 37
         SET 0,(HL)              ; CB C6
         SET 0,(IX+0x56)         ; DD CB 56 C6
@@ -733,6 +824,10 @@ __DATA__
         SUB D                   ; 92
         SUB E                   ; 93
         SUB H                   ; 94
+        SUB IXH                 ; DD 94
+        SUB IXL                 ; DD 95
+        SUB IYH                 ; FD 94
+        SUB IYL                 ; FD 95
         SUB L                   ; 95
         XOR (HL)                ; AE
         XOR (IX+0x56)           ; DD AE 56
@@ -744,4 +839,8 @@ __DATA__
         XOR D                   ; AA
         XOR E                   ; AB
         XOR H                   ; AC
+        XOR IXH                 ; DD AC
+        XOR IXL                 ; DD AD
+        XOR IYH                 ; FD AC
+        XOR IYL                 ; FD AD
         XOR L                   ; AD
