@@ -12,6 +12,8 @@ use CPU::Z80::Assembler::Macro;
 use HOP::Stream ':all';
 use Regexp::Trie;
 
+our $VERSION = '2.00';
+
 use vars qw(@EXPORT);
 use base qw(Exporter);
 @EXPORT = qw(z80lexer);

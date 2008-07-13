@@ -11,6 +11,8 @@ use 5.008;
 use Data::Dump 'dump';
 use HOP::Stream ':all';
 
+our $VERSION = '2.00';
+
 use vars qw(@EXPORT);
 use base qw(Exporter);
 @EXPORT = qw(z80parser eval_expr);
