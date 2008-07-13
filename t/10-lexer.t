@@ -17,6 +17,7 @@ use_ok	'HOP::Stream', 'drop';
 isa_ok	my $s = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
 		'HOP::Stream';
 
+use Data::Dump 'dump'; print dump($s),"\n";
 is_deeply	drop($s), ["LINE", "a adc add af af' af' and b bc bit c call ccf cp cpd cpdr cpi cpir \n", 1, "DATA"], "Line token";
 is_deeply	drop($s), ["a", "a"], "a token";
 is_deeply	drop($s), ["adc", "adc"], "adc token";
