@@ -3,9 +3,13 @@ bin/z80masm
 CHANGES
 GPL2.txt
 lib/CPU/Z80/Assembler.pm
+lib/CPU/Z80/Assembler.pod
 lib/CPU/Z80/Assembler/Lexer.pm
+lib/CPU/Z80/Assembler/Lexer.pod
 lib/CPU/Z80/Assembler/Macro.pm
+lib/CPU/Z80/Assembler/Macro.pod
 lib/CPU/Z80/Assembler/Parser.pm
+lib/CPU/Z80/Assembler/Parser.pod
 Makefile.PL
 MANIFEST			This list of files
 README

@@ -1,0 +1,109 @@
+# $Id$
+
+=head1 NAME
+
+CPU::Z80::Assembler::Parser - Instruction parser for the Z80 assembler
+
+=head1 SYNOPSIS
+
+    use CPU::Z80::Assembler::Parser;
+    use HOP::Stream 'drop';
+
+    my $stream = z80parser($z80lexer);
+    my $value = eval_expr($expr, $address, \%symbol_table)
+
+=head1 DESCRIPTION
+
+This module transforms the sequence of tokens retrieved from L<CPU::Z80::Assembler::Lexer>
+into a sequence of decoded assembly instructions.
+
+=head1 EXPORTS
+
+By default the 'z80parser' and 'eval_expr' subroutines are exported.
+To disable that, do:
+
+    use CPU::Z80::Assembler::Parser ();
+
+=head1 FUNCTIONS
+
+=head2 z80parser
+
+This takes as parameter a L<HOP::Stream> as returned by z80lexer, and returns a L<HOP::Stream>
+with the tokes described below.
+
+=head2 eval_expr
+
+This takes as parameter an expression as a L<HOP::Stream> of tokens, the current address
+of the expression (to evaluate the '$' expression) and a reference to a hash with 
+all defined symbols. Each symbol may be either a scalar value, or an expression.
+The eval_expr function evaluates recursively all the sub-expressions and returns 
+the value. It dies if any used label is not defined, or if there is a circular
+reference.
+
+=head1 TOKENS
+
+The following tokens are returned by the stream:
+
+    ["LINE", $line_text, $line_nr, $file]
+
+Indicates that the next tokens belong to the given file, and line number, and contains
+the whole line text. This token is usefull to remember the current location in the
+source file, to show in listings or error messages.
+
+    ["org", address]
+
+Translation of an ORG instruction with the address argument.
+
+    ["LABEL", name]
+
+Defines the label with the given name at the current location.
+
+    ["LABEL", name, expr]
+
+Defines the label with the given name as the result of evaluating the given
+expression. The expression is only evaluated on pass 2, after all labels are
+defined.
+An expression is a HOP::Stream containing all the tokens of the expression.
+
+    ["OPCODE", byte, [type, expr] ]
+
+Defines an assembled opcode with the list of bytes to load to the object code.
+
+The bytes that need to be computed as the result of an expression evaluation
+are returned as a pair [type, expression], where type is:
+
+=over 4
+
+=item "sb"
+
+for signed byte;
+
+=item "ub" 
+
+for unsigned byte; 
+
+=item "w" 
+
+for word. When a "w" expression is used, the "OPCODE" token includes an empty 
+array ref, so that the size of the instruction 
+matches the size of the token array minus 1.
+
+=back
+
+An expression is a L<HOP::Stream> containing all the tokens of the expression.
+
+=head1 BUGS and FEEDBACK
+
+See L<CPU::Z80::Assembler>.
+
+=head1 SEE ALSO
+
+L<HOP::Stream>
+L<CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Lexer>
+
+=head1 AUTHORS, COPYRIGHT and LICENCE
+
+See L<CPU::Z80::Assembler>.
+
+=cut

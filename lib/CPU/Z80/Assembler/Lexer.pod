@@ -1,0 +1,113 @@
+# $Id$
+
+=head1 NAME
+
+CPU::Z80::Assembler::Lexer - Scanner for the Z80 assembler
+
+=head1 SYNOPSIS
+
+    use CPU::Z80::Assembler::Lexer;
+    use HOP::Stream 'drop';
+
+    open($fh, $file1) or die;
+    my $stream = z80lexer("#include 'file2'\n", sub {<$fh>});
+
+=head1 DESCRIPTION
+
+This module provides a scanner to split the input source into tokens for the
+assembler. The scanner calls z80pp from L<CPU::Z80::Assembler::Macro> to handle
+macro pre-processing, i.e. the returned tokens are already the result of macro 
+expansion.
+
+=head1 EXPORTS
+
+By default the 'z80lexer' subroutine is exported.  To disable that, do:
+
+    use CPU::Z80::Assembler::Lexer ();
+
+=head1 FUNCTIONS
+
+=head2 z80lexer
+
+This takes as parameter a list of either text strings to parse, or iterators that return 
+text strings to parse.
+
+The result is a HOP::Stream that retrieves the next lexical token by each drop($stream).
+
+=head1 Preprocessing
+
+The following preprocessor-like lines are processed by the lexer:
+
+    %line N+M FILE
+
+nasm-like line directive, telling that the next input line is line N from file FILE, 
+followed by lines N+M, N+2*M, ... This information is used to generate error messages.
+Usefull to assemble a file preprocessed by nasm.
+
+    #line N "FILE"
+
+cpp-like line directive, telling that the next input line is line N from file FILE, 
+followed by lines N+1, N+2, ... This information is used to generate error messages.
+Usefull to assemble a file preprocessed by cpp.
+
+    include 'FILE'
+    include "FILE"
+    include <FILE>
+    %include ...
+    #include ...
+
+nasm/cpp-like include directive, asking to insert the contents of the given file 
+in the input stream. The Lexer inserts %line directives to synchronize file positions
+before and after the file inclusion.
+
+The easiest form to ask z80asm to assemble a file is to write:
+
+    z80asm("include 'FILE'");
+
+All the other preprocessor-like lines are ignored, i.e. lines starting with '#' or '%'.
+
+=head1 TOKENS
+
+The following tokens are returned by the stream:
+
+    ["LINE", $line_text, $line_nr, $file]
+
+Indicates that the next tokens belong to the given file, and line number, and contains the 
+whole line text. This token is usefull to remember the current location in the source 
+file, to show in listings or error messages.
+
+    [reserved, reserved]
+
+All the reserved words and symbols are returned in lower case letters, e.g. ["nop", "nop"], or 
+["+", "+"].
+
+    ["STRING", $string]
+
+Single or double quoted strings are returned, including the quotes. The quote character cannot be
+used inside the string.
+
+    ["NAME", $name]
+
+All program identifiers, including '$'. The case is preserved, i.e. case-sensitive for labels, 
+insensitive for assembly reserved words.
+
+    ["NUMBER", $number]
+
+Numbers are returned either in decimal, hexadecimal in the form 0x****, or binary in the form 
+0b****. The forms 0****H is replaced into 0x****, and the form 0****B into 0b****.
+
+=head1 BUGS and FEEDBACK
+
+See L<CPU::Z80::Assembler>.
+
+=head1 SEE ALSO
+
+L<HOP::Stream>
+L<CPU::Z80::Assembler::Macro>
+L<CPU::Z80::Assembler>
+
+=head1 AUTHORS, COPYRIGHT and LICENCE
+
+See L<CPU::Z80::Assembler>.
+
+=cut
