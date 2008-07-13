@@ -12,9 +12,9 @@ use Data::Dump qw( dump );
 use HOP::Stream ':all';
 use Text::Tabs;
 
-use vars qw($VERSION @EXPORT $verbose);
+use vars qw(@EXPORT $verbose);
 
-$VERSION = '2.00';
+our $VERSION = '2.01';
 
 use base qw(Exporter);
 

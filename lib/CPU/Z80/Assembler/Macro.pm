@@ -10,7 +10,7 @@ use 5.008;
 
 use HOP::Stream ':all';
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

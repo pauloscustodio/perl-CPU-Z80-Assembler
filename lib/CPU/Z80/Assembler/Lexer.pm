@@ -12,7 +12,7 @@ use CPU::Z80::Assembler::Macro;
 use HOP::Stream ':all';
 use Regexp::Trie;
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -117,6 +117,7 @@ sub _line_stream {
 		}
 		my $this_line_nr = $line_nr;
 		$line_nr += $line_inc;
+		$line =~ s/\r//g;									# in case Windows file is processed in Unix
 		return node(	["LINE", $line, $this_line_nr, $file],
 			   node(	$line,
 						promise { $line_promise->() } ));

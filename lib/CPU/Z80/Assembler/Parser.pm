@@ -11,7 +11,7 @@ use 5.008;
 use Data::Dump 'dump';
 use HOP::Stream ':all';
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
