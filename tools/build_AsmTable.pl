@@ -1,6 +1,7 @@
 #!perl
 
 #------------------------------------------------------------------------------
+# $Id$
 # Build all CPU::Z80::Assembler instructions
 # Needs sjasmplus (http://sjasmplus.sourceforge.net/) to validate assembled code
 

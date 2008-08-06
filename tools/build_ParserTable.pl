@@ -1,6 +1,7 @@
 #!perl
 
 #------------------------------------------------------------------------------
+# $Id$
 # Build parser table for CPU::Z80::Assembler::Parser.pm
 # Needs sjasmplus (http://sjasmplus.sourceforge.net/) to validate assembled code
 
