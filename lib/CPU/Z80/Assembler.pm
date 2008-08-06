@@ -14,7 +14,7 @@ use Text::Tabs;
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.01';
+our $VERSION = '2.01_01';
 
 use base qw(Exporter);
 
@@ -28,6 +28,7 @@ my $code = '';
 my $bytes_this_instr = 0;
 my $startaddr = 0x0000;
 my $maxaddr = 0x0000;
+my @warnings;
 
 sub z80asm {
     my $source = z80parser(z80lexer(@_));		# input stream
@@ -61,15 +62,24 @@ sub z80asm {
 			# process all instructions in LINE
 			$bytes_this_instr = 0;
 			while (($token = head($input)) && $token->[0] ne "LINE") {
+				@warnings = ();
 				eval { $input = _assemble_instr($input) };
-				if ($@) {						# Semantic error
-					chomp($@);
-					die("\n",
-						(defined($line) ? 
-							"\t".$line->[1]."\n".
-							($line->[3] ? $line->[3] : "IN").
-							"(".$line->[2].") : " : ""),
-						"Error: $@\n");
+				if ($@ || @warnings) {		# Semantic error or warning
+					my $location = "\n".
+								(defined($line) ? 
+									"\t".$line->[1]."\n".
+									($line->[3] ? $line->[3] : "INPUT").
+								"(".$line->[2].") : " : "");
+					if ($@) {
+						chomp($@);	
+						die($location, "Error: $@\n");
+					}
+					else {
+						for (@warnings) {
+							chomp;
+							warn($location, "Warning: $_\n");
+						}
+					}
 				}
 			}
 			if ($verbose && $pass == 2) {
@@ -115,15 +125,18 @@ sub _OPCODE {								# [OPCODE, byte, byte, ...]
 				my($type, $expr) = @$_;
 				my $value = eval_expr($expr, $address, \%labels);
 				if ($type eq "sb") {
-					die "Signed byte $value out of range\n" if ($value >= 0x80 || $value < -0x80);
+					push(@warnings, "Signed byte $value out of range\n")
+						if ($value >= 0x80 || $value < -0x80);
 					push(@computed, $value & 0xFF);
 				}
 				elsif ($type eq "ub") {
-					die "Unsigned byte $value out of range\n" if ($value >= 0x100 || $value < 0);
+					push(@warnings, "Unsigned byte $value out of range\n")
+						if ($value >= 0x100 || $value < -0x80);
 					push(@computed, $value & 0xFF);
 				}
 				elsif ($type eq "w") {
-					die "Word $value out of range\n" if ($value >= 0x10000 || $value < -0x8000);
+					push(@warnings, "Word $value out of range\n")
+						if ($value >= 0x10000 || $value < -0x8000);
 					push(@computed, $value & 0xFF, ($value >> 8) & 0xFF);
 				}
 				else {

@@ -12,7 +12,7 @@ use CPU::Z80::Assembler::Macro;
 use HOP::Stream ':all';
 use Regexp::Trie;
 
-our $VERSION = '2.01';
+our $VERSION = '2.01_01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -82,7 +82,7 @@ sub _line_stream {
 				}		
 			}
 			
-			# we have either one complte line with a final \n, or the last chars of the input without \n
+			# we have either one complete line with a final \n, or the last chars of the input without \n
 			if ($line =~ /^ \s* \%line \s+ (\d+) \+ (\d+) \s+ (\S*) /ix) {
 				($line_nr, $line_inc, $file) = ($1, $2, $3);
 				$line = undef;								# continue 
@@ -135,12 +135,12 @@ my $KEYWORD_RE = do {
 	my $rt = Regexp::Trie->new;
 	for (split(" ","
 				a adc add af af' and b bc bit c call ccf cp cpd cpdr cpi cpir 
-				cpl d daa de dec di djnz e ei equ ex exx h halt hl i im 
+				cpl d daa de dec di djnz e ei equ ex exx exa h halt hl im 
 				in inc ind indr ini inir ix iy jp jr l ld ldd lddr ldi ldir m 
 				nc neg nop nz or otdr otir out outd outi p pe po pop push 
 				res ret reti retn rl rla rlc rlca rld rr rra rrc rrca rrd rst 
-				sbc scf set sla sp sra srl sub xor z
-				ixh ixl iyh iyl f
+				sbc scf set sla sll sli sp sra srl sub xor z
+				ixh ixl iyh iyl hx lx hy ly xh xl yh yl i r f
 				org stop defb defw deft defm macro endm
 			")) {
 		$rt->add($_);

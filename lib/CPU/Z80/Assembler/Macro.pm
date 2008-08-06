@@ -10,7 +10,7 @@ use 5.008;
 
 use HOP::Stream ':all';
 
-our $VERSION = '2.01';
+our $VERSION = '2.01_01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -39,7 +39,7 @@ sub _define_macro {
 	# get macro name
 	my $token;
 	($token = head($input)) && $token->[0] eq 'NAME'
-		or die "Error defining macro: name needed\n";
+		or die "Macro name needed\n";
 	$macro->name( $token->[1] );
 	drop($input);
 	
@@ -54,9 +54,17 @@ sub _define_macro {
 
 	# skip {
 	my $opened_brace;
-	if (($token = head($input)) && $token->[0] eq '{') {
+	($token = head($input)) 
+		or die "Macro body needed\n";	
+	if ($token->[0] eq '{') {
 		drop($input);
 		$opened_brace++;
+	}
+	elsif (exists($STMT_END{$token->[0]})) {
+		# OK, macro body follows on next line
+	}
+	else {
+		die "Unexpected '",$token->[0],"'\n";
 	}
 		
 	# retrieve tokens
@@ -106,6 +114,7 @@ sub _define_macro {
 		}
 		$last_stmt_end = exists($STMT_END{$token->[0]});
 	}
+	die "Macro body not finished\n" unless $token;
 	die "Unmatched braces\n" if $parens != 0;
 	
 	# macro contents and line tokens as streams
