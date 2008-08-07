@@ -5,13 +5,13 @@
 use warnings;
 use strict;
 use CPU::Z80::Assembler;
-$CPU::Z80::Assembler::verbose = 1;
+#$CPU::Z80::Assembler::verbose = 1;
 
 use Test::More tests => 3;
 
 ok(
     z80asm('
-        MACRO HLAGH r {
+        MACRO HLAGH $r {
           $rr
           DEFW 0
           LD A, $r
@@ -88,3 +88,18 @@ ok(
     '),
     'And can use the same labels without squishing each other'
 );
+
+## invalid macro definition
+#eval {z80asm('
+#		MACRO mymacro hl,de
+#		  NOP
+#		ENDM
+#	  ')};
+#is $@, "error", "cannot use reserved word as macro parameter";
+#
+#eval {z80asm('
+#		MACRO mymacro xx
+#		  NOP
+#	  ')};
+#is $@, "error", "macro not terminated";
+#

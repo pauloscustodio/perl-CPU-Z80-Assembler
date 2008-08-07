@@ -2,6 +2,19 @@
 
 # $Id$
 
+# Need to keep these:
+#
+#        STOP                    ; DD DD 00
+#
+#        RST 1                   ; CF
+#        RST 2                   ; D7
+#        RST 3                   ; DF
+#        RST 4                   ; E7
+#        RST 5                   ; EF
+#        RST 6                   ; F7
+#        RST 7                   ; FF
+#
+
 use strict;
 use warnings;
 use CPU::Z80::Assembler;
@@ -679,6 +692,7 @@ __DATA__
         RST 0x30                ; F7
         RST 0x38                ; FF
         RST 0x8                 ; CF
+
         RST 1                   ; CF
         RST 2                   ; D7
         RST 3                   ; DF
@@ -686,6 +700,7 @@ __DATA__
         RST 5                   ; EF
         RST 6                   ; F7
         RST 7                   ; FF
+
         SBC A,(HL)              ; 9E
         SBC A,(IX+0x56)         ; DD 9E 56
         SBC A,(IY+0x56)         ; FD 9E 56
