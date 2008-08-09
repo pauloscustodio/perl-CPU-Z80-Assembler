@@ -1,9 +1,8 @@
 CALL = $(MAKE) -nologo -$(MAKEFLAGS)
 
 all : 	..\t\test_z80.asm \
-	..\lib\CPU\Z80\Assembler\ParserTable.pm \
-	test_z80.lst \
-	test_z80.obj
+	..\t\test_z80.obj \
+	..\lib\CPU\Z80\Assembler\ParserTable.pm
 
 RUN_TOOL :
 	perl $(TOOL) > $(OUT)~
@@ -20,6 +19,9 @@ test_z80.lst test_z80.obj : test_z80.asm assemble.pl
 
 ..\t\test_z80.asm : test_z80.asm
 	perl -MExtUtils::Command -e cp test_z80.asm ..\t\test_z80.asm
+
+..\t\test_z80.obj : test_z80.obj
+	perl -MExtUtils::Command -e cp test_z80.obj ..\t\test_z80.obj
 
 ParserTable.pm : build_ParserTable.pl AsmTable.pm
 	$(CALL) RUN_TOOL TOOL="build_ParserTable.pl" OUT="ParserTable.pm"

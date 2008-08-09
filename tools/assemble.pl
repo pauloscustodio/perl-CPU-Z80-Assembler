@@ -11,7 +11,7 @@ use warnings;
 #------------------------------------------------------------------------------
 # Build input file for sjasmplus
 sub build_input {
-	my($asm_file, $asm_input_file) = @_;
+	my($asm_file, $asm_input_file, $obj_file) = @_;
 
 	print "$asm_file -> $asm_input_file\n";
 	
@@ -26,7 +26,9 @@ sub build_input {
 	MACRO STOP
 	db 0xDD, 0xDD, 0x00
 	ENDM
-	
+
+	OUTPUT $obj_file
+
 ";
 	# convert rst x --> rst x*8 (x in 1..7)
 	while(<$in>) {
@@ -40,7 +42,7 @@ sub build_input {
 sub assemble { 
 	my($asm_file, $lst_file, $obj_file) = @_;
 	
-	my $cmd = "sjasmplus --reversepop --lst=$lst_file --raw=$obj_file $asm_file";
+	my $cmd = "sjasmplus --reversepop --lst=$lst_file $asm_file";
 	print "$cmd\n";
 	
 	system $cmd
@@ -86,7 +88,7 @@ sub compare_assembly {
 		}
 		elsif (/^ \s* \d+ \s+ [0-9A-F]+ 
 				  ( ~ .* |
-					\s+ (org \s+ [0-9A-F]+ | macro .* | endm)? 
+					\s+ (org \s+ [0-9A-F]+ | macro .* | output .* | endm)? 
 			      ) \s* $/ix) {
 			;
 		}
@@ -99,7 +101,7 @@ sub compare_assembly {
 @ARGV==1 or die "assemble FILE_BASE\n";
 my $file = shift; $file =~ s/\..*//;
 
-build_input("$file.asm", "$file.sj.asm");
+build_input("$file.asm", "$file.sj.asm", "$file.obj");
 assemble("$file.sj.asm", "$file.sj.lst", "$file.obj");
 build_output("$file.sj.lst", "$file.lst");
 compare_assembly("$file.lst");

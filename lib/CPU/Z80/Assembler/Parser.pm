@@ -32,20 +32,6 @@ use base qw(Exporter);
 #	Functions die with error message on parse failure, error will be caught
 #	to explain where the error occured.
 my %STMT_END; 	for ("\n", qw( LINE : )) { $STMT_END{$_}++ }
-my @TABLE_ADD =	('add', 'adc', undef, 'sbc');
-my @TABLE_SUB =	(undef, undef, 'sub', undef, 'and', 'xor', 'or', 'cp');
-my @TABLE_INC =	(undef, undef, undef, undef, 'inc', 'dec');
-my @TABLE_ROT4 =('rlca', 'rrca', 'rla', 'rra');
-my @TABLE_ROT8 =('rlc', 'rrc', 'rl', 'rr', 'sla', 'sra', 'sll', 'srl');
-my @TABLE_BIT =	(undef, 'bit', 'res', 'set');
-my @TABLE_R =	('b', 'c', 'd', 'e',   'h',   'l', undef, 'a');
-my @TABLE_RX =	('b', 'c', 'd', 'e', 'ixh', 'ixl', undef, 'a');
-my @TABLE_RY =	('b', 'c', 'd', 'e', 'iyh', 'iyl', undef, 'a');
-my @TABLE_DD =	('bc', 'de', 'hl', 'sp');
-my @TABLE_DDX =	('bc', 'de', 'ix', 'sp');
-my @TABLE_DDY =	('bc', 'de', 'iy', 'sp');
-my @TABLE_QQ =	('bc', 'de', 'hl', 'af');
-my @TABLE_FLAGS=('nz', 'z', 'nc', 'c', 'po', 'pe', 'p', 'm');
 my $TABLE = 	CPU::Z80::Assembler::ParserTable::_parser_table();
 
 #------------------------------------------------------------------------------
@@ -146,6 +132,11 @@ sub _lookup_table {
 					(my $expr, $input) = _parse_expr($input);
 					push(@expr, $expr);
 				}
+				elsif (exists $table->{"OPTEXPR"}) {		# parse expression
+					$table = $table->{"OPTEXPR"};			# advance table
+					(my $expr, $input) = _parse_expr($input, 1); # optional
+					push(@expr, $expr);
+				}
 				elsif (exists $table->{"CEXPR"}) {			# constant expression
 					$table = $table->{"CEXPR"};				# advance table
 					(my $expr, $input) = _parse_expr($input);
@@ -173,12 +164,13 @@ sub _lookup_table {
 }
 
 #------------------------------------------------------------------------------
-# ($expr, $input) = _parse_expr($input)
+# ($expr, $input) = _parse_expr($input, $optional)
 #	Parse an expression from $input, advance $input to first token after 
 #	expression. Returns stream with a copy of the tokens composing the expression.
 # 	Dies if the expression cannot be parsed.
+#	If $optional, then return 0 if expression cannot be parsed
 sub _parse_expr {
-	my($input) = @_;
+	my($input, $optional) = @_;
 	my @tokens;
 	
 	my $parens = 0;
@@ -199,7 +191,10 @@ sub _parse_expr {
 		drop($input);
 	}
 	die "Unbalanced parentheses\n" if $parens > 0;
-	die "Expression not found\n" unless @tokens;
+	if (! @tokens) {
+		die "Expression not found\n" unless $optional;	
+		@tokens = ([NUMBER => 0]);
+	}
 	
 	# advance input, return expression
 	my $expr = list_to_stream(@tokens);

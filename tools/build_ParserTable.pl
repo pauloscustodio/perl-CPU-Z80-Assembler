@@ -41,7 +41,7 @@ sub instr {
 											'list_to_stream(["+","+"]), '.
 											'list_to_stream(["NUMBER",1])'.										
 											')]';
-			$_ = "EXPR";
+			$_ = "OPTEXPR";
 			$next_expr++;
 		}	
 		elsif ($_ eq "NN") {

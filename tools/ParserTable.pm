@@ -20,12 +20,12 @@ use HOP::Stream qw(append list_to_stream);
 sub _parser_table {
 my $table;
 $table->{"adc"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x8E], $_[0])};
-$table->{"adc"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x8E, ["sb", $_[2]]], $_[0])};
-$table->{"adc"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x8E, ["sb", $_[2]]], $_[0])};
+$table->{"adc"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x8E, ["sb", $_[2]]], $_[0])};
+$table->{"adc"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x8E, ["sb", $_[2]]], $_[0])};
 $table->{"adc"}{"a"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xCE, ["ub", $_[2]]], $_[0])};
 $table->{"adc"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x8E], $_[0])};
-$table->{"adc"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x8E, ["sb", $_[2]]], $_[0])};
-$table->{"adc"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x8E, ["sb", $_[2]]], $_[0])};
+$table->{"adc"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x8E, ["sb", $_[2]]], $_[0])};
+$table->{"adc"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x8E, ["sb", $_[2]]], $_[0])};
 $table->{"adc"}{"a"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x8F], $_[0])};
 $table->{"adc"}{"a"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x88], $_[0])};
 $table->{"adc"}{"a"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x89], $_[0])};
@@ -50,12 +50,12 @@ $table->{"adc"}{"hl"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x5A], $_
 $table->{"adc"}{"hl"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x6A], $_[0])};
 $table->{"adc"}{"hl"}{","}{"sp"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x7A], $_[0])};
 $table->{"add"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x86], $_[0])};
-$table->{"add"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x86, ["sb", $_[2]]], $_[0])};
-$table->{"add"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x86, ["sb", $_[2]]], $_[0])};
+$table->{"add"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x86, ["sb", $_[2]]], $_[0])};
+$table->{"add"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x86, ["sb", $_[2]]], $_[0])};
 $table->{"add"}{"a"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xC6, ["ub", $_[2]]], $_[0])};
 $table->{"add"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x86], $_[0])};
-$table->{"add"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x86, ["sb", $_[2]]], $_[0])};
-$table->{"add"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x86, ["sb", $_[2]]], $_[0])};
+$table->{"add"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x86, ["sb", $_[2]]], $_[0])};
+$table->{"add"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x86, ["sb", $_[2]]], $_[0])};
 $table->{"add"}{"a"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x87], $_[0])};
 $table->{"add"}{"a"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x80], $_[0])};
 $table->{"add"}{"a"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x81], $_[0])};
@@ -88,12 +88,12 @@ $table->{"add"}{"iy"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x19], $_
 $table->{"add"}{"iy"}{","}{"iy"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x29], $_[0])};
 $table->{"add"}{"iy"}{","}{"sp"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x39], $_[0])};
 $table->{"and"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xA6], $_[0])};
-$table->{"and"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xA6, ["sb", $_[2]]], $_[0])};
-$table->{"and"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xA6, ["sb", $_[2]]], $_[0])};
+$table->{"and"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xA6, ["sb", $_[2]]], $_[0])};
+$table->{"and"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xA6, ["sb", $_[2]]], $_[0])};
 $table->{"and"}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xE6, ["ub", $_[2]]], $_[0])};
 $table->{"and"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xA6], $_[0])};
-$table->{"and"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xA6, ["sb", $_[2]]], $_[0])};
-$table->{"and"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xA6, ["sb", $_[2]]], $_[0])};
+$table->{"and"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xA6, ["sb", $_[2]]], $_[0])};
+$table->{"and"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xA6, ["sb", $_[2]]], $_[0])};
 $table->{"and"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xA7], $_[0])};
 $table->{"and"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xA0], $_[0])};
 $table->{"and"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xA1], $_[0])};
@@ -123,7 +123,7 @@ $table->{"bit"}{"CEXPR"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0x76], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0x7E], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"bit"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"bit"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x46], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x4E], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x56], $_[0])}, 
@@ -133,7 +133,7 @@ $table->{"bit"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x76], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x7E], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"bit"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"bit"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x46], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x4E], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x56], $_[0])}, 
@@ -153,7 +153,7 @@ $table->{"bit"}{"CEXPR"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0x76], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0x7E], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"bit"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"bit"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x46], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x4E], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x56], $_[0])}, 
@@ -163,7 +163,7 @@ $table->{"bit"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x76], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x7E], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"bit"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"bit"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x46], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x4E], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x56], $_[0])}, 
@@ -254,12 +254,12 @@ $table->{"call"}{"po"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xE4, ["w", 
 $table->{"call"}{"z"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xCC, ["w", $_[2]], []], $_[0])};
 $table->{"ccf"}{"END"}{""} ||= sub {(["OPCODE", 0x3F], $_[0])};
 $table->{"cp"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xBE], $_[0])};
-$table->{"cp"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xBE, ["sb", $_[2]]], $_[0])};
-$table->{"cp"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xBE, ["sb", $_[2]]], $_[0])};
+$table->{"cp"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xBE, ["sb", $_[2]]], $_[0])};
+$table->{"cp"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xBE, ["sb", $_[2]]], $_[0])};
 $table->{"cp"}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFE, ["ub", $_[2]]], $_[0])};
 $table->{"cp"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xBE], $_[0])};
-$table->{"cp"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xBE, ["sb", $_[2]]], $_[0])};
-$table->{"cp"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xBE, ["sb", $_[2]]], $_[0])};
+$table->{"cp"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xBE, ["sb", $_[2]]], $_[0])};
+$table->{"cp"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xBE, ["sb", $_[2]]], $_[0])};
 $table->{"cp"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xBF], $_[0])};
 $table->{"cp"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xB8], $_[0])};
 $table->{"cp"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xB9], $_[0])};
@@ -286,11 +286,11 @@ $table->{"cpir"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0xB1], $_[0])};
 $table->{"cpl"}{"END"}{""} ||= sub {(["OPCODE", 0x2F], $_[0])};
 $table->{"daa"}{"END"}{""} ||= sub {(["OPCODE", 0x27], $_[0])};
 $table->{"dec"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x35], $_[0])};
-$table->{"dec"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x35, ["sb", $_[2]]], $_[0])};
-$table->{"dec"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x35, ["sb", $_[2]]], $_[0])};
+$table->{"dec"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x35, ["sb", $_[2]]], $_[0])};
+$table->{"dec"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x35, ["sb", $_[2]]], $_[0])};
 $table->{"dec"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x35], $_[0])};
-$table->{"dec"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x35, ["sb", $_[2]]], $_[0])};
-$table->{"dec"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x35, ["sb", $_[2]]], $_[0])};
+$table->{"dec"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x35, ["sb", $_[2]]], $_[0])};
+$table->{"dec"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x35, ["sb", $_[2]]], $_[0])};
 $table->{"dec"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x3D], $_[0])};
 $table->{"dec"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x05], $_[0])};
 $table->{"dec"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0x0B], $_[0])};
@@ -356,11 +356,11 @@ $table->{"in"}{"h"}{","}{"["}{"c"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x
 $table->{"in"}{"l"}{","}{"("}{"c"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x68], $_[0])};
 $table->{"in"}{"l"}{","}{"["}{"c"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x68], $_[0])};
 $table->{"inc"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x34], $_[0])};
-$table->{"inc"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x34, ["sb", $_[2]]], $_[0])};
-$table->{"inc"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x34, ["sb", $_[2]]], $_[0])};
+$table->{"inc"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x34, ["sb", $_[2]]], $_[0])};
+$table->{"inc"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x34, ["sb", $_[2]]], $_[0])};
 $table->{"inc"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x34], $_[0])};
-$table->{"inc"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x34, ["sb", $_[2]]], $_[0])};
-$table->{"inc"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x34, ["sb", $_[2]]], $_[0])};
+$table->{"inc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x34, ["sb", $_[2]]], $_[0])};
+$table->{"inc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x34, ["sb", $_[2]]], $_[0])};
 $table->{"inc"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x3C], $_[0])};
 $table->{"inc"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x04], $_[0])};
 $table->{"inc"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0x03], $_[0])};
@@ -432,28 +432,28 @@ $table->{"ld"}{"("}{"hl"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 
 $table->{"ld"}{"("}{"hl"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73], $_[0])};
 $table->{"ld"}{"("}{"hl"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74], $_[0])};
 $table->{"ld"}{"("}{"hl"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"["}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x32, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"["}{"EXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x43, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"["}{"EXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x53, ["w", $_[2]], []], $_[0])};
@@ -473,41 +473,41 @@ $table->{"ld"}{"["}{"hl"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 
 $table->{"ld"}{"["}{"hl"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73], $_[0])};
 $table->{"ld"}{"["}{"hl"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74], $_[0])};
 $table->{"ld"}{"["}{"hl"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x70, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x72, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x74, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"a"}{","}{"("}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x3A, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"a"}{","}{"("}{"bc"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x0A], $_[0])};
 $table->{"ld"}{"a"}{","}{"("}{"de"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x1A], $_[0])};
 $table->{"ld"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x7E], $_[0])};
-$table->{"ld"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"a"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x3E, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"a"}{","}{"["}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x3A, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"a"}{","}{"["}{"bc"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x0A], $_[0])};
 $table->{"ld"}{"a"}{","}{"["}{"de"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x1A], $_[0])};
 $table->{"ld"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x7E], $_[0])};
-$table->{"ld"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"a"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x7F], $_[0])};
 $table->{"ld"}{"a"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x78], $_[0])};
 $table->{"ld"}{"a"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x79], $_[0])};
@@ -530,12 +530,12 @@ $table->{"ld"}{"a"}{","}{"xl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7D], $_[0
 $table->{"ld"}{"a"}{","}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7C], $_[0])};
 $table->{"ld"}{"a"}{","}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7D], $_[0])};
 $table->{"ld"}{"b"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x46], $_[0])};
-$table->{"ld"}{"b"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"b"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"b"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"b"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"b"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x06, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"b"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x46], $_[0])};
-$table->{"ld"}{"b"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"b"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"b"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"b"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"b"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x47], $_[0])};
 $table->{"ld"}{"b"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x40], $_[0])};
 $table->{"ld"}{"b"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x41], $_[0])};
@@ -557,25 +557,25 @@ $table->{"ld"}{"b"}{","}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x44], $_[0
 $table->{"ld"}{"b"}{","}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x45], $_[0])};
 $table->{"ld"}{"bc"}{","}{"("}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x4B, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"bc"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23, 0x46, 0x2B], $_[0])};
-$table->{"ld"}{"bc"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"bc"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"bc"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"bc"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"bc"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x01, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"bc"}{","}{"["}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x4B, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"bc"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23, 0x46, 0x2B], $_[0])};
-$table->{"ld"}{"bc"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"bc"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"bc"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"bc"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x46, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"bc"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0x40, 0x49], $_[0])};
 $table->{"ld"}{"bc"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x42, 0x4B], $_[0])};
 $table->{"ld"}{"bc"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0x44, 0x4D], $_[0])};
 $table->{"ld"}{"bc"}{","}{"ix"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x44, 0xDD, 0x4D], $_[0])};
 $table->{"ld"}{"bc"}{","}{"iy"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x44, 0xFD, 0x4D], $_[0])};
 $table->{"ld"}{"c"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x4E], $_[0])};
-$table->{"ld"}{"c"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"c"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"c"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"c"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"c"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x0E, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"c"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x4E], $_[0])};
-$table->{"ld"}{"c"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"c"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"c"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"c"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"c"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x4F], $_[0])};
 $table->{"ld"}{"c"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x48], $_[0])};
 $table->{"ld"}{"c"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x49], $_[0])};
@@ -596,12 +596,12 @@ $table->{"ld"}{"c"}{","}{"xl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4D], $_[0
 $table->{"ld"}{"c"}{","}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4C], $_[0])};
 $table->{"ld"}{"c"}{","}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4D], $_[0])};
 $table->{"ld"}{"d"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x56], $_[0])};
-$table->{"ld"}{"d"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"d"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"d"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"d"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"d"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x16, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"d"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x56], $_[0])};
-$table->{"ld"}{"d"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"d"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"d"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"d"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"d"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x57], $_[0])};
 $table->{"ld"}{"d"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x50], $_[0])};
 $table->{"ld"}{"d"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x51], $_[0])};
@@ -623,25 +623,25 @@ $table->{"ld"}{"d"}{","}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x54], $_[0
 $table->{"ld"}{"d"}{","}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x55], $_[0])};
 $table->{"ld"}{"de"}{","}{"("}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x5B, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"de"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23, 0x56, 0x2B], $_[0])};
-$table->{"ld"}{"de"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"de"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"de"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"de"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"de"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x11, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"de"}{","}{"["}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x5B, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"de"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23, 0x56, 0x2B], $_[0])};
-$table->{"ld"}{"de"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"de"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"de"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"de"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x56, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"de"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0x50, 0x59], $_[0])};
 $table->{"ld"}{"de"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x52, 0x5B], $_[0])};
 $table->{"ld"}{"de"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0x54, 0x5D], $_[0])};
 $table->{"ld"}{"de"}{","}{"ix"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x54, 0xDD, 0x5D], $_[0])};
 $table->{"ld"}{"de"}{","}{"iy"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x54, 0xFD, 0x5D], $_[0])};
 $table->{"ld"}{"e"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x5E], $_[0])};
-$table->{"ld"}{"e"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"e"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"e"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"e"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"e"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x1E, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"e"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x5E], $_[0])};
-$table->{"ld"}{"e"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"e"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"e"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"e"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"e"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x5F], $_[0])};
 $table->{"ld"}{"e"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x58], $_[0])};
 $table->{"ld"}{"e"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x59], $_[0])};
@@ -662,12 +662,12 @@ $table->{"ld"}{"e"}{","}{"xl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5D], $_[0
 $table->{"ld"}{"e"}{","}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5C], $_[0])};
 $table->{"ld"}{"e"}{","}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5D], $_[0])};
 $table->{"ld"}{"h"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x66], $_[0])};
-$table->{"ld"}{"h"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"h"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"h"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"h"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"h"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x26, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"h"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x66], $_[0])};
-$table->{"ld"}{"h"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"h"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"h"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"h"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"h"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x67], $_[0])};
 $table->{"ld"}{"h"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x60], $_[0])};
 $table->{"ld"}{"h"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x61], $_[0])};
@@ -676,12 +676,12 @@ $table->{"ld"}{"h"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x63], $_[0])};
 $table->{"ld"}{"h"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x64], $_[0])};
 $table->{"ld"}{"h"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x65], $_[0])};
 $table->{"ld"}{"hl"}{","}{"("}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x2A, ["w", $_[2]], []], $_[0])};
-$table->{"ld"}{"hl"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"hl"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"hl"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"hl"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"hl"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x21, ["w", $_[2]], []], $_[0])};
 $table->{"ld"}{"hl"}{","}{"["}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x2A, ["w", $_[2]], []], $_[0])};
-$table->{"ld"}{"hl"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
-$table->{"ld"}{"hl"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"hl"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
+$table->{"ld"}{"hl"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x66, ["sb", append(list_to_stream(["(","("]), $_[2], list_to_stream([")",")"]), list_to_stream(["+","+"]), list_to_stream(["NUMBER",1]))]], $_[0])};
 $table->{"ld"}{"hl"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0x60, 0x69], $_[0])};
 $table->{"ld"}{"hl"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x62, 0x6B], $_[0])};
 $table->{"ld"}{"hl"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0x64, 0x6D], $_[0])};
@@ -753,12 +753,12 @@ $table->{"ld"}{"iyl"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6B], $_[
 $table->{"ld"}{"iyl"}{","}{"iyh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6C], $_[0])};
 $table->{"ld"}{"iyl"}{","}{"iyl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6D], $_[0])};
 $table->{"ld"}{"l"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x6E], $_[0])};
-$table->{"ld"}{"l"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"l"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"l"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"l"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"l"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x2E, ["ub", $_[2]]], $_[0])};
 $table->{"ld"}{"l"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x6E], $_[0])};
-$table->{"ld"}{"l"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]]], $_[0])};
-$table->{"ld"}{"l"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"l"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]]], $_[0])};
+$table->{"ld"}{"l"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]]], $_[0])};
 $table->{"ld"}{"l"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x6F], $_[0])};
 $table->{"ld"}{"l"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x68], $_[0])};
 $table->{"ld"}{"l"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x69], $_[0])};
@@ -832,22 +832,22 @@ $table->{"ldd"}{"("}{"hl"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0x72, 
 $table->{"ldd"}{"("}{"hl"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 0x2B], $_[0])};
 $table->{"ldd"}{"("}{"hl"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74, 0x2B], $_[0])};
 $table->{"ldd"}{"("}{"hl"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"["}{"bc"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x02, 0x0B], $_[0])};
 $table->{"ldd"}{"["}{"de"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x12, 0x1B], $_[0])};
 $table->{"ldd"}{"["}{"hl"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x36, ["ub", $_[2]], 0x2B], $_[0])};
@@ -858,68 +858,68 @@ $table->{"ldd"}{"["}{"hl"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0x72, 
 $table->{"ldd"}{"["}{"hl"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 0x2B], $_[0])};
 $table->{"ldd"}{"["}{"hl"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74, 0x2B], $_[0])};
 $table->{"ldd"}{"["}{"hl"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
-$table->{"ldd"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"("}{"bc"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x0A, 0x0B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"("}{"de"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x1A, 0x1B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x7E, 0x2B], $_[0])};
-$table->{"ldd"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"["}{"bc"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x0A, 0x0B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"["}{"de"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x1A, 0x1B], $_[0])};
 $table->{"ldd"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x7E, 0x2B], $_[0])};
-$table->{"ldd"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"b"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x46, 0x2B], $_[0])};
-$table->{"ldd"}{"b"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"b"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"b"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"b"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"b"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x46, 0x2B], $_[0])};
-$table->{"ldd"}{"b"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"b"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"b"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"b"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"c"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x2B], $_[0])};
-$table->{"ldd"}{"c"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"c"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"c"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"c"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"c"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x2B], $_[0])};
-$table->{"ldd"}{"c"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"c"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"c"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"c"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"d"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x56, 0x2B], $_[0])};
-$table->{"ldd"}{"d"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"d"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"d"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"d"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"d"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x56, 0x2B], $_[0])};
-$table->{"ldd"}{"d"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"d"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"d"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"d"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"e"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x2B], $_[0])};
-$table->{"ldd"}{"e"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"e"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"e"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"e"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"e"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x2B], $_[0])};
-$table->{"ldd"}{"e"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"e"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"e"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"e"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"h"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x66, 0x2B], $_[0])};
-$table->{"ldd"}{"h"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"h"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"h"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"h"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"h"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x66, 0x2B], $_[0])};
-$table->{"ldd"}{"h"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"h"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"h"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"h"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"l"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x6E, 0x2B], $_[0])};
-$table->{"ldd"}{"l"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"l"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"l"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"l"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"ldd"}{"l"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x6E, 0x2B], $_[0])};
-$table->{"ldd"}{"l"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
-$table->{"ldd"}{"l"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
+$table->{"ldd"}{"l"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x2B], $_[0])};
+$table->{"ldd"}{"l"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x2B], $_[0])};
 $table->{"lddr"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0xB8], $_[0])};
 $table->{"ldi"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0xA0], $_[0])};
 $table->{"ldi"}{"("}{"bc"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x02, 0x03], $_[0])};
@@ -934,28 +934,28 @@ $table->{"ldi"}{"("}{"hl"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x73,
 $table->{"ldi"}{"("}{"hl"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 0x23], $_[0])};
 $table->{"ldi"}{"("}{"hl"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74, 0x23], $_[0])};
 $table->{"ldi"}{"("}{"hl"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"["}{"bc"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x02, 0x03], $_[0])};
 $table->{"ldi"}{"["}{"de"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x12, 0x13], $_[0])};
 $table->{"ldi"}{"["}{"hl"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0x36, ["ub", $_[2]], 0x23], $_[0])};
@@ -968,100 +968,100 @@ $table->{"ldi"}{"["}{"hl"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0x73,
 $table->{"ldi"}{"["}{"hl"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0x73, 0x23], $_[0])};
 $table->{"ldi"}{"["}{"hl"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0x74, 0x23], $_[0])};
 $table->{"ldi"}{"["}{"hl"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0x75, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x77, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x70, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x71, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x72, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x73, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x74, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x75, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x36, ["sb", $_[2]], ["ub", $_[3]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x77, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x70, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x71, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"de"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x72, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x73, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x74, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x75, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"a"}{","}{"("}{"bc"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x0A, 0x03], $_[0])};
 $table->{"ldi"}{"a"}{","}{"("}{"de"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x1A, 0x13], $_[0])};
 $table->{"ldi"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x7E, 0x23], $_[0])};
-$table->{"ldi"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"a"}{","}{"["}{"bc"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x0A, 0x03], $_[0])};
 $table->{"ldi"}{"a"}{","}{"["}{"de"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x1A, 0x13], $_[0])};
 $table->{"ldi"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x7E, 0x23], $_[0])};
-$table->{"ldi"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x7E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x7E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"b"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x46, 0x23], $_[0])};
-$table->{"ldi"}{"b"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"b"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"b"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"b"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"b"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x46, 0x23], $_[0])};
-$table->{"ldi"}{"b"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"b"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"b"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"b"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"bc"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23, 0x46, 0x23], $_[0])};
-$table->{"ldi"}{"bc"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"bc"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"bc"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"bc"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"bc"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23, 0x46, 0x23], $_[0])};
-$table->{"ldi"}{"bc"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"bc"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"bc"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x46, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"bc"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x46, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"c"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23], $_[0])};
-$table->{"ldi"}{"c"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"c"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"c"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"c"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"c"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x4E, 0x23], $_[0])};
-$table->{"ldi"}{"c"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"c"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"c"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x4E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"c"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x4E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"d"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x56, 0x23], $_[0])};
-$table->{"ldi"}{"d"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"d"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"d"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"d"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"d"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x56, 0x23], $_[0])};
-$table->{"ldi"}{"d"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"d"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"d"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"d"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"de"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23, 0x56, 0x23], $_[0])};
-$table->{"ldi"}{"de"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"de"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"de"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"de"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"de"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23, 0x56, 0x23], $_[0])};
-$table->{"ldi"}{"de"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"de"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"de"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x56, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"de"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x56, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"e"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23], $_[0])};
-$table->{"ldi"}{"e"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"e"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"e"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"e"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"e"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x5E, 0x23], $_[0])};
-$table->{"ldi"}{"e"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"e"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"e"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x5E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"e"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x5E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"h"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x66, 0x23], $_[0])};
-$table->{"ldi"}{"h"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"h"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"h"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"h"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"h"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x66, 0x23], $_[0])};
-$table->{"ldi"}{"h"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"h"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"hl"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"hl"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
-$table->{"ldi"}{"hl"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"hl"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"h"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"h"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"hl"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"hl"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"hl"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23, 0xDD, 0x66, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"hl"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23, 0xFD, 0x66, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"l"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x6E, 0x23], $_[0])};
-$table->{"ldi"}{"l"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"l"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"l"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"l"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldi"}{"l"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x6E, 0x23], $_[0])};
-$table->{"ldi"}{"l"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
-$table->{"ldi"}{"l"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
+$table->{"ldi"}{"l"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x6E, ["sb", $_[2]], 0xDD, 0x23], $_[0])};
+$table->{"ldi"}{"l"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x6E, ["sb", $_[2]], 0xFD, 0x23], $_[0])};
 $table->{"ldir"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0xB0], $_[0])};
 $table->{"neg"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x44], $_[0])};
 $table->{"nop"}{"END"}{""} ||= sub {(["OPCODE", 0x00], $_[0])};
 $table->{"or"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xB6], $_[0])};
-$table->{"or"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xB6, ["sb", $_[2]]], $_[0])};
-$table->{"or"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xB6, ["sb", $_[2]]], $_[0])};
+$table->{"or"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xB6, ["sb", $_[2]]], $_[0])};
+$table->{"or"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xB6, ["sb", $_[2]]], $_[0])};
 $table->{"or"}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xF6, ["ub", $_[2]]], $_[0])};
 $table->{"or"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xB6], $_[0])};
-$table->{"or"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xB6, ["sb", $_[2]]], $_[0])};
-$table->{"or"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xB6, ["sb", $_[2]]], $_[0])};
+$table->{"or"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xB6, ["sb", $_[2]]], $_[0])};
+$table->{"or"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xB6, ["sb", $_[2]]], $_[0])};
 $table->{"or"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xB7], $_[0])};
 $table->{"or"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xB0], $_[0])};
 $table->{"or"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xB1], $_[0])};
@@ -1129,7 +1129,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0xB6], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0xBE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x87], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8F], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x97], $_[0])}, 
@@ -1139,7 +1139,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB7], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x80], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x88], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x90], $_[0])}, 
@@ -1149,7 +1149,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB0], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x81], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x89], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x91], $_[0])}, 
@@ -1159,7 +1159,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB1], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x82], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8A], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x92], $_[0])}, 
@@ -1169,7 +1169,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB2], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x83], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8B], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x93], $_[0])}, 
@@ -1179,7 +1179,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB3], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x84], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8C], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x94], $_[0])}, 
@@ -1189,7 +1189,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB4], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x85], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8D], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x95], $_[0])}, 
@@ -1199,7 +1199,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB5], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x86], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8E], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x96], $_[0])}, 
@@ -1209,7 +1209,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB6], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x87], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8F], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x97], $_[0])}, 
@@ -1219,7 +1219,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB7], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x80], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x88], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x90], $_[0])}, 
@@ -1229,7 +1229,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB0], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x81], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x89], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x91], $_[0])}, 
@@ -1239,7 +1239,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB1], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x82], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8A], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x92], $_[0])}, 
@@ -1249,7 +1249,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB2], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x83], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8B], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x93], $_[0])}, 
@@ -1259,7 +1259,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB3], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x84], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8C], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x94], $_[0])}, 
@@ -1269,7 +1269,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB4], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x85], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8D], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x95], $_[0])}, 
@@ -1279,7 +1279,7 @@ $table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB5], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x86], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8E], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x96], $_[0])}, 
@@ -1299,7 +1299,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0xB6], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0xBE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x87], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8F], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x97], $_[0])}, 
@@ -1309,7 +1309,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB7], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x80], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x88], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x90], $_[0])}, 
@@ -1319,7 +1319,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB0], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x81], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x89], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x91], $_[0])}, 
@@ -1329,7 +1329,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB1], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x82], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8A], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x92], $_[0])}, 
@@ -1339,7 +1339,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB2], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x83], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8B], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x93], $_[0])}, 
@@ -1349,7 +1349,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB3], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x84], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8C], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x94], $_[0])}, 
@@ -1359,7 +1359,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB4], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x85], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8D], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x95], $_[0])}, 
@@ -1369,7 +1369,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB5], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x86], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x8E], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0x96], $_[0])}, 
@@ -1379,7 +1379,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xB6], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xBE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x87], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8F], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x97], $_[0])}, 
@@ -1389,7 +1389,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB7], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x80], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x88], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x90], $_[0])}, 
@@ -1399,7 +1399,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB0], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x81], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x89], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x91], $_[0])}, 
@@ -1409,7 +1409,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB1], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x82], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8A], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x92], $_[0])}, 
@@ -1419,7 +1419,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB2], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x83], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8B], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x93], $_[0])}, 
@@ -1429,7 +1429,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB3], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x84], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8C], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x94], $_[0])}, 
@@ -1439,7 +1439,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB4], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x85], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8D], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x95], $_[0])}, 
@@ -1449,7 +1449,7 @@ $table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xB5], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xBD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"res"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x86], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x8E], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0x96], $_[0])}, 
@@ -1541,39 +1541,39 @@ $table->{"ret"}{"z"}{"END"}{""} ||= sub {(["OPCODE", 0xC8], $_[0])};
 $table->{"reti"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x4D], $_[0])};
 $table->{"retn"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x45], $_[0])};
 $table->{"rl"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x16], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
-$table->{"rl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
-$table->{"rl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
+$table->{"rl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
+$table->{"rl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
 $table->{"rl"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x16], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
-$table->{"rl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
-$table->{"rl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
+$table->{"rl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x16], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x17], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x10], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x11], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x12], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x13], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x14], $_[0])};
+$table->{"rl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x15], $_[0])};
 $table->{"rl"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x17], $_[0])};
 $table->{"rl"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x10], $_[0])};
 $table->{"rl"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x11, 0xCB, 0x10], $_[0])};
@@ -1586,39 +1586,39 @@ $table->{"rl"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x15, 0xCB, 0x14], $_
 $table->{"rl"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x15], $_[0])};
 $table->{"rla"}{"END"}{""} ||= sub {(["OPCODE", 0x17], $_[0])};
 $table->{"rlc"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x06], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
-$table->{"rlc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
-$table->{"rlc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
+$table->{"rlc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
+$table->{"rlc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
 $table->{"rlc"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x06], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
-$table->{"rlc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
-$table->{"rlc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
+$table->{"rlc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x06], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x07], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x00], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x01], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x02], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x03], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x04], $_[0])};
+$table->{"rlc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x05], $_[0])};
 $table->{"rlc"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x07], $_[0])};
 $table->{"rlc"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x00], $_[0])};
 $table->{"rlc"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x01], $_[0])};
@@ -1629,39 +1629,39 @@ $table->{"rlc"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x05], $_[0])};
 $table->{"rlca"}{"END"}{""} ||= sub {(["OPCODE", 0x07], $_[0])};
 $table->{"rld"}{"END"}{""} ||= sub {(["OPCODE", 0xED, 0x6F], $_[0])};
 $table->{"rr"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x1E], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
-$table->{"rr"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
-$table->{"rr"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
+$table->{"rr"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
+$table->{"rr"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
 $table->{"rr"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x1E], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
-$table->{"rr"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
-$table->{"rr"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
+$table->{"rr"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1E], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1F], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x18], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x19], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1A], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1B], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1C], $_[0])};
+$table->{"rr"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x1D], $_[0])};
 $table->{"rr"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x1F], $_[0])};
 $table->{"rr"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x18], $_[0])};
 $table->{"rr"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x18, 0xCB, 0x19], $_[0])};
@@ -1674,39 +1674,39 @@ $table->{"rr"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x1C, 0xCB, 0x1D], $_
 $table->{"rr"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x1D], $_[0])};
 $table->{"rra"}{"END"}{""} ||= sub {(["OPCODE", 0x1F], $_[0])};
 $table->{"rrc"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x0E], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
-$table->{"rrc"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
-$table->{"rrc"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
+$table->{"rrc"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
+$table->{"rrc"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
 $table->{"rrc"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x0E], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
-$table->{"rrc"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
-$table->{"rrc"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
+$table->{"rrc"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0E], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0F], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x08], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x09], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0A], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0B], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0C], $_[0])};
+$table->{"rrc"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x0D], $_[0])};
 $table->{"rrc"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x0F], $_[0])};
 $table->{"rrc"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x08], $_[0])};
 $table->{"rrc"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x09], $_[0])};
@@ -1734,12 +1734,12 @@ $table->{"rst"}{"CEXPR"}{"END"}{""} ||= sub { my $lu = {
 8 => sub {(["OPCODE", 0xCF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
 $table->{"sbc"}{"a"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x9E], $_[0])};
-$table->{"sbc"}{"a"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x9E, ["sb", $_[2]]], $_[0])};
-$table->{"sbc"}{"a"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x9E, ["sb", $_[2]]], $_[0])};
+$table->{"sbc"}{"a"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x9E, ["sb", $_[2]]], $_[0])};
+$table->{"sbc"}{"a"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x9E, ["sb", $_[2]]], $_[0])};
 $table->{"sbc"}{"a"}{","}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xDE, ["ub", $_[2]]], $_[0])};
 $table->{"sbc"}{"a"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x9E], $_[0])};
-$table->{"sbc"}{"a"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x9E, ["sb", $_[2]]], $_[0])};
-$table->{"sbc"}{"a"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x9E, ["sb", $_[2]]], $_[0])};
+$table->{"sbc"}{"a"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x9E, ["sb", $_[2]]], $_[0])};
+$table->{"sbc"}{"a"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x9E, ["sb", $_[2]]], $_[0])};
 $table->{"sbc"}{"a"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x9F], $_[0])};
 $table->{"sbc"}{"a"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x98], $_[0])};
 $table->{"sbc"}{"a"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x99], $_[0])};
@@ -1774,7 +1774,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"hl"}{")"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0xF6], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0xFE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC7], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCF], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD7], $_[0])}, 
@@ -1784,7 +1784,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF7], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC0], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC8], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD0], $_[0])}, 
@@ -1794,7 +1794,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF0], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC1], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC9], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD1], $_[0])}, 
@@ -1804,7 +1804,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF1], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC2], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCA], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD2], $_[0])}, 
@@ -1814,7 +1814,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF2], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC3], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCB], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD3], $_[0])}, 
@@ -1824,7 +1824,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF3], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC4], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCC], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD4], $_[0])}, 
@@ -1834,7 +1834,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF4], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC5], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCD], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD5], $_[0])}, 
@@ -1844,7 +1844,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF5], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC6], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCE], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD6], $_[0])}, 
@@ -1854,7 +1854,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF6], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC7], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCF], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD7], $_[0])}, 
@@ -1864,7 +1864,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF7], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC0], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC8], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD0], $_[0])}, 
@@ -1874,7 +1874,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF0], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC1], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC9], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD1], $_[0])}, 
@@ -1884,7 +1884,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF1], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC2], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCA], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD2], $_[0])}, 
@@ -1894,7 +1894,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF2], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC3], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCB], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD3], $_[0])}, 
@@ -1904,7 +1904,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF3], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC4], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCC], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD4], $_[0])}, 
@@ -1914,7 +1914,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF4], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC5], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCD], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD5], $_[0])}, 
@@ -1924,7 +1924,7 @@ $table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF5], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC6], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCE], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD6], $_[0])}, 
@@ -1944,7 +1944,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"hl"}{"]"}{"END"}{""} ||= sub { my $lu = {
 6 => sub {(["OPCODE", 0xCB, 0xF6], $_[0])}, 
 7 => sub {(["OPCODE", 0xCB, 0xFE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC7], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCF], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD7], $_[0])}, 
@@ -1954,7 +1954,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF7], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC0], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC8], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD0], $_[0])}, 
@@ -1964,7 +1964,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF0], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC1], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC9], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD1], $_[0])}, 
@@ -1974,7 +1974,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF1], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC2], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCA], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD2], $_[0])}, 
@@ -1984,7 +1984,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF2], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC3], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCB], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD3], $_[0])}, 
@@ -1994,7 +1994,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF3], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC4], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCC], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD4], $_[0])}, 
@@ -2004,7 +2004,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF4], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC5], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCD], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD5], $_[0])}, 
@@ -2014,7 +2014,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF5], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xC6], $_[0])}, 
 1 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xCE], $_[0])}, 
 2 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xD6], $_[0])}, 
@@ -2024,7 +2024,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $l
 6 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xF6], $_[0])}, 
 7 => sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[3]], 0xFE], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC7], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCF], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD7], $_[0])}, 
@@ -2034,7 +2034,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF7], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFF], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC0], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC8], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD0], $_[0])}, 
@@ -2044,7 +2044,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF0], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF8], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC1], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC9], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD1], $_[0])}, 
@@ -2054,7 +2054,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF1], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF9], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC2], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCA], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD2], $_[0])}, 
@@ -2064,7 +2064,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF2], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFA], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC3], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCB], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD3], $_[0])}, 
@@ -2074,7 +2074,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF3], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFB], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC4], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCC], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD4], $_[0])}, 
@@ -2084,7 +2084,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF4], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFC], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC5], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCD], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD5], $_[0])}, 
@@ -2094,7 +2094,7 @@ $table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= s
 6 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xF5], $_[0])}, 
 7 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xFD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
-$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
+$table->{"set"}{"CEXPR"}{","}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub { my $lu = {
 0 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xC6], $_[0])}, 
 1 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xCE], $_[0])}, 
 2 => sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[3]], 0xD6], $_[0])}, 
@@ -2175,39 +2175,39 @@ $table->{"set"}{"CEXPR"}{","}{"l"}{"END"}{""} ||= sub { my $lu = {
 7 => sub {(["OPCODE", 0xCB, 0xFD], $_[0])}, 
 }; defined($lu->{$_[2]}) ? $lu->{$_[2]}->(@_) : die("Value $_[2] is not allowed\n");};
 $table->{"sla"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x26], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
-$table->{"sla"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
-$table->{"sla"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
+$table->{"sla"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
+$table->{"sla"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
 $table->{"sla"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x26], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
-$table->{"sla"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
-$table->{"sla"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
+$table->{"sla"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x26], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x27], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x20], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x21], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x22], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x23], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x24], $_[0])};
+$table->{"sla"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x25], $_[0])};
 $table->{"sla"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x27], $_[0])};
 $table->{"sla"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x20], $_[0])};
 $table->{"sla"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x21, 0xCB, 0x10], $_[0])};
@@ -2219,39 +2219,39 @@ $table->{"sla"}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x24], $_[0])};
 $table->{"sla"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0x29], $_[0])};
 $table->{"sla"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x25], $_[0])};
 $table->{"sli"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x36], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sli"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sli"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sli"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sli"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
 $table->{"sli"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x36], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sli"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sli"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sli"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sli"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
 $table->{"sli"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x37], $_[0])};
 $table->{"sli"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x30], $_[0])};
 $table->{"sli"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x31, 0xCB, 0x10], $_[0])};
@@ -2263,39 +2263,39 @@ $table->{"sli"}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x34], $_[0])};
 $table->{"sli"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x35, 0xCB, 0x14], $_[0])};
 $table->{"sli"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x35], $_[0])};
 $table->{"sll"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x36], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sll"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sll"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sll"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sll"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
 $table->{"sll"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x36], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sll"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
-$table->{"sll"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sll"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x36], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x37], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x30], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x31], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x32], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x33], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x34], $_[0])};
+$table->{"sll"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x35], $_[0])};
 $table->{"sll"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x37], $_[0])};
 $table->{"sll"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x30], $_[0])};
 $table->{"sll"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x31, 0xCB, 0x10], $_[0])};
@@ -2307,39 +2307,39 @@ $table->{"sll"}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x34], $_[0])};
 $table->{"sll"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x35, 0xCB, 0x14], $_[0])};
 $table->{"sll"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x35], $_[0])};
 $table->{"sra"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2E], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
-$table->{"sra"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
-$table->{"sra"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
+$table->{"sra"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
+$table->{"sra"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
 $table->{"sra"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2E], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
-$table->{"sra"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
-$table->{"sra"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
+$table->{"sra"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2E], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2F], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x28], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x29], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2A], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2B], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2C], $_[0])};
+$table->{"sra"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x2D], $_[0])};
 $table->{"sra"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2F], $_[0])};
 $table->{"sra"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x28], $_[0])};
 $table->{"sra"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x28, 0xCB, 0x19], $_[0])};
@@ -2351,39 +2351,39 @@ $table->{"sra"}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2C], $_[0])};
 $table->{"sra"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2C, 0xCB, 0x1D], $_[0])};
 $table->{"sra"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x2D], $_[0])};
 $table->{"srl"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x3E], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
-$table->{"srl"}{"("}{"ix"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
-$table->{"srl"}{"("}{"iy"}{"EXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
+$table->{"srl"}{"("}{"ix"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
+$table->{"srl"}{"("}{"iy"}{"OPTEXPR"}{")"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
 $table->{"srl"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x3E], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
-$table->{"srl"}{"["}{"ix"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
-$table->{"srl"}{"["}{"iy"}{"EXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
+$table->{"srl"}{"["}{"ix"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3E], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3F], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x38], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x39], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"d"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3A], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"e"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3B], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"h"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3C], $_[0])};
+$table->{"srl"}{"["}{"iy"}{"OPTEXPR"}{"]"}{","}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xCB, ["sb", $_[2]], 0x3D], $_[0])};
 $table->{"srl"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x3F], $_[0])};
 $table->{"srl"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x38], $_[0])};
 $table->{"srl"}{"bc"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x38, 0xCB, 0x19], $_[0])};
@@ -2396,12 +2396,12 @@ $table->{"srl"}{"hl"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x3C, 0xCB, 0x1D], $
 $table->{"srl"}{"l"}{"END"}{""} ||= sub {(["OPCODE", 0xCB, 0x3D], $_[0])};
 $table->{"stop"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xDD, 0x00], $_[0])};
 $table->{"sub"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0x96], $_[0])};
-$table->{"sub"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x96, ["sb", $_[2]]], $_[0])};
-$table->{"sub"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x96, ["sb", $_[2]]], $_[0])};
+$table->{"sub"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x96, ["sb", $_[2]]], $_[0])};
+$table->{"sub"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x96, ["sb", $_[2]]], $_[0])};
 $table->{"sub"}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xD6, ["ub", $_[2]]], $_[0])};
 $table->{"sub"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0x96], $_[0])};
-$table->{"sub"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x96, ["sb", $_[2]]], $_[0])};
-$table->{"sub"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x96, ["sb", $_[2]]], $_[0])};
+$table->{"sub"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x96, ["sb", $_[2]]], $_[0])};
+$table->{"sub"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x96, ["sb", $_[2]]], $_[0])};
 $table->{"sub"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0x97], $_[0])};
 $table->{"sub"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0x90], $_[0])};
 $table->{"sub"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0x91], $_[0])};
@@ -2426,12 +2426,12 @@ $table->{"sub"}{"xl"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0x95], $_[0])};
 $table->{"sub"}{"yh"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x94], $_[0])};
 $table->{"sub"}{"yl"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0x95], $_[0])};
 $table->{"xor"}{"("}{"hl"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xAE], $_[0])};
-$table->{"xor"}{"("}{"ix"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xAE, ["sb", $_[2]]], $_[0])};
-$table->{"xor"}{"("}{"iy"}{"EXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xAE, ["sb", $_[2]]], $_[0])};
+$table->{"xor"}{"("}{"ix"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xAE, ["sb", $_[2]]], $_[0])};
+$table->{"xor"}{"("}{"iy"}{"OPTEXPR"}{")"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xAE, ["sb", $_[2]]], $_[0])};
 $table->{"xor"}{"EXPR"}{"END"}{""} ||= sub {(["OPCODE", 0xEE, ["ub", $_[2]]], $_[0])};
 $table->{"xor"}{"["}{"hl"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xAE], $_[0])};
-$table->{"xor"}{"["}{"ix"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xAE, ["sb", $_[2]]], $_[0])};
-$table->{"xor"}{"["}{"iy"}{"EXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xAE, ["sb", $_[2]]], $_[0])};
+$table->{"xor"}{"["}{"ix"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xDD, 0xAE, ["sb", $_[2]]], $_[0])};
+$table->{"xor"}{"["}{"iy"}{"OPTEXPR"}{"]"}{"END"}{""} ||= sub {(["OPCODE", 0xFD, 0xAE, ["sb", $_[2]]], $_[0])};
 $table->{"xor"}{"a"}{"END"}{""} ||= sub {(["OPCODE", 0xAF], $_[0])};
 $table->{"xor"}{"b"}{"END"}{""} ||= sub {(["OPCODE", 0xA8], $_[0])};
 $table->{"xor"}{"c"}{"END"}{""} ||= sub {(["OPCODE", 0xA9], $_[0])};
