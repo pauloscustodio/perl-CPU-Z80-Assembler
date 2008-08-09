@@ -3,6 +3,7 @@
                    check with sjasmplus assembler.
                    Fix documentation.
                    Integer out of range is now a warning instead of a fatal error.
+                   "+d" in "(ix+d)" is optional.
 
 2.01    2008-07-13 10-lexer.t and 11-z80pp.t tests failed in Unix.
 
