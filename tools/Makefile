@@ -67,6 +67,7 @@ bmk_z80.dif : bmk_z80.obj.txt bmk_z80.sj.obj.txt
 
 benchmark.txt : benchmark.pl bmk_z80.asm Makefile.benchmark
 	$(CALL) /f Makefile.benchmark
+	$(CALL) bmk_z80.dif
 
 Makefile.benchmark : Makefile
 	perl << > Makefile.benchmark
@@ -82,5 +83,9 @@ END
 
 	
 clean::
-	-del AsmTable.pm* ParserTable.pm* test_z80.* bmk_z80.* Makefile.benchmark
-
+	-del *~ bmk_z80.dif* bmk_z80.lst* bmk_z80.obj* bmk_z80.sj* \
+		test_z80.lst* test_z80.obj* test_z80.sj* \
+		Makefile.benchmark
+	
+realclean:: clean
+	-del AsmTable.pm ParserTable.pm bmk_z80.* test_z80.* 
