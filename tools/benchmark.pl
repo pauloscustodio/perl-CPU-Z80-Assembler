@@ -56,14 +56,3 @@ for (sort keys %bmk) {
 	push(@out, $_."\t".$bmk{$_}."\n");
 }
 write_file(BMK_FILE, {atomic => 1}, @out);
-
-__END__
-	
-
-
-
-my $benchmark = "tmon-$asm_file-$source_size-z80masm-$version";
-
-move("tmon.out", "$benchmark.out");
-system "dprofpp $benchmark.out > $benchmark.txt";
-

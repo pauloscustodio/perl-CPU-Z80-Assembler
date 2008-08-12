@@ -1,3 +1,6 @@
+2.01_02 2008-08-12 Add bechmark tool and source file to test assembly speed
+                   with different versions.
+
 2.01_01 2008-08-09 Support undocumented Z80 instructions (t/test_z80.asm)
                    Auto-generate ParserTable.pm and test_z80.asm, cross
                    check with sjasmplus assembler.
