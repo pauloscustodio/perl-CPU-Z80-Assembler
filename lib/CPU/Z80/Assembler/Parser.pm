@@ -13,7 +13,7 @@ use HOP::Stream ':all';
 
 use CPU::Z80::Assembler::ParserTable;
 
-our $VERSION = '2.01_02';
+our $VERSION = '2.02';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -31,65 +31,70 @@ use base qw(Exporter);
 #	@expr are all the expressions parsed, as streams.
 #	Functions die with error message on parse failure, error will be caught
 #	to explain where the error occured.
-my %STMT_END; 	for ("\n", qw( LINE : )) { $STMT_END{$_}++ }
+my %STMT_END; 	for ("\n", "LINE", ":") { $STMT_END{$_}++ }
 my $TABLE = 	CPU::Z80::Assembler::ParserTable::_parser_table();
 
 #------------------------------------------------------------------------------
 # Pseudo-instructions
+_add_table('org', 'EXPR', 'END',
+			sub {
+				my($input, $start, $expr) = @_;
+				return (["ORG", $expr], $input);
+			});
 
-_add_table('org', 'EXPR', 'END',	sub { 
-										my($input, $start, $expr) = @_;
-										return (["org", $expr], $input);
-									});
+_add_table('defb', 					
+			sub { 
+				my($input, $start) = @_;
+				(my $bytes, $input) = _parse_def($input, 1);
+				return (["OPCODE", @$bytes], $input);
+			});
 
-_add_table('defb', 					sub { 
-										my($input, $start) = @_;
-										(my $bytes, $input) = _parse_def($input, 1);
-										return (["OPCODE", @$bytes], $input);
-									});
+_add_table('defw', 					
+			sub { 
+				my($input, $start) = @_;
+				(my $bytes, $input) = _parse_def($input, 2);
+				return (["OPCODE", @$bytes], $input);
+			});
 
-_add_table('defw', 					sub { 
-										my($input, $start) = @_;
-										(my $bytes, $input) = _parse_def($input, 2);
-										return (["OPCODE", @$bytes], $input);
-									});
+_add_table('deft', 					
+			sub { 
+				my($input, $start) = @_;
+				(my $bytes, $input) = _parse_def($input, 1);
+				return (["OPCODE", @$bytes], $input);
+			});
 
-_add_table('deft', 					sub { 
-										my($input, $start) = @_;
-										(my $bytes, $input) = _parse_def($input, 1);
-										return (["OPCODE", @$bytes], $input);
-									});
+_add_table('defm', 					
+			sub { 
+				my($input, $start) = @_;
+				(my $bytes, $input) = _parse_def($input, 1);
+				return (["OPCODE", @$bytes], $input);
+			});
 
-_add_table('defm', 					sub { 
-										my($input, $start) = @_;
-										(my $bytes, $input) = _parse_def($input, 1);
-										return (["OPCODE", @$bytes], $input);
-									});
+_add_table('NAME',					
+			sub {
+				my($input, $start) = @_;
+				my $token = head($start) or die;	# must be 'NAME'
+				my $name = $token->[1];				# label name
 
-_add_table('NAME',					sub {
-										my($input, $start) = @_;
-										my $token = head($start) or die;	# must be 'NAME'
-										my $name = $token->[1];				# label name
-										
-										# skip optional ':'
-										while (($token = head($input)) &&
-												$token->[0] eq ':') {
-											drop($input);
-										}
-										
-										# if next token is '=', get the expression
-										# else label is '$'
-										$token = head($input);
-										if ($token && $token->[0] eq '=') {
-											drop($input);					# skip '='
-											(my $expr, $input) = _parse_expr($input);
-											$input = _check_end($input);
-											return (["LABEL", $name, $expr], $input);
-										}
-										else {
-											return (["LABEL", $name], $input);
-										}
-									});
+				# skip optional ':'
+				while (($token = head($input)) &&
+						$token->[0] eq ':') {
+					drop($input);
+				}
+
+				# if next token is '=', get the expression
+				# else label is '$'
+				$token = head($input);
+				if ($token && $token->[0] eq '=') {
+					drop($input);					# skip '='
+					(my $expr, $input) = _parse_expr($input);
+					$input = _check_end($input);
+					return (["LABEL", $name, $expr], $input);
+				}
+				else {
+					return (["LABEL", $name], $input);
+				}
+			});
 
 #dump($TABLE);
 
@@ -177,7 +182,7 @@ sub _parse_expr {
 	while (my $token = head($input)) {
 		my $label = $token->[0];
 		if (exists($STMT_END{$label}) || 
-		    ($label eq "," && $parens == 0)) {
+			($label eq "," && $parens == 0)) {
 			last;
 		}
 		elsif ($label eq '(' || $label eq '[') {
@@ -272,7 +277,7 @@ sub eval_expr {
 			my $expr_value;
 			
 			die "Symbol $value not defined" unless defined($expr);
-			if (ref($expr)) {					# compute expression first
+			if (ref($expr)) {					# compute sub-expression first
 				die "Circular reference computing expression\n" if $seen->{$value}++;
 				$expr_value = eval_expr($expr, $address, $symbol_table, $seen);
 			}
@@ -324,15 +329,17 @@ sub _check_end {
 #	The result stream contains the LINE tokens returned by _line_stream() 
 #   followed by all the assembled instructions in the given line
 # 	An instruction is defined as:
-#	[ "OPCODE", byte, byte ]	--  for a 2 byte instruction without 
+#	[ "OPCODE", byte, byte ]	        --  for a 2 byte instruction without 
 #										 	expressions
-#   [ "OPCODE", byte, [type, expr] ]
-#										-- 	for a 2/3 byte instruction
+#   [ "OPCODE", byte, [type, expr] ]	-- 	for a 2 byte instruction
 #											type = "sb" for signed byte, 
-#											"ub" for unsigned byte, "w" for word
+#											"ub" for unsigned byte
+#   [ "OPCODE", byte, [type, expr], [] ]
+#                                       -- 	for a 3 byte instruction
+#											type = "w" for word
 #	Other tokens returned:
 #	["LINE", "The complete line to be parsed\n", 1, "file.asm"]
-#	["org", address]
+#	["ORG", address]
 #	["LABEL", name]						-- define label at current location
 #	["LABEL", name, expr]				-- define label as expression
 sub z80parser {

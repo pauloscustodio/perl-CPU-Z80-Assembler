@@ -12,7 +12,7 @@ use CPU::Z80::Assembler::Macro;
 use HOP::Stream ':all';
 use Regexp::Trie;
 
-our $VERSION = '2.01_02';
+our $VERSION = '2.02';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
