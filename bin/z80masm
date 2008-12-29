@@ -7,13 +7,21 @@ use strict;
 use CPU::Z80::Assembler;
 $CPU::Z80::Assembler::verbose = 1;
 
-my $infile = shift();
-my $outfile = shift() || "$infile.o";
+my $version = $CPU::Z80::Assembler::VERSION;
+
+print "CPU::Z80::Assembler - z80masm v$version\n";
+
+my($infile, $outfile) = splice(@ARGV, 0, 2);
+defined($infile) && @ARGV == 0
+    or die "Usage: z80masm sourcefile [destfile]\n";
+$outfile ||= "$infile.o";
+
 my $code = z80asm("#include '$infile'");
 open(OUT, ">$outfile") || die("Can't open $outfile\n");
 binmode(OUT);
 print OUT $code;
 close(OUT);
+exit 0;
 
 =head1 NAME
 
