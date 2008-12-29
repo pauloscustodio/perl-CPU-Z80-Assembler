@@ -1,3 +1,5 @@
+# $Id$
+
 CALL = $(MAKE) -nologo -$(MAKEFLAGS)
 
 all : 	..\t\test_z80.asm \
@@ -85,7 +87,7 @@ END
 clean::
 	-del *~ bmk_z80.dif* bmk_z80.lst* bmk_z80.obj* bmk_z80.sj* \
 		test_z80.lst* test_z80.obj* test_z80.sj* \
-		Makefile.benchmark
+		Makefile.benchmark tmon.out
 	
 realclean:: clean
 	-del AsmTable.pm ParserTable.pm bmk_z80.* test_z80.* 
