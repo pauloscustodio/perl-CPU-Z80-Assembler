@@ -14,7 +14,7 @@ use Text::Tabs;
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.01_02';
+our $VERSION = '2.02';
 
 use base qw(Exporter);
 
@@ -23,7 +23,6 @@ use base qw(Exporter);
 my $pass = 0;
 my $address = 0x0000;
 my %labels = ();
-my %macros = ();
 my $code = '';
 my $bytes_this_instr = 0;
 my $startaddr = 0x0000;
@@ -35,7 +34,6 @@ sub z80asm {
 
 	# initialize
 	%labels = (org => 0);
-	%macros = ();
 	$code = chr(0) x 65536;
 
     for ($pass = 1; $pass <= 2; $pass++) {
@@ -90,17 +88,22 @@ sub z80asm {
     return substr($code, $startaddr, $maxaddr - $startaddr);
 }
 
+my %assemble_table = (
+	OPCODE	=> \&_OPCODE,
+	LABEL	=> \&_LABEL,
+	ORG		=> \&_ORG,
+);
+
 sub _assemble_instr {
 	my($input) = @_;
 
     my $token = drop($input) or return undef;
     my($label, $value) = @$token;
-    
-    my $start_of_macro = 0;
 
-	if    ($label eq "OPCODE") {		_OPCODE($token) }
-	elsif ($label eq "LABEL") {			_LABEL($token) }
-	elsif ($label eq "org") {			_ORG($token) }
+	my $handler = $assemble_table{$label};
+	if (defined($handler) && ref($handler) eq "CODE") {
+		$handler->($token);
+	}
 	else {
 		die(sprintf("Invalid instruction near 0x%04X: %s\n", 
 					$address, $label));
