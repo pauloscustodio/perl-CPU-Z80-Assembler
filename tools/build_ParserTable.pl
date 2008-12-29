@@ -12,8 +12,37 @@ use AsmTable;
 use Data::Dump 'dump';
 
 #------------------------------------------------------------------------------
-# write parse table with all instruction
+# Create parser table : key is '$table->{"jr"}...', value is 'sub {(["OPCODE"...}'
+# The order is important: an instruction is only loaded if not yet defined
+my %parser_table;
 
+sub add_parser_table {
+	my($key, $value) = @_;
+	defined $parser_table{$key} 
+		and die "$key multiply defined: ",$parser_table{$key}," and ",$value,"\n";
+	$parser_table{$key} = $value;
+}
+sub change_parser_table {
+	my($key, $value) = @_;
+	$parser_table{$key} = $value;
+}
+sub get_parser_table {
+	my($key) = @_;
+	defined($key) or return \%parser_table;
+	
+	defined $parser_table{$key} 
+		or die "$key not defined\n";
+	return $parser_table{$key};
+}
+sub print_parser_table {
+	for (sort keys %parser_table) {
+		print $_,"\t= ",$parser_table{$_},";\n";
+	}
+}
+
+#------------------------------------------------------------------------------
+# return ($key, $sub) for the given instruction @args and @bytes, computes
+# expressions
 sub instr {
 	my($args, $bytes, $next_expr) = @_;
 
@@ -77,30 +106,32 @@ sub instr {
 	}
 	$bytes = join(', ', @bytes);
 
-	return  '$table->'.join('', (map {'{'.dump($_).'}'} @args)).
-			' ||= '.
-			'sub {(["OPCODE", '.$bytes.'], $_[0])};'."\n";
+	my $key = '$table->'.join('', (map {'{'.dump($_).'}'} @args));
+	my $sub = 'sub {(["OPCODE", '.$bytes.'], $_[0])}';
+	
+	return ($key, $sub);
 }
 
-sub write_table {
+#------------------------------------------------------------------------------
+# Recursive function to load a sub-tree of instructions starting at $table
+sub load_table {
 	my($table, $cexpr_key, $cexpr, $next_expr, @previous) = @_;
 	if (ref($table) eq "ARRAY") {
-		my $instr = instr(\@previous, $table, $next_expr);
+		my($key, $sub) = instr(\@previous, $table, $next_expr);
 		
 		if (defined($cexpr_key)) {				# load CEXPR
-			my($key, $sub) = split(/\s*\|\|\=\s*/, $instr);
 			$key =~ s/\{$cexpr_key\}/{"CEXPR"}/;
 			$cexpr->{$key}{$cexpr_key} = $sub;
 		}
 		else {
-			print $instr;
+			add_parser_table($key, $sub);
 		}
 	}
 	else {
 		# first dump the non-CEXPR
 		for my $key (sort keys %$table) {
 			next if $key =~ /^\d+$/;
-			write_table($table->{$key}, $cexpr_key, $cexpr, $next_expr, @previous, $key);
+			load_table($table->{$key}, $cexpr_key, $cexpr, $next_expr, @previous, $key);
 		}
 
 		# then collect all CEXPR and dump then groupped
@@ -109,18 +140,18 @@ sub write_table {
 		for my $key (sort keys %$table) {
 			next unless $key =~ /^\d+$/;
 			$cexpr_key = $key;
-			write_table($table->{$key}, $cexpr_key, $cexpr, $next_expr, @previous, $key);
+			load_table($table->{$key}, $cexpr_key, $cexpr, $next_expr, @previous, $key);
 		}
 			
 		# dump select statement
 		for my $key (sort keys %$cexpr) {
 			my $value = $cexpr->{$key};
-			print $key,' ||= sub { ',
-				  'my $lu = ',dump_sub_hash($value),
+			my $sub = 'sub { '.
+				  'my $lu = '.dump_sub_hash($value).
 				  'defined($lu->{$_[2]}) ? '.
 						'$lu->{$_[2]}->(@_) : '.
-						'die("Value $_[2] is not allowed\\n");',
-				  "};\n";
+						'die("Value $_[2] is not allowed\\n");}';
+			add_parser_table($key, $sub);
 		}
 	}
 }
@@ -138,7 +169,50 @@ sub dump_sub_hash {
 	$ret;
 }
 
+#------------------------------------------------------------------------------
+# Convert the jr/djnz instructions from ["OPCODE", byte, ["sb", expr]] into 
+# ["JR", target_expr, [["OPCODE", jr_instr], ["OPCODE", jp_instr]]]
+sub load_jr_instr {
+	while (my($key, $value) = each %{get_parser_table()}) {
+		if ($key =~ /"jr"/) {
+			my $jr_value = $value;
+			(my $jp_key = $key) =~ s/"jr"/"jp"/;
+			my $jp_value = get_parser_table($jp_key);
+			
+			for ($jr_value, $jp_value) {
+				s/^sub \{\(//;
+				s/, \$_\[0\]\)\}$//;
+			}
+			my $new_value = 'sub {(["JR", $_[2], '.
+							'['.$jr_value.','.
+							' '.$jp_value.']], $_[0])}';
+			change_parser_table($key, $new_value);
+		}
+		elsif ($key =~ /"djnz"/) {
+			my $djnz_value = $value;
+			(my $dec_key = $key) =~ s/"djnz"\}\{"EXPR"/"dec"}{"b"/;
+			my $dec_value = get_parser_table($dec_key);
+			(my $jp_key = $key) =~ s/"djnz"/"jp"}{"nz"}{","/;
+			my $jp_value = get_parser_table($jp_key);
+			
+			for ($djnz_value, $dec_value, $jp_value) {
+				s/^sub \{\(//;
+				s/, \$_\[0\]\)\}$//;
+			}
+			$dec_value =~ s/\["OPCODE", (0x[0-9A-F]+)\]/$1/ or die $dec_value;
+			$jp_value =~  s/("OPCODE", )/$1$dec_value, / or die $jp_value;
 
+			my $new_value = 'sub {(["JR", $_[2], '.
+							'['.$djnz_value.','.
+							' '.$jp_value.']], $_[0])}';
+			change_parser_table($key, $new_value);
+		}
+	}
+}
+
+
+#------------------------------------------------------------------------------
+# Generate output
 print 
 '# Generated file, do not edit
 # $Id$
@@ -148,7 +222,6 @@ use HOP::Stream qw(append list_to_stream);
 
 #------------------------------------------------------------------------------
 # LOOKUP-TABLES
-# 	The order is important: an instruction is only loaded if not yet defined
 #	Lookup table of all assembly instructions recognized by the assembler
 #	Sequence is indexed by a sequence of token labels, followed by "" as the 
 #	last key. The value is a fucntion with the signature:
@@ -163,7 +236,9 @@ sub _parser_table {
 my $table;
 ';
 
-write_table(asm_table->{asm});
+load_table(asm_table->{asm});
+#load_jr_instr();
+print_parser_table();
 
 print 
 '$table;
