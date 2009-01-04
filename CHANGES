@@ -1,3 +1,5 @@
+2.03    2009-01-04 Fixed MANIFEST
+
 2.02    2009-01-04 Support undocumented Z80 instructions (t/test_z80.asm)
                    Auto-generate ParserTable.pm and test_z80.asm, cross
                    check the assembly with the sjasmplus assembler.
