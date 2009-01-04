@@ -13,7 +13,7 @@ use HOP::Stream ':all';
 
 use CPU::Z80::Assembler::ParserTable;
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
