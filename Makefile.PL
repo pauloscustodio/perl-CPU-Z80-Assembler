@@ -4,9 +4,11 @@ use ExtUtils::MakeMaker;
 use 5.008;
 
 WriteMakefile(
-    NAME         => 'CPU::Z80::Assembler',
-    VERSION_FROM => 'lib/CPU/Z80/Assembler.pm',
-    PREREQ_PM => {
+    NAME         	=> 'CPU::Z80::Assembler',
+    VERSION_FROM 	=> 'VERSION',
+    PM_FILTER		=> 'perl VERSION',
+    depend 			=> { Makefile => '$(VERSION_FROM)' },
+    PREREQ_PM 		=> {
         'Test::More' => 0,
         'File::Slurp' => 9999.13,
         'File::Spec' => 0,
@@ -16,7 +18,8 @@ WriteMakefile(
         'Class::Struct' => 0,
         'Text::Tabs' => 2006.1117,
     },
-    EXE_FILES    => [qw(
+    EXE_FILES    	=> [qw(
         bin/z80masm
     )],
+    LICENSE			=> 'perl',
 );
