@@ -13,7 +13,7 @@ use File::Copy;
 use File::Slurp;
 use Time::HiRes qw(time);
 
-use constant { REPEAT => 10, BMK_FILE => basename($0,".pl").".txt" };
+use constant { REPEAT => 3, BMK_FILE => basename($0,".pl").".txt" };
 
 $|=1;
 
