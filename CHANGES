@@ -1,3 +1,5 @@
+2.04    2009-01-04 Added MANIFEST.SKIP. Created VERSION file.
+
 2.03    2009-01-04 Fixed MANIFEST
 
 2.02    2009-01-04 Support undocumented Z80 instructions (t/test_z80.asm)
