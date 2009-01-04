@@ -157,7 +157,7 @@ L<CPU::Emulator::Z80>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-Copyright 2008 
+Copyright 2009 
 David Cantrell E<lt>F<david@cantrell.org.uk>E<gt>,
 Paulo Custodio E<lt>F<pscust@cpan.org>E<gt>
 
