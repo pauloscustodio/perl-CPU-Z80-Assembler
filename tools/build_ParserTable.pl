@@ -218,6 +218,8 @@ print
 # $Id$
 package CPU::Z80::Assembler::ParserTable;
 
+our $VERSION = \'<VERSION>\';
+
 use HOP::Stream qw(append list_to_stream);
 
 #------------------------------------------------------------------------------

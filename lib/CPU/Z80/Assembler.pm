@@ -14,7 +14,7 @@ use Text::Tabs;
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.03';
+our $VERSION = '<VERSION>';
 
 use base qw(Exporter);
 
