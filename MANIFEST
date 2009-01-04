@@ -1,12 +1,7 @@
 ARTISTIC.txt
+bin/z80masm
 CHANGES
 GPL2.txt
-MANIFEST			This list of files
-MANIFEST.SKIP
-Makefile.PL
-README
-VERSION
-bin/z80masm
 lib/CPU/Z80/Assembler.pm
 lib/CPU/Z80/Assembler.pod
 lib/CPU/Z80/Assembler/Lexer.pm
@@ -16,6 +11,10 @@ lib/CPU/Z80/Assembler/Macro.pod
 lib/CPU/Z80/Assembler/Parser.pm
 lib/CPU/Z80/Assembler/Parser.pod
 lib/CPU/Z80/Assembler/ParserTable.pm
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+README
 t/00-assemble.t
 t/00-opcodes.t
 t/01-DEF-instrs.t
@@ -37,3 +36,4 @@ t/pod-coverage.t
 t/pod.t
 t/test_z80.asm
 t/test_z80.obj
+VERSION

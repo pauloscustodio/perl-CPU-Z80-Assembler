@@ -6,7 +6,6 @@ use 5.008;
 WriteMakefile(
     NAME         	=> 'CPU::Z80::Assembler',
     VERSION_FROM 	=> 'VERSION',
-    PM_FILTER		=> 'perl VERSION',
     depend 			=> { Makefile => '$(VERSION_FROM)' },
     PREREQ_PM 		=> {
         'Test::More' => 0,

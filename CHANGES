@@ -1,6 +1,8 @@
+2.05    2009-01-04 Fixed VERSION file - wrong version parsed by CPAN.
+
 2.04    2009-01-04 Added MANIFEST.SKIP. Created VERSION file.
 
-2.03    2009-01-04 Fixed MANIFEST
+2.03    2009-01-04 Fixed MANIFEST - missing files.
 
 2.02    2009-01-04 Support undocumented Z80 instructions (t/test_z80.asm)
                    Auto-generate ParserTable.pm and test_z80.asm, cross
