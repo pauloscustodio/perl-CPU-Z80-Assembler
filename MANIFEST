@@ -1,7 +1,6 @@
 ARTISTIC.txt
 bin/z80masm
 CHANGES
-CPU-Z80-Assembler.kpf
 GPL2.txt
 lib/CPU/Z80/Assembler.pm
 lib/CPU/Z80/Assembler.pod
@@ -11,11 +10,9 @@ lib/CPU/Z80/Assembler/Macro.pm
 lib/CPU/Z80/Assembler/Macro.pod
 lib/CPU/Z80/Assembler/Parser.pm
 lib/CPU/Z80/Assembler/Parser.pod
-lib/CPU/Z80/Assembler/ParserTable.pm
 Makefile.PL
 MANIFEST			This list of files
 README
-t/00-assemble.t
 t/00-opcodes.t
 t/01-DEF-instrs.t
 t/01-ORG-instrs.t
@@ -34,16 +31,3 @@ t/include2.z80
 t/include3.z80
 t/pod-coverage.t
 t/pod.t
-t/test_z80.asm
-t/test_z80.obj
-tools/AsmTable.pm
-tools/assemble.pl
-tools/benchmark.pl
-tools/benchmark.txt
-tools/bmk_z80.asm
-tools/build_AsmTable.pl
-tools/build_bmk_z80.pl
-tools/build_ParserTable.pl
-tools/build_test_z80.pl
-tools/ParserTable.pm
-tools/test_z80.asm
