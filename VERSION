@@ -1,0 +1,5 @@
+$VERSION = '2.04';
+while (<>) {
+	s/ ( [\$*] [\w\:\']* \b VERSION \b \s* = \s* \' ) [^\']* ( \' ) /$1$VERSION$2/x;
+	print;
+}
