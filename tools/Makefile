@@ -1,12 +1,13 @@
 # $Id$
 
-CALL = $(MAKE) -nologo -$(MAKEFLAGS)
+CALL = 		$(MAKE) -nologo -$(MAKEFLAGS)
+PATH =     	..\blib\script;$(PATH)
+PERL5LIB = 	..\blib\lib;$(PERL5LIB)
 
 all : 	..\t\test_z80.asm \
 	..\t\test_z80.obj \
 	bmk_z80.dif \
-	..\lib\CPU\Z80\Assembler\ParserTable.pm \
-	benchmark.txt
+	..\lib\CPU\Z80\Assembler\ParserTable.pm
 
 RUN_TOOL :
 	perl $(TOOL) > $(OUT)~
@@ -67,22 +68,10 @@ bmk_z80.dif : bmk_z80.obj.txt bmk_z80.sj.obj.txt
 	diff bmk_z80.obj.txt bmk_z80.sj.obj.txt > bmk_z80.dif~
 	perl -MExtUtils::Command -e mv bmk_z80.dif~ bmk_z80.dif
 
-benchmark.txt : benchmark.pl bmk_z80.asm Makefile.benchmark
-	$(CALL) /f Makefile.benchmark
-	$(CALL) bmk_z80.dif
-
-Makefile.benchmark : Makefile
-	perl << > Makefile.benchmark
-		use Config;
-		print <<END ;
-benchmark.txt : benchmark.pl bmk_z80.asm \\
-		$$Config{'sitebin'}\\z80masm \\
-		$$Config{'sitelib'}\\CPU\\Z80\\Assembler.pm
+benchmark.txt : benchmark.pl bmk_z80.asm \
+		..\blib\script\z80masm \
+		..\blib\lib\CPU\Z80\Assembler.pm
 	benchmark.pl bmk_z80.asm
-
-END
-<<KEEP
-
 	
 clean::
 	-del *~ bmk_z80.dif* bmk_z80.lst* bmk_z80.obj* bmk_z80.sj* \
