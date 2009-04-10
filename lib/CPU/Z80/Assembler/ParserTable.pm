@@ -2,7 +2,7 @@
 # $Id$
 package CPU::Z80::Assembler::ParserTable;
 
-our $VERSION = '2.05';
+our $VERSION = '2.05_01';
 
 use HOP::Stream qw(append list_to_stream);
 

@@ -1,6 +1,6 @@
 # $Id$
 
-# Join assembly tokens into instructions
+# Instruction parser for the Z80 assembler
 
 package CPU::Z80::Assembler::Parser;
 
@@ -9,11 +9,11 @@ use warnings;
 use 5.008;
 
 use Data::Dump 'dump';
-use HOP::Stream ':all';
+use HOP::Stream qw( drop head iterator_to_stream list_to_stream tail );
 
 use CPU::Z80::Assembler::ParserTable;
 
-our $VERSION = '2.05';
+our $VERSION = '2.05_01';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -24,7 +24,7 @@ use base qw(Exporter);
 # 	The order is important: an instruction is only loaded if not yet defined
 #	Lookup table of all assembly instructions recognized by the assembler
 #	Sequence is indexed by a sequence of token labels, followed by "" as the 
-#	last key. The value is a fucntion with the signature:
+#	last key. The value is a function with the signature:
 #		($parsed, $input) = f($input, $start, @expr)
 #	$input is the current stream position after the recognized tokens
 #	$start is the stream position at the start of the instruction
@@ -74,18 +74,18 @@ _add_table('NAME',
 			sub {
 				my($input, $start) = @_;
 				my $token = head($start) or die;	# must be 'NAME'
-				my $name = $token->[1];				# label name
+				my $name = $token->value;				# label name
 
 				# skip optional ':'
 				while (($token = head($input)) &&
-						$token->[0] eq ':') {
+						$token->type eq ':') {
 					drop($input);
 				}
 
 				# if next token is '=', get the expression
 				# else label is '$'
 				$token = head($input);
-				if ($token && $token->[0] eq '=') {
+				if ($token && $token->type eq '=') {
 					drop($input);					# skip '='
 					(my $expr, $input) = _parse_expr($input);
 					$input = _check_end($input);
@@ -127,9 +127,9 @@ sub _lookup_table {
 		else {
 			my $token = head($input);
 			if ($token) {
-				my($label, $value) = @$token;
-				if (exists $table->{$label}) {
-					$table = $table->{$label};				# advance table
+				my($type, $value) = ($token->type, $token->value);
+				if (exists $table->{$type}) {
+					$table = $table->{$type};				# advance table
 					drop($input);							# advance stream
 				}
 				elsif (exists $table->{"EXPR"}) {			# parse expression
@@ -153,7 +153,7 @@ sub _lookup_table {
 					$input = _check_end($input);
 				}
 				else {
-					die "Cannot parse at $label\n";
+					die "Cannot parse at $type\n";
 				}
 			}
 			else {											# at end of file
@@ -180,15 +180,15 @@ sub _parse_expr {
 	
 	my $parens = 0;
 	while (my $token = head($input)) {
-		my $label = $token->[0];
-		if (exists($STMT_END{$label}) || 
-			($label eq "," && $parens == 0)) {
+		my $type = $token->type;
+		if (exists($STMT_END{$type}) || 
+			($type eq "," && $parens == 0)) {
 			last;
 		}
-		elsif ($label eq '(' || $label eq '[') {
+		elsif ($type eq '(' || $type eq '[') {
 			$parens++;
 		}
-		elsif ($label eq ')' || $label eq ']') {
+		elsif ($type eq ')' || $type eq ']') {
 			last if $parens < 1;
 			$parens--;
 		}
@@ -223,9 +223,9 @@ sub _parse_def {
 		die $@ if $@;								# expression not found
 	
 		$token = head($expr) or die;				# token must exist
-		if ($size == 1 && $token->[0] eq 'STRING' && ! tail($expr)) {
+		if ($size == 1 && $token->type eq 'STRING' && ! tail($expr)) {
 													# expression is a single string -> decode bytes
-			my $text = substr($token->[1], 1, length($token->[1]) - 2);
+			my $text = substr($token->value, 1, length($token->value) - 2);
 													# remove quotes
 			my @text = map {ord($_)} split(//, $text);
 			push(@bytes, @text);
@@ -242,15 +242,15 @@ sub _parse_def {
 		
 		# if ",", get next expression; if END, finish; else error
 		$token = head($input) or last;				# end of list
-		if (exists($STMT_END{$token->[0]})) {
+		if (exists($STMT_END{$token->type})) {
 			drop($input);
 			last;									
 		}
-		elsif ($token->[0] eq ',') {				# list continues
+		elsif ($token->type eq ',') {				# list continues
 			drop($input);
 		}
 		else {
-			die "Unexpected ",$token->[0]," in list\n";
+			die "Unexpected ",$token->type," in list\n";
 		}
 	}
 	return (\@bytes, $input);
@@ -268,11 +268,11 @@ sub eval_expr {
 	$symbol_table->{'$'} = $address;			# update '$' value
 	my @code;
 	while (my $token = drop($expr)) {
-		my($label, $value) = @$token;
-		if ($label eq "NUMBER") {
+		my($type, $value) = ($token->type, $token->value);
+		if ($type eq "NUMBER") {
 			push(@code, $value);
 		}
-		elsif ($label eq "NAME") {
+		elsif ($type eq "NAME") {
 			my $expr = $symbol_table->{$value};
 			my $expr_value;
 			
@@ -286,15 +286,15 @@ sub eval_expr {
 			}				
 			push(@code, $expr_value);
 		}
-		elsif ($label eq "STRING") {
+		elsif ($type eq "STRING") {
 			$value = substr($value, 1, length($value)-2) . "\0\0";
 			my @bytes = map {ord($_)} split(//, $value);	
 			my $value = $bytes[0] + ($bytes[1] << 8);
 			push(@code, $value);
 		}
 		else {
-			die "Expression '$label' cannot be evaluated\n" if $label =~ /^[a-z_]\w*/;	
-			push(@code, $label);
+			die "Expression '$type' cannot be evaluated\n" if $type =~ /^[a-z_]\w*/;	
+			push(@code, $type);
 		}
 	}
 	my $code = "0 + ( ".join(" ", @code)." )";
@@ -314,7 +314,7 @@ sub _check_end {
 	my($input) = @_;
 	
 	my $token = head($input);
-	if (!defined($token) || exists($STMT_END{$token->[0]})) {
+	if (!defined($token) || exists($STMT_END{$token->type})) {
 		drop($input);
 	}
 	else {
@@ -326,9 +326,8 @@ sub _check_end {
 #------------------------------------------------------------------------------
 # z80parser(INPUT)
 # 	INPUT is a stream of tokens, as returned by z80lexer()
-#	The result stream contains the LINE tokens returned by _line_stream() 
-#   followed by all the assembled instructions in the given line
-# 	An instruction is defined as:
+#	The result stream contains the assembled instructions as
+#	CPI::Z80::Assembler::Token, with the following types:
 #	[ "OPCODE", byte, byte ]	        --  for a 2 byte instruction without 
 #										 	expressions
 #   [ "OPCODE", byte, [type, expr] ]	-- 	for a 2 byte instruction
@@ -338,37 +337,24 @@ sub _check_end {
 #                                       -- 	for a 3 byte instruction
 #											type = "w" for word
 #	Other tokens returned:
-#	["LINE", "The complete line to be parsed\n", 1, "file.asm"]
 #	["ORG", address]
 #	["LABEL", name]						-- define label at current location
 #	["LABEL", name, expr]				-- define label as expression
 sub z80parser {
 	my($input) = @_;
-	my $line;									# last LINE token
 	
 	return iterator_to_stream sub {
 		for(;;) {
 			my $token = head($input);
 			defined($token) or return undef;	# end of file
-			if (exists $STMT_END{$token->[0]}) {
+			if (exists $STMT_END{$token->type}) {
 				drop($input);
-				if ($token->[0] eq "LINE") {
-					$line = $token;
-					return $line;
-				}
 			}
 			else {
+				my $err_line = $token->line or die;
 				($token, $input) = eval { _lookup_table($input) };
 				if ($@ || !$token) {
-					chomp($@);
-					die("\n",
-						(defined($line) ? 
-							"\t".$line->[1]."\n".
-							($line->[3] ? $line->[3] : "IN").
-							"(".$line->[2].") : " : ""),
-						"Error: ",
-						($@ ? $@ : "cannot parse"),
-						"\n");
+					$err_line->fatal_error($@ ? $@ : "cannot parse");
 				}
 				elsif (@$token) {					# not []
 					return $token;
@@ -379,3 +365,108 @@ sub z80parser {
 }
 
 1;
+
+#------------------------------------------------------------------------------
+
+=head1 NAME
+
+CPU::Z80::Assembler::Parser - Instruction parser for the Z80 assembler
+
+=head1 SYNOPSIS
+
+    use CPU::Z80::Assembler::Parser;
+    use HOP::Stream 'drop';
+
+    my $stream = z80parser($z80lexer);
+    my $value = eval_expr($expr, $address, \%symbol_table)
+
+=head1 DESCRIPTION
+
+This module transforms the sequence of tokens retrieved from L<CPU::Z80::Assembler::Lexer>
+into a sequence of decoded assembly instructions.
+
+=head1 EXPORTS
+
+By default the 'z80parser' and 'eval_expr' subroutines are exported.
+To disable that, do:
+
+    use CPU::Z80::Assembler::Parser ();
+
+=head1 FUNCTIONS
+
+=head2 z80parser
+
+This takes as parameter a L<HOP::Stream> as returned by z80lexer, and returns a L<HOP::Stream>
+with the tokes described below.
+
+=head2 eval_expr
+
+This takes as parameter an expression as a L<HOP::Stream> of tokens, the current address
+of the expression (to evaluate the '$' expression) and a reference to a hash with 
+all defined symbols. Each symbol may be either a scalar value, or an expression.
+The eval_expr function evaluates recursively all the sub-expressions and returns 
+the value. It dies if any used label is not defined, or if there is a circular
+reference.
+
+=head1 TOKENS
+
+The following tokens are returned by the stream:
+
+    ["org", address]
+
+Translation of an ORG instruction with the address argument.
+
+    ["LABEL", name]
+
+Defines the label with the given name at the current location.
+
+    ["LABEL", name, expr]
+
+Defines the label with the given name as the result of evaluating the given
+expression. The expression is only evaluated on pass 2, after all labels are
+defined.
+
+An expression is a HOP::Stream containing all the tokens of the expression.
+
+    ["OPCODE", byte, [type, expr] ]
+
+Defines an assembled opcode with the list of bytes to load to the object code.
+
+The bytes that need to be computed as the result of an expression evaluation
+are returned as a pair [type, expression], where type is:
+
+=over 4
+
+=item "sb"
+
+for signed byte;
+
+=item "ub" 
+
+for unsigned byte; 
+
+=item "w" 
+
+for word. When a "w" expression is used, the "OPCODE" token includes an empty 
+array ref, so that the size of the instruction 
+matches the size of the token array minus 1.
+
+=back
+
+An expression is a L<HOP::Stream> containing all the tokens of the expression.
+
+=head1 BUGS and FEEDBACK
+
+See L<CPU::Z80::Assembler>.
+
+=head1 SEE ALSO
+
+L<HOP::Stream>
+L<CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Lexer>
+
+=head1 AUTHORS, COPYRIGHT and LICENCE
+
+See L<CPU::Z80::Assembler>.
+
+=cut
