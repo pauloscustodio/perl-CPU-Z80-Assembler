@@ -10,7 +10,7 @@ CPU::Z80::Assembler::Class - Plugin replacement to Class::Class
 
 =head1 DESCRIPTION
 
-This module is a temporary plugin replacement to Class::Class,
+This module is a temporary plugin replacement to L<Class::Class>,
 until RT #42710 (Calling DESTROY on parent classes which might not be defined)
 is fixed.
 
