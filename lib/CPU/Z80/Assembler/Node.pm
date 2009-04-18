@@ -1,8 +1,16 @@
 # $Id$
 
-# Base class for one node of the parse tree
-
 package CPU::Z80::Assembler::Parser::Node;
+
+#------------------------------------------------------------------------------
+
+=head1 NAME
+
+CPU::Z80::Assembler::Parser::Node - Base class for one node of the parse tree
+
+=cut
+
+#------------------------------------------------------------------------------
 
 use strict;
 use warnings;
@@ -12,27 +20,20 @@ our $VERSION = '2.05_01';
 
 use CPU::Z80::Assembler::Line;
 
-use Class::Struct 'CPU::Z80::Assembler::Parser::Node::Data' => {
-		children	=> '@',		# list of children of this node
-		line 		=> 'CPU::Z80::Assembler::Line',
-								# line where tokens found
-};
-use base qw( CPU::Z80::Assembler::Parser::Node::Data );
-
-1;
-
+use base 'Class::Class';
+our %MEMBERS = (
+		child	=> '@',				# list of children of this node
+		line 	=> 'CPU::Z80::Assembler::Line',
+									# line where tokens found
+);
 
 #------------------------------------------------------------------------------
-
-=head1 NAME
-
-CPU::Z80::Assembler::Parser::Node - Base class for one node of the parse tree
 
 =head1 SYNOPSIS
 
   use CPU::Z80::Assembler::Parser::Node;
   my $node = CPU::Z80::Assembler::Parser::Node->new(
-					children => \@children,
+					child => \@child,
                     line  => CPU::Z80::Assembler::Line->new(...));
 
 =head1 DESCRIPTION
@@ -47,11 +48,11 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Struct>.
+Creates a new object, see L<Class::Class>.
 
-=head2 children
+=head2 child
 
-Get/set the children node list.
+Get/set the child node list.
 
 =head2 line
 
@@ -65,10 +66,14 @@ See L<CPU::Z80::Assembler>.
 
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
-L<Class::Struct>
+L<Class::Class>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
 See L<CPU::Z80::Assembler>.
 
 =cut
+
+#------------------------------------------------------------------------------
+
+1;
