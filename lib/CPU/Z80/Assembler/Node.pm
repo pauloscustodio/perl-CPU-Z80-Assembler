@@ -1,12 +1,12 @@
 # $Id$
 
-package CPU::Z80::Assembler::Parser::Node;
+package CPU::Z80::Assembler::Node;
 
 #------------------------------------------------------------------------------
 
 =head1 NAME
 
-CPU::Z80::Assembler::Parser::Node - Base class for one node of the parse tree
+CPU::Z80::Assembler::Node - Base class for one node of the parse tree
 
 =cut
 
@@ -20,7 +20,7 @@ our $VERSION = '2.05_01';
 
 use CPU::Z80::Assembler::Line;
 
-use base 'Class::Class';
+use base 'CPU::Z80::Assembler::Class';
 our %MEMBERS = (
 		child	=> '@',				# list of children of this node
 		line 	=> 'CPU::Z80::Assembler::Line',
@@ -31,8 +31,8 @@ our %MEMBERS = (
 
 =head1 SYNOPSIS
 
-  use CPU::Z80::Assembler::Parser::Node;
-  my $node = CPU::Z80::Assembler::Parser::Node->new(
+  use CPU::Z80::Assembler::Node;
+  my $node = CPU::Z80::Assembler::Node->new(
 					child => \@child,
                     line  => CPU::Z80::Assembler::Line->new(...));
 
