@@ -35,6 +35,8 @@ our %MEMBERS = (
   my $node = CPU::Z80::Assembler::Node->new(
 					child => \@child,
                     line  => CPU::Z80::Assembler::Line->new(...));
+  $node->set_child($child, $child, ...);
+  $node->push_child($child, $child, ...);
 
 =head1 DESCRIPTION
 
@@ -57,6 +59,43 @@ Get/set the child node list.
 =head2 line
 
 Get/set the line - text, file name and line number where the token was read.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+=head2 set_child
+
+  $node->set_child($child, $child, ...);
+
+Clear the child array and set it to the input arguments. Clear the child array
+if passed an empty list of children.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub set_child { my($self, @child) = @_;
+	@{$self->child} = @child;
+}
+
+#------------------------------------------------------------------------------
+
+=head2 push_child
+
+  $node->push_child($child, $child, ...);
+
+Append a new child node to the child array.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub push_child { my($self, @child) = @_;
+	push(@{$self->child}, @child);
+}
+
+#------------------------------------------------------------------------------
 
 =head1 BUGS and FEEDBACK
 

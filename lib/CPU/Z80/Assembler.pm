@@ -8,6 +8,8 @@ use 5.008;
 
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
+use CPU::Z80::Assembler::Program;
+
 use Data::Dump qw( dump );
 use HOP::Stream qw( drop head );
 use Text::Tabs; 						# imports expand(), unexpand()
@@ -30,6 +32,16 @@ my $maxaddr = 0x0000;
 my @warnings;
 
 sub z80asm {
+	my(@input) = @_;
+	my $token_stream = z80lexer(@input);
+	my $program = CPU::Z80::Assembler::Program->new();
+	$program->parse($token_stream);
+	$program->link;
+	my $bytes = $program->bytes;
+	return $bytes;
+}
+
+sub old_z80asm {
     my $source = z80parser(z80lexer(@_));		# input stream
 
 	# initialize
@@ -59,7 +71,7 @@ sub z80asm {
 				@warnings = ();
 				eval { $input = _assemble_instr($input) };
 				if ($@) {					# Semantic error 
-					$line->fatal_error($@);
+					$line->error($@);
 					die; # unreached
 				}
 				for (@warnings) {			# Warnings

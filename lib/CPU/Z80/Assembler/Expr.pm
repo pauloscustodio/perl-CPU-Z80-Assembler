@@ -24,17 +24,23 @@ use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
 
 use base 'CPU::Z80::Assembler::Node';
-
+our %MEMBERS = (
+			type 	=> '$',		# one of:
+								#	"sb" - signed byte
+								#	"ub" - unsigned byte
+								#	"w"  - 2 byte word
+);
 #------------------------------------------------------------------------------
 
 =head1 SYNOPSIS
 
   use CPU::Z80::Assembler::Expr;
-  my $node = CPU::Z80::Assembler::Expr->new();
-  $input = $expr->parse($input)
-  $input = $expr->parse_optional($input)
-  $new_expr = $expr->build($expr_text)
-  $value = $expr->evaluate($address, \%symbol_table)
+  my $node = CPU::Z80::Assembler::Expr->new( type => "sb" );
+  $input = $expr->parse($input);
+  $input = $expr->parse_optional($input);
+  $new_expr = $expr->build($expr_text);
+  $value = $expr->evaluate($address, \%symbol_table);
+  $bytes = $expr->bytes($address, \%symbol_table);
 
 =head1 DESCRIPTION
 
@@ -50,6 +56,34 @@ Nothing.
 =head2 new
 
 Creates a new object, see L<Class::Class>.
+
+=head2 type
+
+The type string has to be defined before the C<bytes> method is called, and defines
+how to code the value returned by C<evaluate> into a byte string.
+
+Type is one of:
+
+=over 4
+
+=item "sb"
+
+for signed byte - a 8 bit signed value. A larger value is truncated and a warning
+is issued.
+
+=item "ub" 
+
+for unsigned byte - a 8 bit unsigned value. A larger value is truncated and a warning
+is issued.
+
+=item "w" 
+
+for word - a 16 bit unsigned value in little endian format. A larger value is truncated,
+but in this case no warning is issued. The address part above 0xFFFF is considered
+a bank selector for memory banked systems.
+
+=back
+
 
 =head2 child
 
@@ -104,7 +138,7 @@ sub _parse {
 	my($self, $input, $optional) = @_;
 	
 	# init expr
-	@{$self->child} = ();
+	$self->set_child();
 	$self->line(CPU::Z80::Assembler::Line->new());
 	
 	# line for error messages
@@ -145,52 +179,9 @@ sub _parse {
 	}
 	
 	# set expression and return
-	@{$self->child} = @tokens;
+	$self->set_child(@tokens);
 	$self->line($line);
 	return $input;
-}
-
-#------------------------------------------------------------------------------
-
-=head2 build
-
-  $new_expr = $expr->build($expr_text)
-
-Build and return a new expresion object with an expression based on the current
-object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler::Lexer>.
-The special token '{}' is used to refer to this expression.
-
-For example, to return a new expression object that, when evaluated, gives the double
-of the current expression object:
-
-  my $new_expr = $expr->build("2*{}");
-
-=cut
-
-#------------------------------------------------------------------------------
-
-sub build {	my($self, $expr_text) = @_;
-	my $line = $self->line;
-	my $new_expr = ref($self)->new(line => $line);
-	my $token_stream = z80lexer($expr_text);
-	while (my $token = drop($token_stream)) {
-		if ($token->type eq '{') {
-			(head($token_stream) && drop($token_stream)->type eq '}')
-				or die "unmatched {}";
-				
-			# refer to this expression
-			push(@{$new_expr->child},
-				CPU::Z80::Assembler::Token->new(
-								type => 'EXPR',
-								value => $self,
-								line => $line));
-		}
-		else {
-			$token->line($line);
-			push(@{$new_expr->child}, $token);
-		}
-	}
-	$new_expr;
 }
 
 #------------------------------------------------------------------------------
@@ -271,6 +262,113 @@ sub evaluate { my($self, $address, $symbol_table, $seen) = @_;
 	}
 
 	return $value;
+}
+
+#------------------------------------------------------------------------------
+
+=head2 build
+
+  $new_expr = $expr->build($expr_text)
+  $new_expr = $expr->build($expr_text, @init_args)
+
+Build and return a new expresion object with an expression based on the current
+object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler::Lexer>.
+The special token '{}' is used to refer to this expression.
+
+For example, to return a new expression object that, when evaluated, gives the double
+of the current expression object:
+
+  my $new_expr = $expr->build("2*{}");
+
+C<@init_args> can be used to pass parameters to the constructor of the new expression
+object.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub build {	my($self, $expr_text, @init_args) = @_;
+	my $line = $self->line;
+	my $new_expr = ref($self)->new(line => $line, @init_args);
+	my $token_stream = z80lexer($expr_text);
+	while (my $token = drop($token_stream)) {
+		if ($token->type eq '{') {
+			(head($token_stream) && drop($token_stream)->type eq '}')
+				or die "unmatched {}";
+				
+			# refer to this expression
+			$new_expr->push_child(CPU::Z80::Assembler::Token->new(
+										type => 'EXPR',
+										value => $self,
+										line => $line));
+		}
+		else {
+			$token->line($line);
+			$new_expr->push_child($token);
+		}
+	}
+	$new_expr;
+}
+
+#------------------------------------------------------------------------------
+
+=head2 bytes
+
+  $bytes = $expr->bytes($address, \%symbol_table);
+
+Calls C<evaluate> to compute the value of the expression, and converts the
+value to a one or two byte string, according to the C<type>.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub bytes { my($self, $address, $symbol_table) = @_;
+	my $type = $self->type || "";	
+	my $value = $self->evaluate($address, $symbol_table);
+			
+	my $ret;
+	if ($type eq "w") {
+		if ($value > 0xFFFF) {
+			# silently accept values > 0xFFFF to ignore segment selectors
+		}
+		elsif ($value < -0x8000) {
+			# error if negative value out of range
+			$self->line->error(sprintf("value -0x%04X out of range", (-$value) & 0xFFFF));
+			die; # not reached
+		}
+		$ret = pack("v", $value & 0xFFFF);	# 16 bit little endian unsigned
+	}
+	elsif ($type eq "ub") {
+		if ($value > 0xFF) {
+			# accept values > 0xFF, but issue warning
+			$self->line->warning(sprintf("value 0x%02X truncated to 0x%02X",
+										 $value, $value & 0xFF));
+		}
+		elsif ($value < -0x80) {
+			# error if negative value out of range
+			$self->line->error(sprintf("value -0x%02X out of range", (-$value) & 0xFF));
+			die; # not reached
+		}
+		$ret = pack("C", $value & 0xFF);	# 8 bit unsigned
+	}
+	elsif ($type eq "sb") {
+		# error if value outside of signed byte range
+		# used by (ix+d) and jr NN; error if out of range
+		if ($value > 0x7F) {
+			$self->line->error(sprintf("value 0x%02X out of range", $value));
+			die; # not reached
+		}
+		elsif ($value < -0x80) {
+			$self->line->error(sprintf("value -0x%02X out of range", (-$value) & 0xFF));
+			die; # not reached
+		}
+		$ret = pack("C", $value & 0xFF);	# 8 bit unsigned
+	}
+	else {
+		die "Expr::bytes(): unrecognized type '$type'";		# exception
+	}
+	return $ret;
 }
 
 #------------------------------------------------------------------------------

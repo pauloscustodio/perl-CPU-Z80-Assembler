@@ -32,15 +32,15 @@ eval { z80asm('
 $start
 	JP $start
 ') };
-like	$@, qr/ORG cannot change address/, "ORG must be first instruction";
+like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
 
-is	z80asm('
+eval { z80asm('
 	ORG 0x10
 	DEFB 0x30, 0x31, 0x32, 0x33, 0x34
 	ORG 0x15
 	DEFB 0x35, 0x36, 0x37, 0x38, 0x39
-	'), "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39",
-	"Re-org with same address";
+') };
+like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
 
 eval { z80asm('
 	ORG 0x10
@@ -48,5 +48,5 @@ eval { z80asm('
 	ORG 0x16
 	DEFB 0x35, 0x36, 0x37, 0x38, 0x39
 	') };
-like $@, qr/ORG cannot change address/, "Re-org with different address";
+like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
 

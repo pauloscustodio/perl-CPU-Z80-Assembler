@@ -9,6 +9,7 @@ use warnings;
 use 5.008;
 
 use CPU::Z80::Assembler::Token;
+use CPU::Z80::Assembler::Parser;
 use HOP::Stream qw( append drop head list_to_stream node promise );
 
 our $VERSION = '2.05_01';
@@ -16,9 +17,6 @@ our $VERSION = '2.05_01';
 use vars qw(@EXPORT);
 use base qw(Exporter);
 @EXPORT = qw(z80macro);
-
-my %STMT_END; 	for ("\n", ":"     ) { $STMT_END{$_}++ }
-my %ARG_END; 	for ("\n", ":", ",") { $ARG_END{$_}++ }
 
 #------------------------------------------------------------------------------
 use Class::Struct 'CPU::Z80::Assembler::MacroDef' => [
@@ -59,7 +57,7 @@ sub _define_macro {
 		drop($input);
 		$opened_brace++;
 	}
-	elsif (exists($STMT_END{$token->type})) {
+	elsif (statement_end($token->type)) {
 		# OK, macro body follows on next line
 	}
 	else {
@@ -102,7 +100,7 @@ sub _define_macro {
 			push(@macro_tokens, $token);
 			drop($input);
 		}
-		$last_stmt_end = exists($STMT_END{$token->type});
+		$last_stmt_end = statement_end($token->type);
 	}
 	die "Macro body not finished\n" unless $token;
 	die "Unmatched braces\n" if $parens != 0;
@@ -174,7 +172,7 @@ sub _extract_argument {
 	my $opened_brace;
 	while ($token = head($input)) {
 		my $type = $token->type;
-		if (exists($ARG_END{$type}) && $parens == 0) {
+		if (argument_end($type) && $parens == 0) {
 			last;
 		}
 		elsif ($type eq '{') {
@@ -212,7 +210,7 @@ sub _macro_arguments {
 	my @args;
 	for(;;) {
 		my $token = head($input) or last;				# end of line
-		last if exists($STMT_END{$token->type});		# end of args
+		last if statement_end($token->type);			# end of args
 		
 		(my $arg, $input) = _extract_argument($input);
 		push(@args, $arg);
