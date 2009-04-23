@@ -46,7 +46,7 @@ sub print_parser_table {
 sub instr {
 	my($args, $bytes, $next_expr) = @_;
 
-	$next_expr ||= 2;	# first expression is $_[2]
+	$next_expr ||= 0;	# first expression
 	my %expr;
 	
 	# get @args, converting expressions
@@ -54,38 +54,36 @@ sub instr {
 	for (@$args) {
 		next if $_ eq "";
 		if ($_ eq "N") {
-			$expr{$_} = '["ub", $_['.($next_expr++).']]';
+			$expr{$_} = '
+										$expr['.($next_expr++).']->build("{}", type => "ub"),
+									';
 			$_ = "EXPR";
 		}
 		elsif ($_ eq "DIS") {
 			pop(@args) eq "+" or die;		# remove '+' from '+DIS'
 
-			$expr{$_} = '["sb", $_['.($next_expr).']]';
+			$expr{$_} = '
+										$expr['.($next_expr).']->build("{}", type => "sb"),
+									';
 
-			# compute "(expr) + 1"
-			$expr{$_."+0x01"} = '["sb", append('.
-											'list_to_stream(["(","("]), '.
-											'$_['.($next_expr).'], '.
-											'list_to_stream([")",")"]), '.
-											'list_to_stream(["+","+"]), '.
-											'list_to_stream(["NUMBER",1])'.										
-											')]';
+			# compute "expr + 1"
+			$expr{$_."+0x01"} = '
+										$expr['.($next_expr).']->build("{}+1", type => "sb"),
+									';
 			$_ = "OPTEXPR";
 			$next_expr++;
 		}	
 		elsif ($_ eq "NN") {
-			$expr{$_."l"} = '["w", $_['.($next_expr).']]';
-			$expr{$_."h"} = '[]';
+			$expr{$_."l"} = '
+										$expr['.($next_expr).']->build("{}", type => "w"),
+										undef,
+									';
+			$expr{$_."h"} = '';
 			
 			# compute "(expr) - $ - 2"
-			$expr{$_."o"} = '["sb", append('.
-								'list_to_stream(["(","("]), '.
-								'$_['.($next_expr).'], '.
-								'list_to_stream([")",")"], '.
-											   '["-","-"], ["NAME","\$"], '.
-											   '["-","-"], ["NUMBER",2])'.										
-							')]';
-
+			$expr{$_."o"} = '
+										$expr['.($next_expr).']->build("{}-\\$-2", type => "sb"),
+									';
 			$_ = "EXPR";
 			$next_expr++;
 		}
@@ -100,14 +98,23 @@ sub instr {
 			$_ = $expr{$_};
 		}
 		else {
-			$_ = sprintf("0x%02X", $_);
+			$_ = sprintf("0x%02X,", $_);
 		}
 		push(@bytes, $_);
 	}
-	$bytes = join(', ', @bytes);
+	$bytes = join(' ', @bytes);
+	$bytes =~ s/,(\s*)$/$1/;	# remove final comma
 
 	my $key = '$table->'.join('', (map {'{'.dump($_).'}'} @args));
-	my $sub = 'sub {(["OPCODE", '.$bytes.'], $_[0])}';
+	my $sub = '
+		sub { 
+			my($self, $input, $start, @expr) = @_;
+			my $opcode = CPU::Z80::Assembler::Opcode->new(
+							line => head($start)->line,
+							child => [ '.$bytes.' ]);
+			return ($opcode, $input);
+		}';
+#	$sub =~ s/\s+/ /g;
 	
 	return ($key, $sub);
 }
@@ -136,7 +143,7 @@ sub load_table {
 
 		# then collect all CEXPR and dump then groupped
 		$cexpr = {};
-		$next_expr = 3;							# consume first expression
+		$next_expr = 1;							# consume first expression
 		for my $key (sort keys %$table) {
 			next unless $key =~ /^\d+$/;
 			$cexpr_key = $key;
@@ -146,11 +153,14 @@ sub load_table {
 		# dump select statement
 		for my $key (sort keys %$cexpr) {
 			my $value = $cexpr->{$key};
-			my $sub = 'sub { '.
-				  'my $lu = '.dump_sub_hash($value).
-				  'defined($lu->{$_[2]}) ? '.
-						'$lu->{$_[2]}->(@_) : '.
-						'die("Value $_[2] is not allowed\\n");}';
+			my $sub = '
+		sub {
+			my($self, $input, $start, @expr) = @_;
+			my $lu = '.dump_sub_hash($value).'
+			defined($lu->{$expr[0]}) 
+				or head($start)->line->error("Value $expr[0] is not allowed\\n");
+			return $lu->{$expr[0]}->($self, $input, $start, @expr);
+		}';
 			add_parser_table($key, $sub);
 		}
 	}
@@ -161,11 +171,10 @@ sub dump_sub_hash {
 	my $ret = "{\n";
 	for my $key (sort keys %$h) {
 		my $value = $h->{$key};
-		chomp($value);
-		$value =~ s/;.*//;
-		$ret .= $key." => ".$value.", \n";
+		$value =~ s/^/\t\t\t/gm;
+		$ret .= "\t\t\t\t\t".$key." => ".$value.", \n";
 	}
-	$ret .= "}; ";
+	$ret .= "\t\t\t}; ";
 	$ret;
 }
 
@@ -220,7 +229,9 @@ package CPU::Z80::Assembler::ParserTable;
 
 our $VERSION = \'<VERSION>\';
 
-use HOP::Stream qw(append list_to_stream);
+use CPU::Z80::Assembler::Opcode;
+use CPU::Z80::Assembler::Expr;
+use HOP::Stream qw( head );
 
 #------------------------------------------------------------------------------
 # LOOKUP-TABLES
