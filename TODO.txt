@@ -1,0 +1,14 @@
+X Create class for "OPCODE", ...
+- Create class for object code -> list of instructions
+- Accept -I for include path, open file searches in include path
+- Move pre-processing stage (#define, expansion, -U, -D) to the preprocessor
+- Join continuation lines (\\\n)
+X Integrate pod into pm
+- test statement_end, argument_end
+- test expression
+- replace by [] at lib/CPU/Z80/Assembler/Token.pm line 16.
+- replace by [] at lib/CPU/Z80/Assembler/Line.pm line 15.
+- Test performance of lexer based on Regexp::Assemble
+- Compatible with TASM
+- perlcritic
+- Class::Class instead of Class::Struct
