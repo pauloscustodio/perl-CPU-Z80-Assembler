@@ -1,38 +1,58 @@
-2.05    2009-01-04 Fixed VERSION file - wrong version parsed by CPAN.
+2.05_01	2009-04-23
+Add Line, Token classes. No need to create LINE tokens - each token carries the
+line number.
+Change to single-pass design.
+Use Class::Class hierarchy for parsed objects. Will have to roll back this change - 
+better organized but performance of Class::Class is really bad!
+Several test scripts fail.
+Documentation needs update.
+Dead code needs to be removed.
 
-2.04    2009-01-04 Added MANIFEST.SKIP. Created VERSION file.
+2.05    2009-01-04
+Fixed VERSION file - wrong version parsed by CPAN.
 
-2.03    2009-01-04 Fixed MANIFEST - missing files.
+2.04	2009-01-04
+Added MANIFEST.SKIP. Created VERSION file.
 
-2.02    2009-01-04 Support undocumented Z80 instructions (t/test_z80.asm)
-                   Auto-generate ParserTable.pm and test_z80.asm, cross
-                   check the assembly with the sjasmplus assembler.
-                   Fix documentation and show usage when called without arguments.
-                   Integer out of range is now a warning instead of a fatal error.
-                   "+d" in "(ix+d)" is optional.
+2.03    2009-01-04 
+Fixed MANIFEST - missing files.
 
-2.01    2008-07-13 10-lexer.t and 11-z80pp.t tests failed in Unix.
+2.02    2009-01-04 
+Support undocumented Z80 instructions (t/test_z80.asm)
+Auto-generate ParserTable.pm and test_z80.asm, cross
+check the assembly with the sjasmplus assembler.
+Fix documentation and show usage when called without arguments.
+Integer out of range is now a warning instead of a fatal error.
+"+d" in "(ix+d)" is optional.
 
-2.00    2008-07-13 Re-implemented for speed improvement.
-                   Split into three layers - lexical scanner, instructions 
-                   parser and code generator.
-                   Added Z80 undocumented instructions.
-                   $ in front of labels is optional, accepts lower case 
-                   assembly instructions, improved error messages, 
-                   accepts multiple assembly instructions in a line 
-                   separated by ':'
+2.01    2008-07-13 
+10-lexer.t and 11-z80pp.t tests failed in Unix.
 
-1.03    2008-06-25 Bugfixes from Paulo Custodio:
-                     see https://rt.cpan.org/Ticket/Display.html?id=36991
+2.00    2008-07-13 
+Re-implemented for speed improvement.
+Split into three layers - lexical scanner, instructions 
+parser and code generator.
+Added Z80 undocumented instructions.
+$ in front of labels is optional, accepts lower case 
+assembly instructions, improved error messages, 
+accepts multiple assembly instructions in a line 
+separated by ':'
 
-1.02    2008-06-22 Added INCLUDE
-                   Added support for #comments at start of line
-                     (for C pre-processor friendliness)
+1.03    2008-06-25 
+Bugfixes from Paulo Custodio:
+see https://rt.cpan.org/Ticket/Display.html?id=36991
 
-1.01    2008-06-14 Macro parameters no longer clash with labels
-                     whose names start the same as a parameter.
-                     eg, a param $r no longer clashes with label
-                     $rr
-                   Likewise labels
+1.02    2008-06-22 
+Added INCLUDE
+Added support for #comments at start of line
+(for C pre-processor friendliness)
 
-1.0     2008-06-13 Original release
+1.01    2008-06-14 
+Macro parameters no longer clash with labels
+whose names start the same as a parameter.
+eg, a param $r no longer clashes with label
+$rr
+Likewise labels
+
+1.0     2008-06-13 
+Original release
