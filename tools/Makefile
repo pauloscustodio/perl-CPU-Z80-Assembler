@@ -9,6 +9,9 @@ all : 	..\t\test_z80.asm \
 	bmk_z80.dif \
 	..\lib\CPU\Z80\Assembler\ParserTable.pm
 
+benchmark:
+	benchmark.pl bmk_z80.asm
+
 RUN_TOOL :
 	perl $(TOOL) > $(OUT)~
 	perl -MExtUtils::Command -e mv $(OUT)~ $(OUT)
@@ -71,7 +74,7 @@ bmk_z80.dif : bmk_z80.obj.txt bmk_z80.sj.obj.txt
 benchmark.txt : benchmark.pl bmk_z80.asm \
 		..\blib\script\z80masm \
 		..\blib\lib\CPU\Z80\Assembler.pm
-	benchmark.pl bmk_z80.asm
+	$(CALL) benchmark
 	
 clean::
 	-del *~ bmk_z80.dif* bmk_z80.lst* bmk_z80.obj* bmk_z80.sj* \
