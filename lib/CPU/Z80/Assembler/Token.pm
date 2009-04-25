@@ -16,13 +16,12 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Line;
 
-use base 'CPU::Z80::Assembler::Class';
-our %MEMBERS = (
+use Class::Struct (
 		type 	=> '$',		# type of token
 		value 	=> '$',		# token attribute
 		line 	=> 'CPU::Z80::Assembler::Line',
@@ -44,7 +43,7 @@ our %MEMBERS = (
 
 This module defines the data structure to represent one token of input text to be assembled,
 as retrived by the lexer.
-The object is created by L<Class::Class> and contains
+The object is created by L<Class::Struct> and contains
 the token type and value, and the input line where it was found in the input.
 The input line is used for error messages.
 
@@ -56,7 +55,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Class>.
+Creates a new object, see L<Class::Struct>.
 
 =head2 type
 
@@ -84,8 +83,11 @@ Creates an identical copy as a new object.
 
 sub clone {
 	my($self) = @_;
-	my $ret = eval dump($self); $@ and die $@;
-	$ret;
+	return ref($self)->new(
+		type 	=> $self->type,
+		value	=> $self->value,
+		line	=> $self->line->clone,
+	);
 }
 
 #------------------------------------------------------------------------------
@@ -106,7 +108,10 @@ sub as_string { my($self) = @_;
 			(defined($self->line) ? $self->line->as_string : "undef")."]";	
 }
 
-use overload '""' => \&as_string;
+use overload
+	'""' 	=> \&as_string,
+	'bool'	=> sub {$_[0]},		# avoid as_string to be called in bool and numeric
+	'0+'	=> sub {$_[0]};		# context
 
 #------------------------------------------------------------------------------
 
@@ -118,7 +123,7 @@ See L<CPU::Z80::Assembler>.
 
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
-L<Class::Class>
+L<Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 

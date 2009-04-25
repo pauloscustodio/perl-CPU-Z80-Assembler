@@ -16,12 +16,11 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use Data::Dump 'dump';
 
-use base 'CPU::Z80::Assembler::Class';
-our %MEMBERS = (
+use Class::Struct (
 		text	=> '$',		# text from the line
 		line_nr	=> '$',		# line within ...
 		file	=> '$',		# ... the file
@@ -45,7 +44,7 @@ our %MEMBERS = (
 =head1 DESCRIPTION
 
 This module defines the data structure to represent one line of input text to be assembled.
-The object is created by L<Class::Class> and contains
+The object is created by L<Class::Struct> and contains
 the actual text from the line and the file name and line number where
 the text was retrieved. This information is used for error messages.
 
@@ -57,7 +56,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Class>.
+Creates a new object, see L<Class::Struct>.
 
 =head2 text
 
@@ -85,8 +84,10 @@ Creates an identical copy as a new object.
 
 sub clone {
 	my($self) = @_;
-	my $ret = eval dump($self); $@ and die $@;
-	$ret;
+	return ref($self)->new(
+		text 	=> $self->text,
+		line_nr	=> $self->line_nr,
+		file	=> $self->file);
 }
 
 #------------------------------------------------------------------------------
@@ -107,44 +108,47 @@ sub as_string { my($self) = @_;
 	return dump(\@x);	
 }
 
-use overload '""' => \&as_string;
+use overload
+	'""' 	=> \&as_string,
+	'bool'	=> sub {$_[0]},		# avoid as_string to be called in bool and numeric
+	'0+'	=> sub {$_[0]};		# context
 
-#------------------------------------------------------------------------------
-
-=head2 is_equal
-
-  if ($self == $other) { ... }
-
-Compares two line objects. Overloads the '==' operator.
-
-=cut
-
-sub is_equal { my($self, $other) = @_;
-	no warnings 'uninitialized';
-	return $self->text    eq $other->text    &&
-		   $self->line_nr == $other->line_nr &&
-		   $self->file    eq $other->file;
-}
-
-use overload '==' => \&is_equal;
-
-#------------------------------------------------------------------------------
-
-=head2 is_different
-
-  if ($self != $other) { ... }
-
-Compares two line objects. Overloads the '!=' operator.
-
-=cut
-
-#------------------------------------------------------------------------------
-
-sub is_different { my($self, $other) = @_;
-	return ! $self->is_equal($other);
-}
-
-use overload '!=' => \&is_different;
+##------------------------------------------------------------------------------
+#
+#=head2 is_equal
+#
+#  if ($self == $other) { ... }
+#
+#Compares two line objects. Overloads the '==' operator.
+#
+#=cut
+#
+#sub is_equal { my($self, $other) = @_;
+#	no warnings 'uninitialized';
+#	return $self->text    eq $other->text    &&
+#		   $self->line_nr == $other->line_nr &&
+#		   $self->file    eq $other->file;
+#}
+#
+#use overload '==' => \&is_equal;
+#
+##------------------------------------------------------------------------------
+#
+#=head2 is_different
+#
+#  if ($self != $other) { ... }
+#
+#Compares two line objects. Overloads the '!=' operator.
+#
+#=cut
+#
+##------------------------------------------------------------------------------
+#
+#sub is_different { my($self, $other) = @_;
+#	return ! $self->is_equal($other);
+#}
+#
+#use overload '!=' => \&is_different;
 
 #------------------------------------------------------------------------------
 
@@ -208,7 +212,7 @@ See L<CPU::Z80::Assembler>.
 =head1 SEE ALSO
 
 L<CPU::Z80::Assembler>
-L<Class::Class>
+L<Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
