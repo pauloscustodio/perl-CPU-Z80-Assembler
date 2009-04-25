@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 23;
 use_ok 'CPU::Z80::Assembler::Program';
 
 isa_ok my $program = CPU::Z80::Assembler::Program->new,

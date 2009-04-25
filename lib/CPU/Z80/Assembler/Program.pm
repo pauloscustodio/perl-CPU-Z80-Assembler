@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use CPU::Z80::Assembler::Segment;
 use CPU::Z80::Assembler::Parser;

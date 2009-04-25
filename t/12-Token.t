@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 33;
+use Test::More tests => 31;
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Token';
 
@@ -14,10 +14,8 @@ isa_ok 	$token = CPU::Z80::Assembler::Token->new(),
 		'CPU::Z80::Assembler::Token';
 is		$token->type,  	undef, "no type";
 is		$token->value, 	undef, "no value";
-is		$token->line->text, 	undef, "no line";
-is		$token->line->line_nr, 	undef, "no line";
-is		$token->line->file, 	undef, "no line";
-is		"$token", '[undef, undef, [undef, undef, undef]]', "string";
+is		$token->line,	undef, "no line";
+is		"$token", '[undef, undef, undef]', "string";
 
 my $line;
 isa_ok	$line = CPU::Z80::Assembler::Line->new(

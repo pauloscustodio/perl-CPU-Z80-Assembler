@@ -24,6 +24,7 @@ sub test_error { my($error_msg, $expected_error, $expected_warning) = @_;
 			$warn = "";
 			$line->warning($error_msg);
 	is 		$warn, $expected_warning, "$test_name warning()";
+	$warn = undef;
 }
 
 	

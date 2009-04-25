@@ -2,7 +2,7 @@
 
 # $Id$
 
-my $REPEAT = 23;
+my $REPEAT = 1;
 
 print "\tORG 0\n\n";
 print "; Source file compatible with CPU::Z80::Assembler 1.0 to benchmark\n";

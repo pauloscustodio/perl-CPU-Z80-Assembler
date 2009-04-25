@@ -11,7 +11,7 @@ use 5.008;
 use CPU::Z80::Assembler::Line;
 use HOP::Stream qw( append drop iterator_to_stream node promise );
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

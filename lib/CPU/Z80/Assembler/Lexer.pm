@@ -15,7 +15,7 @@ use CPU::Z80::Assembler::Preprocessor;
 use HOP::Stream qw( append drop iterator_to_stream node promise );
 use Regexp::Trie;
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

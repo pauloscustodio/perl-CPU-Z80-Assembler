@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_01';
+our $VERSION = '2.05_02';
 
 use base 'CPU::Z80::Assembler::Node';
 our %MEMBERS = (

@@ -31,7 +31,7 @@ print "Benchmark CPU::Z80::Assembler $digest\n";
 my $t1 = time;
 for (1 .. REPEAT) {
 	print "z80masm $asm_file - $_ / ", REPEAT, "\r";
-	system "perl -d:DProf -S z80masm $asm_file $obj_file > $lst_file";
+	system "perl -S z80masm $asm_file $obj_file > $lst_file";
 }
 my $t2 = time;
 my $time = ($t2-$t1)/REPEAT;
