@@ -14,7 +14,7 @@ unlink 'Parser.pm';
 isa_ok my $g = ParserGenerator->new(), 'ParserGenerator';
 $g->prolog('our $COUNT;');
 $g->epilog('$COUNT++;');
-$g->add_rule("start", "NAME", "=", "NUMBER", 'sub {$_[1][2][1]}');
+$g->add_rule("start", "NAME", "=", "NUMBER", 'sub {$_[0][2][1]}');
 $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
 

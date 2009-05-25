@@ -292,6 +292,9 @@ package <NAME>;
 # 	terminal => [ (subrule ID), (next state ID) ], for a sub-rule followed by a shift
 # 	terminal => [ (subrule ID), sub{} ], for a sub-rule followed by an accept
 # 	terminal => sub{}, for an accept
+# Each sub{} is called with $sub->($args, $user); 
+# $args is [] of all parsed elements
+# $user is the user pointer passed to parse()
 <TABLE>
 
 #------------------------------------------------------------------------------
@@ -356,7 +359,7 @@ sub parse {
 			
 			while (ref($state) eq 'CODE') {				# return from
 														# sub-rules 
-				my $value = eval { $state->($user, \@values) };
+				my $value = eval { $state->(\@values, $user) };
 				$@ and error_at($token, "Parse error, $@");
 				
 				return $value if (!$token && !@stack);	# END OF PARSE

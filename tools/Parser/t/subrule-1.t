@@ -13,9 +13,9 @@ use_ok 'ParserGenerator';
 unlink 'Parser.pm';
 
 isa_ok my $g = ParserGenerator->new(), 'ParserGenerator';
-$g->add_rule("expr", "NAME", "=", "NUMBER", 'sub {$_[1][2][1]}');
-$g->add_rule("expr", "NAME", "=", "NAME", 'sub {$_[1][2][1]}');
-$g->add_rule("start", "[expr]", 'sub {$_[1][0]}');
+$g->add_rule("expr", "NAME", "=", "NUMBER", 'sub {$_[0][2][1]}');
+$g->add_rule("expr", "NAME", "=", "NAME", 'sub {$_[0][2][1]}');
+$g->add_rule("start", "[expr]", 'sub {$_[0][0]}');
 $g->start_rule("start");
 $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
