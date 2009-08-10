@@ -12,12 +12,6 @@ use_ok 'CPU::Z80::Assembler::Parser';
 use_ok 'CPU::Z80::Assembler::Lexer';
 require_ok 't/test_utils.pl';
 
-# statement_end / argument_end
-my @input = map {chr($_)} 0..255;
-
-is_deeply [grep {statement_end($_)} @input], [sort "\n", ":"],      "statement_end";
-is_deeply [grep {argument_end($_)}  @input], [sort "\n", ":", ","], "argument_end";
-
 # _check_end
 our $stream;
 is CPU::Z80::Assembler::Parser::_check_end($stream), undef, "empty input";

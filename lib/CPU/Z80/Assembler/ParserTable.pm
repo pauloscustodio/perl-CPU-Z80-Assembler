@@ -2,7 +2,7 @@
 # $Id$
 package CPU::Z80::Assembler::ParserTable;
 
-our $VERSION = '2.05_02';
+our $VERSION = '<VERSION>';
 
 use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::Expr;
