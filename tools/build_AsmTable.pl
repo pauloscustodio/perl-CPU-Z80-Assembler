@@ -1,6 +1,5 @@
 #!perl
 
-#------------------------------------------------------------------------------
 # $Id$
 # Build all CPU::Z80::Assembler instructions
 # Needs sjasmplus (http://sjasmplus.sourceforge.net/) to validate assembled code
@@ -11,6 +10,7 @@ use warnings;
 use Data::Dump 'dump';
 use File::Basename;
 use Iterator::Array::Jagged;
+use List::MoreUtils 'first_index';
 
 #------------------------------------------------------------------------------
 # generated table
@@ -76,6 +76,26 @@ sub load_table { my($line_iter) = @_;
 
 					# need to make copies of the argument arrays
 					load_instr([@instr_copy], [@bytes]);
+					
+					# convert "(ix+DIS)" into "(ix-NDIS)" and "(ix)" 
+					my $dis_pos = first_index {$_ eq "DIS"} @instr_copy;
+					if ($dis_pos >= 0) {
+						die unless $instr_copy[$dis_pos-1] eq "+";
+						my @bytes_copy = @bytes;
+						
+						@instr_copy[$dis_pos-1, $dis_pos] = ("-", "NDIS");
+						for (@bytes_copy) {
+							s/DIS/NDIS/;
+						}
+						load_instr([@instr_copy], [@bytes_copy]);
+						
+						splice(@instr_copy, $dis_pos-1, 2);
+						for (@bytes_copy) {
+							s/NDIS\+1/1/;
+							s/NDIS/0/;
+						}
+						load_instr([@instr_copy], [@bytes_copy]);
+					}
 				}
 			}
 		}
