@@ -1,12 +1,13 @@
 #!perl
 
-#------------------------------------------------------------------------------
 # $Id$
 # Assemble with sjasmplus and compare result of our internal assembly
 # with the output of sjasmplus
 
 use strict;
 use warnings;
+
+use File::Copy;
 
 #------------------------------------------------------------------------------
 # Build input file for sjasmplus
@@ -27,12 +28,13 @@ sub build_input {
 	db 0xDD, 0xDD, 0x00
 	ENDM
 
-	OUTPUT $obj_file
+	OUTPUT $obj_file~
 
 ";
-	# convert rst x --> rst x*8 (x in 1..7)
+	# convert rst x --> rst x*8 (x in 1..7); remove '$' from labels
 	while(<$in>) {
 		s/(rst\s+)(\d+)(\s\s)/ $2 < 8 && $2 > 0 ? $1."8*".$2 : $1.$2.$3 /gie;
+		s/\$(.)/$1/g;
 		print $out $_;
 	}
 }	
@@ -87,7 +89,9 @@ sub compare_assembly {
 			die "Wrong assembly, '$a' ne '$b' at: $_" unless $a eq $b;
 		}
 		elsif (/^ \s* \d+ \s+ [0-9A-F]+ 
-				  ( ~ .* |
+				  ( \s+ ; .* |			# comment
+				    \w+ .* |			# label
+					~ .* |
 					\s+ (org \s+ [0-9A-F]+ | macro .* | output .* | endm)? 
 			      ) \s* $/ix) {
 			;
@@ -105,3 +109,5 @@ build_input("$file.asm", "$file.sj.asm", "$file.obj");
 assemble("$file.sj.asm", "$file.sj.lst", "$file.obj");
 build_output("$file.sj.lst", "$file.lst");
 compare_assembly("$file.lst");
+move("$file.obj~", "$file.obj");
+
