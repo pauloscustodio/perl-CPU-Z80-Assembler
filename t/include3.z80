@@ -1,3 +1,0 @@
-	LD B,1
-%include 't/include2.z80'
-	LD B,3
