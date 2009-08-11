@@ -9,8 +9,8 @@ use Test::More tests => 7;
 use File::Slurp;
 use File::Spec;
 
-my $infile =  't/test_z80.asm';
-my $bmkfile = 't/test_z80.obj';
+my $infile =  't/data/test_z80.asm';
+my $bmkfile = 't/data/test_z80.obj';
 my $outfile = 't/test_z80.o';
 
 	unlink $outfile;

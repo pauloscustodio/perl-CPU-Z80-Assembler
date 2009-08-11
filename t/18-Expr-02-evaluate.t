@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 50;
+use Test::More tests => 48;
 use_ok 'HOP::Stream', 'list_to_stream';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Line';
@@ -78,7 +78,7 @@ $stream = z80lexer('"AZY"');
 ok 			$stream = $expr->parse($stream), "parse expr";
 is			$warn, undef, "no warnings";
 is			$expr->evaluate, ord('A') + (ord('Z') << 8), "eval";
-is			$warn, "\t\"AZY\"\ninput(1) : warning: Expression \"AZY\": extra bytes ignored\n", "warning";
+is			$warn, "\t\"AZY\"\ninput(1) : warning: Expression AZY: extra bytes ignored\n", "warning";
 $warn = undef;
 
 $stream = z80lexer('10+vc');
@@ -100,14 +100,12 @@ is			$@, "\t10/(51-va)\ninput(1) : error: Expression '10 / ( 51 - 51 )': Illegal
 			"division by zero";
 
 $stream = z80lexer('10+');
-ok 			$stream = $expr->parse($stream), "parse expr";
-eval {$expr->evaluate(0, \%symbols)};
-is			$@, "\t10+\ninput(1) : error: Expression '10 +': syntax error\n",
+eval { $expr->parse($stream) };
+is			$@, "input 1: Error: Parse error, expected one of (\"(\" NAME NUMBER STRING) at \"\\n\"\n",
 			"syntax error";
 
 $stream = z80lexer('10+hl');
-ok 			$stream = $expr->parse($stream), "parse expr";
-eval {$expr->evaluate(0, \%symbols)};
-is			$@, "\t10+hl\ninput(1) : error: Expression 'hl': syntax error\n",
+eval { $expr->parse($stream) };
+is			$@, "input 1: Error: Parse error, expected one of (\"(\" NAME NUMBER STRING) at hl\n",
 			"syntax error";
 

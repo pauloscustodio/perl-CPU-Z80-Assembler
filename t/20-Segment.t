@@ -27,9 +27,9 @@ isa_ok		my $segment = CPU::Z80::Assembler::Segment->new(name => "CODE"),
 is_deeply	$segment->child,	[], 	"no children";
 
 
-$segment->push_child(CPU::Z80::Assembler::Opcode->new(child => [1,2,3]));
-$segment->push_child(CPU::Z80::Assembler::Opcode->new(child => [4,$expr,undef]));
-$segment->push_child(CPU::Z80::Assembler::Opcode->new(child => [5,6,7]));
+push(@{$segment->child}, CPU::Z80::Assembler::Opcode->new(child => [1,2,3]));
+push(@{$segment->child}, CPU::Z80::Assembler::Opcode->new(child => [4,$expr,undef]));
+push(@{$segment->child}, CPU::Z80::Assembler::Opcode->new(child => [5,6,7]));
 
 eval {$segment->size};
 like		$@, qr/^size not computed yet at/, "invalid size";

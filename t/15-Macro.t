@@ -5,7 +5,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 535;
+use Test::More tests => 579;
 use Data::Dump 'dump';
 
 use_ok	'CPU::Z80::Assembler::Lexer';
@@ -15,6 +15,12 @@ require 't/test_utils.pl';
 our $stream;
 
 isa_ok	$stream = z80lexer(<DATA>), 'HOP::Stream';
+
+test_token_line("macro m1 {\n", 1, undef);
+test_token(	"\n", "\n");
+
+test_token_line("  ld a,1 : ld b,2\n", 2, undef);
+test_token(	"\n", "\n");
 
 test_token_line("}\n", 3, undef);
 test_token(	"\n", "\n");
@@ -102,6 +108,12 @@ test_token(	"{", "{");
 test_token(	"NUMBER", 2);
 test_token(	"}", "}");
 
+test_token(	"\n", "\n");
+
+test_token_line("macro m3 x,y\n", 9, undef);
+test_token(	"\n", "\n");
+
+test_token_line("L1 jr x : jr y : L2 jp L3\n", 10, undef);
 test_token(	"\n", "\n");
 
 test_token_line("endm\n", 11, undef);

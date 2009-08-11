@@ -11,7 +11,7 @@ use Test::More tests => 1;
 
 ok(
     z80asm('
-        INCLUDE "t/include.z80"
+        INCLUDE "t/data/include.z80"
     ') eq chr(0).chr(0),
     "INCLUDE works"
 );

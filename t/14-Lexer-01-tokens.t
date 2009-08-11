@@ -13,7 +13,6 @@ use_ok	'HOP::Stream', 'drop', 'head';
 require 't/test_utils.pl';
 our $stream;
 
-
 isa_ok	$stream = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
 		'HOP::Stream';
 
@@ -304,12 +303,12 @@ test_token(	"NAME",		"string");
 test_token(	"\n", 		"\n");
 
 test_token_line(	"'clo;sed' \"string\" 'with''quote' \"and\"\"quote\" ; comment '\n", 20, "DATA");
-test_token(	"STRING", 	"'clo;sed'");
-test_token(	"STRING", 	"\"string\"");
-test_token(	"STRING", 	"'with'");
-test_token(	"STRING", 	"'quote'");
-test_token(	"STRING", 	"\"and\"");
-test_token(	"STRING", 	"\"quote\"");
+test_token(	"STRING", 	"clo;sed");
+test_token(	"STRING", 	"string");
+test_token(	"STRING", 	"with");
+test_token(	"STRING", 	"quote");
+test_token(	"STRING", 	"and");
+test_token(	"STRING", 	"quote");
 test_token(	"\n", 		"\n");
 
 test_token_line(	"Identifier INDENTIFIER indentifier \$Identifier \$INDENTIFIER \$indentifier \n", 21, "DATA");

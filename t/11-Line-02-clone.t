@@ -25,13 +25,13 @@ is		$line2->text, 	"text\n", 	"text";
 is		$line2->line_nr, 3,			"line_nr";
 is		$line2->file, 	"f1", 		"file";
 
-$line->text(undef);
-$line->line_nr(undef);
-$line->file(undef);
+$line->text('');
+$line->line_nr('');
+$line->file('');
 
-is		$line->text, 	undef, 		"no text";
-is		$line->line_nr, undef, 		"no line_nr";
-is		$line->file, 	undef, 		"no file";
+is		$line->text, 	'', 		"no text";
+is		$line->line_nr, '', 		"no line_nr";
+is		$line->file, 	'', 		"no file";
 
 is		$line2->text, 	"text\n", 	"text";
 is		$line2->line_nr, 3,			"line_nr";
