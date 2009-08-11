@@ -16,12 +16,12 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
-use base 'CPU::Z80::Assembler::Node';
-our %MEMBERS = (
-			name	=> '$',		# name of the segment
-			address	=> '$',		# start address of segment
+use Class::Struct (
+		child	=> '@',		# list of children of this node
+		name	=> '$',		# name of the segment
+		address	=> '$',		# start address of segment
 );
 
 #------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Class>.
+Creates a new object, see L<Class::Struct>.
 
 =head2 child
 
@@ -67,6 +67,42 @@ Get/set of segment name.
 Get/set of base address of the segment.
 
 =cut
+
+#------------------------------------------------------------------------------
+
+=head2 org
+
+  $self->org($address);
+
+Changes the start address of the segment. It is a fatal error to try to 
+change the address after some opcodes have been compiled.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub org { my($self, $address) = @_;
+	if (@{$self->child}) {
+		die("ORG must be the first intruction\n");
+	}
+	$self->address($address);
+}
+
+#------------------------------------------------------------------------------
+
+=head2 add
+
+  $self->add(@opcodes);
+
+Adds the opcodes to the segment.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub add { my($self, @opcodes) = @_;
+	push(@{$self->child}, @opcodes);
+}
 
 #------------------------------------------------------------------------------
 
@@ -119,22 +155,30 @@ sub size { my($self) = @_;
 
 =head2 bytes
 
-  $segment->bytes(\%symbols);
+  $segment->bytes(\%symbols, $list_output);
 
 Computes the bytes of each opcode, and concatenates them together. Returns the
 complete object code.
+
+$list_output is an optional L<CPU::Z80::Assembler::List> object to dump the assembly
+listing to.
 
 =cut
 
 #------------------------------------------------------------------------------
 
-sub bytes { my($self, $symbols) = @_;
+sub bytes { my($self, $symbols, $list_output) = @_;
 	my $bytes = "";
 	my $address = $self->address;
 	$symbols->{org} = $address; 	# NOTE: is the org label realy needed? Of which segment?
+	
 	for my $opcode (@{$self->child}) {
 		$opcode->address($address);
-		$bytes .= $opcode->bytes($address, $symbols);
+		my $opcode_bytes = $opcode->bytes($address, $symbols);
+		$bytes .= $opcode_bytes;
+		
+		$list_output->add($opcode->line, $address, $opcode_bytes) if ($list_output);
+		
 		$address += $opcode->size;
 	}
 	return $bytes;
@@ -152,7 +196,7 @@ L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
 L<CPU::Z80::Assembler::Opcode>
 L<CPU::Z80::Assembler::Node>
-L<Class::Class>
+L<Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
