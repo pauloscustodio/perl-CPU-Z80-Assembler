@@ -16,20 +16,23 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
 use HOP::Stream qw( drop head );
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
 
-use base 'CPU::Z80::Assembler::Node';
-our %MEMBERS = (
-			type 	=> '$',		# one of:
-								#	"sb" - signed byte
-								#	"ub" - unsigned byte
-								#	"w"  - 2 byte word
+use Class::Struct (
+		child	=> '@',		# list of children of this node
+		line 	=> 'CPU::Z80::Assembler::Line',
+							# line where tokens found
+		type 	=> '$',		# one of:
+							#	"sb" - signed byte
+							#	"ub" - unsigned byte
+							#	"w"  - 2 byte word
 );
+
 #------------------------------------------------------------------------------
 
 =head1 SYNOPSIS
@@ -37,7 +40,6 @@ our %MEMBERS = (
   use CPU::Z80::Assembler::Expr;
   my $node = CPU::Z80::Assembler::Expr->new( type => "sb" );
   $input = $expr->parse($input);
-  $input = $expr->parse_optional($input);
   $new_expr = $expr->build($expr_text);
   $value = $expr->evaluate($address, \%symbol_table);
   $bytes = $expr->bytes($address, \%symbol_table);
@@ -55,7 +57,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Class>.
+Creates a new object, see L<Class::Struct>.
 
 =head2 type
 
@@ -82,6 +84,18 @@ for word - a 16 bit unsigned value in little endian format. A larger value is tr
 but in this case no warning is issued. The address part above 0xFFFF is considered
 a bank selector for memory banked systems.
 
+A STRING value is computed in little endian format and only the first two characters are used.
+"ab" is encoded as ord("a")+(ord("b")<<8).
+
+=item "t"
+
+for text - a string of bytes in big endian format, not truncated. For example, 0x112233 is 
+stored as the 3-byte sequence 0x11, 0x22 and 0x33. 
+
+A STRING value is encoded with the list of characters in the string. If the string is 
+used in an expression, then the expression applies to the last character of the string. This allows 
+expressions like "CALL"+0x80 to invert bit 7 of the last character of the string.
+
 =back
 
 
@@ -99,89 +113,22 @@ Get/set the line - text, file name and line number where the token was read.
 
 =head2 parse
 
-  $input = $expr->parse($input)
+  $input = $expr->parse($input);
 
-Receives a stream of tokens as argument and tries to parse an expression from the
-stream. Returns the stream pointing to the first token after the expression and
-sets the child element of the node to the list of tokens in the expression.
-
-Dies if the expression cannot be parsed.
-
-=cut
-
-#------------------------------------------------------------------------------
-
-sub parse {	my($self, $input) = @_;
-	return $self->_parse($input, 0);
-}
-
-#------------------------------------------------------------------------------
-
-=head2 parse_optional
-
-  $input = $expr->parse_optional($input)
-
-Same as C<parse>, but returns an expression of C<0> if the expression cannot be
+Parses an expression at the given $input stream, returns the stream pointer after
+the expression and updates the expression object. Dies if the expression cannot be
 parsed.
 
 =cut
 
-#------------------------------------------------------------------------------
-
-sub parse_optional { my($self, $input) = @_;
-	return $self->_parse($input, 1);
-}
-
-#------------------------------------------------------------------------------
-
-sub _parse {
-	my($self, $input, $optional) = @_;
+sub parse {
+	my($self, $input) = @_;
+	$self->child([]);
 	
-	# init expr
-	$self->set_child();
-	$self->line(CPU::Z80::Assembler::Line->new());
-	
-	# line for error messages
-	my $head = head($input);
-	my $line = ($head && $head->line) ?
-				$head->line :
-				CPU::Z80::Assembler::Line->new();
-	
-	my @tokens;
-	my @parens;			# list of closing parens waited for
-	while (my $token = head($input)) {
-		my $type = $token->type;
-		if (statement_end($type) ||
-		    (!@parens && argument_end($type))) {
-			last;
-		}
-		elsif ($type eq '(' ) {
-			push(@parens, ')');
-		}
-		elsif ($type eq '[') {
-			push(@parens, ']');
-		}
-		elsif ($type eq ')' || $type eq ']') {
-			last if !@parens;
-			$line->error("Unbalanced parentheses")
-				if pop(@parens) ne $type;
-		}
-		push(@tokens, $token);
-		drop($input);
-	}
-	$line->error("Unbalanced parentheses") if @parens;
-	if (! @tokens) {
-		$line->error("Expression not found") unless $optional;	
-		@tokens = (CPU::Z80::Assembler::Token->new(
-								type => 'NUMBER',
-								value => 0,
-								line => $line));
-	}
-	
-	# set expression and return
-	$self->set_child(@tokens);
-	$self->line($line);
-	return $input;
+	my $value = CPU::Z80::Assembler::Parser::parse($input, undef, "expr");
+	$self->child($value);
+	$self->line($value->[0]->line);
+	$input;
 }
 
 #------------------------------------------------------------------------------
@@ -236,9 +183,11 @@ sub evaluate { my($self, $address, $symbol_table, $seen) = @_;
 			}
 		}
 		elsif ($type eq "STRING") {
-			$self->line->warning("Expression $value: extra bytes ignored")
-				if length($value) > 2+2;
-			$value = substr($value, 1, length($value)-2) . "\0\0";
+			if (length($value) > 2) {
+				$self->line->warning("Expression $value: extra bytes ignored");
+				$value = substr($value, 0, 2);
+			}
+			$value .= "\0\0";
 			my @bytes = map {ord($_)} split(//, $value);
 			my $value = $bytes[0] + ($bytes[1] << 8);
 			push(@code, $value);
@@ -289,22 +238,23 @@ object.
 
 sub build {	my($self, $expr_text, @init_args) = @_;
 	my $line = $self->line;
-	my $new_expr = ref($self)->new(line => $line, @init_args);
-	my $token_stream = z80lexer($expr_text);
+	my $new_expr = ref($self)->new(line => $line, type => $self->type, @init_args);
+	my $token_stream = CPU::Z80::Assembler::Lexer::z80lexer($expr_text);
 	while (my $token = drop($token_stream)) {
 		if ($token->type eq '{') {
 			(head($token_stream) && drop($token_stream)->type eq '}')
 				or die "unmatched {}";
 				
 			# refer to this expression
-			$new_expr->push_child(CPU::Z80::Assembler::Token->new(
+			push(@{$new_expr->child},
+					CPU::Z80::Assembler::Token->new(
 										type => 'EXPR',
 										value => $self,
 										line => $line));
 		}
 		else {
 			$token->line($line);
-			$new_expr->push_child($token);
+			push(@{$new_expr->child}, $token);
 		}
 	}
 	$new_expr;
@@ -382,7 +332,7 @@ See L<CPU::Z80::Assembler>.
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
 L<CPU::Z80::Assembler::Node>
-L<Class::Class>
+L<Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
