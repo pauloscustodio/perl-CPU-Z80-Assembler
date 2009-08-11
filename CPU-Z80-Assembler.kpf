@@ -4,4 +4,56 @@
 <preference-set idref="034094dc-3567-46d7-9895-98e254928c7d">
   <boolean id="import_live">1</boolean>
 </preference-set>
+<preference-set idref="034094dc-3567-46d7-9895-98e254928c7d/lib/CPU/Z80/Assembler/List.pm">
+<preference-set id="Invocations">
+<preference-set id="default">
+  <string id="cookieparams"></string>
+  <string relative="path" id="cwd"></string>
+  <long id="debugger.io-port">9011</long>
+  <string id="documentRoot"></string>
+  <string id="executable-params">-Ilib</string>
+  <string relative="path" id="filename">bin/z80masm</string>
+  <string id="getparams"></string>
+  <string id="language">Perl</string>
+  <string id="mpostparams"></string>
+  <string id="params">t/data/07-list.asm t/07-list.o</string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment"></string>
+  <string id="warnings">enabled</string>
+</preference-set>
+</preference-set>
+  <string id="lastInvocation">default</string>
+</preference-set>
+<preference-set idref="034094dc-3567-46d7-9895-98e254928c7d/tools/build_test_z80.pl">
+<preference-set id="Invocations">
+<preference-set id="default">
+  <string id="cookieparams"></string>
+  <string relative="path" id="cwd">tools</string>
+  <long id="debugger.io-port">9011</long>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">tools/build_test_z80.pl</string>
+  <string id="getparams"></string>
+  <string id="language">Perl</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment"></string>
+  <string id="warnings">enabled</string>
+</preference-set>
+</preference-set>
+  <string id="lastInvocation">default</string>
+</preference-set>
 </project>
