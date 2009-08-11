@@ -12,7 +12,7 @@ use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Parser;
 use HOP::Stream qw( append drop head list_to_stream node promise );
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -57,7 +57,7 @@ sub _define_macro {
 		drop($input);
 		$opened_brace++;
 	}
-	elsif (statement_end($token->type)) {
+	elsif ($token->type =~ /^[:\n]$/) {
 		# OK, macro body follows on next line
 	}
 	else {
@@ -66,6 +66,7 @@ sub _define_macro {
 		
 	# retrieve tokens
 	my @macro_tokens;
+	my @line_tokens;
 	my $parens = 0;
 	my $last_stmt_end = 1;							# last statement finished
 
@@ -98,15 +99,20 @@ sub _define_macro {
 		}
 		else {
 			push(@macro_tokens, $token);
+			push(@line_tokens,  $token) if $type eq "\n";	# save new-lines for listing
 			drop($input);
 		}
-		$last_stmt_end = statement_end($token->type);
+		$last_stmt_end = ($token->type =~ /^[:\n]$/);
 	}
 	die "Macro body not finished\n" unless $token;
 	die "Unmatched braces\n" if $parens != 0;
 	
 	# macro contents and line tokens as streams
 	$macro->tokens( list_to_stream(@macro_tokens) );
+	my $line_stream = list_to_stream(@line_tokens);
+
+	# prepend all seen LINE tokens in input
+	$input = append( $line_stream, $input );
 
 	return ($macro, $input);
 }
@@ -172,7 +178,7 @@ sub _extract_argument {
 	my $opened_brace;
 	while ($token = head($input)) {
 		my $type = $token->type;
-		if (argument_end($type) && $parens == 0) {
+		if ($type =~ /^[:\n,]$/ && $parens == 0) {
 			last;
 		}
 		elsif ($type eq '{') {
@@ -210,7 +216,7 @@ sub _macro_arguments {
 	my @args;
 	for(;;) {
 		my $token = head($input) or last;				# end of line
-		last if statement_end($token->type);			# end of args
+		last if $token->type =~ /^[:\n]$/;				# end of args
 		
 		(my $arg, $input) = _extract_argument($input);
 		push(@args, $arg);
