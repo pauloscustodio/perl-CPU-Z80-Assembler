@@ -16,11 +16,13 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
-use base 'CPU::Z80::Assembler::Node';
-our %MEMBERS = (
-			address 		=> '$',		# address where loaded
+use Class::Struct (
+		child	=> '@',		# list of children of this node
+		line 	=> 'CPU::Z80::Assembler::Line',
+							# line where tokens found
+		address	=> '$',		# address where loaded
 );
 
 =head1 SYNOPSIS
@@ -50,7 +52,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Class>.
+Creates a new object.
 
 =head2 address
 
@@ -144,7 +146,6 @@ See L<CPU::Z80::Assembler>.
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
 L<CPU::Z80::Assembler::ode>
-L<Class::Class>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
