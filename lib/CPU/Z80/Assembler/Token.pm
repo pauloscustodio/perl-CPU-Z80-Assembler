@@ -16,17 +16,24 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Line;
 
-use Class::Struct (
-		type 	=> '$',		# type of token
-		value 	=> '$',		# token attribute
-		line 	=> 'CPU::Z80::Assembler::Line',
-							# line where token found
-);
+#use Class::Struct (
+#		type 	=> '$',		# type of token
+#		value 	=> '$',		# token attribute
+#		line 	=> 'CPU::Z80::Assembler::Line',
+#							# line where token found
+#);
+# Faster than Class::Struct
+sub new { my($class, %args) = @_;
+	return bless [$args{type}, $args{value}, $args{line}], $class;
+}
+sub type  { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
+sub value { defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
+sub line  { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
 
 #------------------------------------------------------------------------------
 
