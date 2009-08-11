@@ -15,7 +15,7 @@ use CPU::Z80::Assembler::Preprocessor;
 use HOP::Stream qw( append drop iterator_to_stream node promise );
 use Regexp::Trie;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -31,7 +31,7 @@ my $KEYWORD_RE = _regexp("
 				res ret reti retn rl rla rlc rlca rld rr rra rrc rrca rrd rst 
 				sbc scf set sla sll sli sp sra srl sub xor z
 				ixh ixl iyh iyl hx lx hy ly xh xl yh yl i r f
-				org stop defb defw deft defm macro endm
+				org stop defb db defw dw deft dt defm dm macro endm
 			");
 my $SYMBOLS_RE = _regexp("
 				<< >> == != >= <= 
@@ -68,7 +68,7 @@ sub _lexer_stream {
 			$text =~ / \G ( \' [^\']* \' | \" [^\"]* \" ) /gcix			
 				and return CPU::Z80::Assembler::Token->new(
 											type  => "STRING",
-											value => $1,
+											value => substr($1, 1, length($1)-2),
 											line  => $line );
 			$text =~ / \G ( af\' | $KEYWORD_RE \b | $SYMBOLS_RE ) /gcix
 				and return CPU::Z80::Assembler::Token->new(
