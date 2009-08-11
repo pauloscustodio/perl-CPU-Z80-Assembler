@@ -16,15 +16,22 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_02';
+our $VERSION = '2.05_03';
 
 use Data::Dump 'dump';
 
-use Class::Struct (
-		text	=> '$',		# text from the line
-		line_nr	=> '$',		# line within ...
-		file	=> '$',		# ... the file
-);
+#use Class::Struct (
+#		text	=> '$',		# text from the line
+#		line_nr	=> '$',		# line within ...
+#		file	=> '$',		# ... the file
+#);
+# Faster than Class::Struct
+sub new { my($class, %args) = @_;
+	return bless [$args{text}, $args{line_nr}, $args{file}], $class;
+}
+sub text    { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
+sub line_nr { defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
+sub file    { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
 
 #------------------------------------------------------------------------------
 
@@ -113,42 +120,42 @@ use overload
 	'bool'	=> sub {$_[0]},		# avoid as_string to be called in bool and numeric
 	'0+'	=> sub {$_[0]};		# context
 
-##------------------------------------------------------------------------------
-#
-#=head2 is_equal
-#
-#  if ($self == $other) { ... }
-#
-#Compares two line objects. Overloads the '==' operator.
-#
-#=cut
-#
-#sub is_equal { my($self, $other) = @_;
-#	no warnings 'uninitialized';
-#	return $self->text    eq $other->text    &&
-#		   $self->line_nr == $other->line_nr &&
-#		   $self->file    eq $other->file;
-#}
-#
-#use overload '==' => \&is_equal;
-#
-##------------------------------------------------------------------------------
-#
-#=head2 is_different
-#
-#  if ($self != $other) { ... }
-#
-#Compares two line objects. Overloads the '!=' operator.
-#
-#=cut
-#
-##------------------------------------------------------------------------------
-#
-#sub is_different { my($self, $other) = @_;
-#	return ! $self->is_equal($other);
-#}
-#
-#use overload '!=' => \&is_different;
+#------------------------------------------------------------------------------
+
+=head2 is_equal
+
+  if ($self == $other) { ... }
+
+Compares two line objects. Overloads the '==' operator.
+
+=cut
+
+sub is_equal { my($self, $other) = @_;
+	no warnings 'uninitialized';
+	return $self->text    eq $other->text    &&
+		   $self->line_nr == $other->line_nr &&
+		   $self->file    eq $other->file;
+}
+
+use overload '==' => \&is_equal;
+
+#------------------------------------------------------------------------------
+
+=head2 is_different
+
+  if ($self != $other) { ... }
+
+Compares two line objects. Overloads the '!=' operator.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub is_different { my($self, $other) = @_;
+	return ! $self->is_equal($other);
+}
+
+use overload '!=' => \&is_different;
 
 #------------------------------------------------------------------------------
 
