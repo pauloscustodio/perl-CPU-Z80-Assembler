@@ -8,7 +8,6 @@ WriteMakefile(
     VERSION_FROM 	=> 'VERSION',
     depend 			=> { Makefile => '$(VERSION_FROM)' },
     PREREQ_PM 		=> {
-        'Class::Class'		=> 0.18,
         'Class::Struct'		=> 0,
         'Data::Dump' 		=> 1.08,
         'File::Slurp' 		=> 9999.13,
@@ -39,6 +38,13 @@ pure_all :: .touched
 
 clean ::
 	- $(RM_F) .touched
+
+# generate the parser - developper only, specific Win32
+gentools : 
+	cd tools 
+	$(MAKE)
+	cd ..
+	$(MAKE)
 
 };
 }
