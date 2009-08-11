@@ -21,7 +21,8 @@ sub show_instr {
 	my @args = grep {$_ ne ""} @$args;
 	my @bytes = @$bytes;
 	
-	if ("@args" =~ /(\bNN?\b|\bNN?\d+|\bDIS\b|\bDIS\d+)/) {
+	my $instr = $opcode." ".join("", @args);
+	if ("@args" =~ /(\bNN?\b|\bNN?\d+|\bDIS\b|\bDIS\d+|\bNDIS\b)/) {
 		my $found = $1;
 		my @values;
 		if ($opcode =~ /jr|djnz/i) {
@@ -30,13 +31,13 @@ sub show_instr {
 						1, 126, 127 );
 			@values = ($values[-1]) if $seen{VALUE}{JR}++;
 		}
-		elsif ($found =~ /DIS/) {
+		elsif ($found =~ /NDIS|DIS/) {
 			my $max = ("@args" =~ /bc|de|hl/i) ? 126 : 127;
 			@values = ( "+-128", "-128", "+-127", "-127", "+-1", "-1", 
 						"+-0", "-0", "+0", "", 
 						"+1", "+".($max-1), "+".$max );
 			@values = ($values[-1]) if $seen{VALUE}{DIS}++;
-			@args = grep {$_ ne "+"} @args;		# +/- included in value
+			@args = grep {! /^[+-]$/} @args;		# +/- included in value
 		}
 		elsif ($found =~ /^N\d*$/) {
 			@values = ( -128, -127,
@@ -63,16 +64,24 @@ sub show_instr {
 			$value ||= 0;
 			$value = eval($value) if $value =~ /\D/; die $@ if $@;
 			for (@bytes_copy) {				# use numeric value in bytes
-				s/${found}h/ ($value >> 8          ) & 0xFF /ge;
-				s/${found}l/ ($value               ) & 0xFF /ge;
-				s/${found}o/ ($value - $address - 2) & 0xFF /ge;
-				s/${found}/  ($value               ) & 0xFF /ge;
+				s/${found}h/ 		($value >> 8          ) & 0xFF /ge;
+				s/${found}l/ 		($value               ) & 0xFF /ge;
+				s/${found}o/ 		($value - $address - 2) & 0xFF /ge;
+				s/${found}\+0x01/	($value + 1           ) & 0xFF /ge;
+				s/${found}/  		($value               ) & 0xFF /ge;
 			}
 			show_instr([$opcode, @args_copy], [@bytes_copy]);
 		}
 		return;
 	}
 
+	# handle case of "ld (ix),a" -> need to define DIS
+	my @bytes_copy = @bytes;
+	for (@bytes_copy) {	
+		s/DIS\+0x01/1/g;
+		s/DIS/0/g;
+	}
+	
 	my $asm = sprintf("%8s%-5s%-19s",
 					  "",
 					  $opcode, 
@@ -80,8 +89,8 @@ sub show_instr {
 
 	print $asm, sprintf("; %04X %s\n",  
 					  $address, 
-					  join(" ", map {sprintf("%02X", eval "(0+$_) & 0xFF")} @bytes)); 
-	$address += @bytes;
+					  join(" ", map {sprintf("%02X", eval "(0+$_) & 0xFF")} @bytes_copy)); 
+	$address += @bytes_copy;
 	
 	# upper case, unless all keywords have been seen in upper case
 	my $need_print;
@@ -99,8 +108,8 @@ sub show_instr {
 
 		print $asm, sprintf("; %04X %s\n",  
 						  $address, 
-						  join(" ", map {sprintf("%02X", eval "(0+$_) & 0xFF")} @bytes)); 
-		$address += @bytes;
+						  join(" ", map {sprintf("%02X", eval "(0+$_) & 0xFF")} @bytes_copy)); 
+		$address += @bytes_copy;
 	}
 }
 sub show_instrs {
