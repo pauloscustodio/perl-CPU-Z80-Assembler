@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use Class::Struct (
 		child	=> '@',		# list of children of this node
