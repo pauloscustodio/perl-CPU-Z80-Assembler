@@ -16,12 +16,11 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Segment;
 use CPU::Z80::Assembler::Expr;
-use HOP::Stream qw( drop head );
 use Data::Dump 'dump';
 
 use Class::Struct 'CPU::Z80::Assembler::Program::Data' => [
@@ -30,6 +29,7 @@ use Class::Struct 'CPU::Z80::Assembler::Program::Data' => [
 		segment_map		=> '%',		# map name => segment in child
 		_cur_segment	=> 'CPU::Z80::Assembler::Segment',
 									# segment we are now adding code to
+		macros			=> '%',		# list of defined macros
 ];
 
 use base 'CPU::Z80::Assembler::Program::Data';
@@ -82,6 +82,10 @@ an expression, or a L<CPU::Z80::Assembler::Opcode> for a label.
 =head2 segment_map
 
 Hash to map segment names to the segment objects in the child array.
+
+=head2 macros
+
+Hash of macro names to L<CPU::Z80::Assembler::Macro> objects for all defined macros.
 
 =cut
 
@@ -140,17 +144,19 @@ sub parse { my($self, $input) = @_;
 
 =head2 org
 
-  $program->org($address);
+  $program->org($address, $token);
 
 Changes the start address of the current segment. It is a fatal error to try to 
 change the address after some opcodes have been compiled.
+
+$token is the location of the ORG instruction used for error messages.
 
 =cut
 
 #------------------------------------------------------------------------------
 
-sub org { my($self, $address) = @_;
-	$self->cur_segment->org($address);
+sub org { my($self, $address, $token) = @_;
+	$self->cur_segment->org($address, $token);
 }
 
 #------------------------------------------------------------------------------
