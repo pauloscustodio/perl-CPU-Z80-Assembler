@@ -59,7 +59,7 @@ all : ..\lib\CPU\Z80\Assembler\Parser.pm
 	build_Parser.pl CPU::Z80::Assembler::Parser ..\lib\CPU\Z80\Assembler\Parser.pm
 
 t\result.txt : t\*.t ParserGenerator.pm
-	prove t\*.t > t\result.txt~
+	prove -I..\lib t\*.t > t\result.txt~
 	$(MV) t\result.txt~ t\result.txt
 
 clean::
