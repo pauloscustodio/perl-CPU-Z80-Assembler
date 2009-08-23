@@ -16,12 +16,12 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
-use HOP::Stream qw( drop head );
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
+use CPU::Z80::Assembler::Stream;
 
 use Class::Struct (
 		child	=> '@',		# list of children of this node
@@ -39,7 +39,7 @@ use Class::Struct (
 
   use CPU::Z80::Assembler::Expr;
   my $node = CPU::Z80::Assembler::Expr->new( type => "sb" );
-  $input = $expr->parse($input);
+  $expr->parse($input);
   $new_expr = $expr->build($expr_text);
   $value = $expr->evaluate($address, \%symbol_table);
   $bytes = $expr->bytes($address, \%symbol_table);
@@ -87,17 +87,12 @@ a bank selector for memory banked systems.
 A STRING value is computed in little endian format and only the first two characters are used.
 "ab" is encoded as ord("a")+(ord("b")<<8).
 
-=item "t"
-
-for text - a string of bytes in big endian format, not truncated. For example, 0x112233 is 
-stored as the 3-byte sequence 0x11, 0x22 and 0x33. 
-
-A STRING value is encoded with the list of characters in the string. If the string is 
-used in an expression, then the expression applies to the last character of the string. This allows 
-expressions like "CALL"+0x80 to invert bit 7 of the last character of the string.
-
 =back
 
+The text bytes used in defm / deft are a string of bytes in big endian format, not truncated. For example, 0x112233 is stored as the 3-byte sequence 0x11, 0x22 and 0x33. 
+
+A STRING value is encoded with the list of characters in the string. If the string is 
+used in an expression, then the expression applies to the last character of the string. This allows expressions like "CALL"+0x80 to invert bit 7 of the last character of the string.
 
 =head2 child
 
@@ -113,11 +108,11 @@ Get/set the line - text, file name and line number where the token was read.
 
 =head2 parse
 
-  $input = $expr->parse($input);
+  $expr->parse($input);
 
-Parses an expression at the given $input stream, returns the stream pointer after
-the expression and updates the expression object. Dies if the expression cannot be
-parsed.
+Parses an expression at the given $input stream (L<CPU::Z80::Assembler::Stream>), 
+leaves the stream pointer after the expression and updates the expression object. 
+Dies if the expression cannot be parsed.
 
 =cut
 
@@ -128,7 +123,6 @@ sub parse {
 	my $value = CPU::Z80::Assembler::Parser::parse($input, undef, "expr");
 	$self->child($value);
 	$self->line($value->[0]->line);
-	$input;
 }
 
 #------------------------------------------------------------------------------
@@ -240,9 +234,9 @@ sub build {	my($self, $expr_text, @init_args) = @_;
 	my $line = $self->line;
 	my $new_expr = ref($self)->new(line => $line, type => $self->type, @init_args);
 	my $token_stream = CPU::Z80::Assembler::Lexer::z80lexer($expr_text);
-	while (my $token = drop($token_stream)) {
+	while (defined(my $token = $token_stream->get)) {
 		if ($token->type eq '{') {
-			(head($token_stream) && drop($token_stream)->type eq '}')
+			(defined($token_stream->head) && $token_stream->get->type eq '}')
 				or die "unmatched {}";
 				
 			# refer to this expression
