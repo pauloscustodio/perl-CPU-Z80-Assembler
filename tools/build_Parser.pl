@@ -32,8 +32,6 @@ CPU::Z80::Assembler::Parser - Parser for the Z80 assembler
 
   use CPU::Z80::Assembler::Parser;
   z80parser($input, $program);
-  error_at($token, $message)
-  warning_at($token, $message);
 
 =head1 DESCRIPTION
 
@@ -43,7 +41,7 @@ passed L<CPU::Z80::Assembler::Program> object.
 
 =head1 EXPORTS
 
-By default z80parser, error_at and warning_at subroutines are exported.
+By default the z80parser subroutines is exported.
 
 =head1 FUNCTIONS
 
@@ -63,12 +61,12 @@ The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program>.
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::Token;
-use HOP::Stream qw( node );
+use CPU::Z80::Assembler::Stream;
 
 our $VERSION = "<VERSION>";
 
 use base "Exporter";
-our @EXPORT = qw( z80parser error_at warning_at );
+our @EXPORT = qw( z80parser );
 
 ');
 
@@ -83,7 +81,7 @@ sub _add_opcode {
 	if (@bytes) {
 		my $opcode = CPU::Z80::Assembler::Opcode->new(
 									child 	=> \@bytes,
-									line	=> $args->[0][LINE]);
+									line	=> $args->[0]->line);
 		$program->add($opcode);
 	}
 	return undef;
@@ -170,7 +168,7 @@ $g->add_rule('expr_DIS
 					'sub {
 						return CPU::Z80::Assembler::Expr->new(
 									child 	=> $_[ARGS][0],
-									line	=> $_[ARGS][0][0][LINE],
+									line	=> $_[ARGS][0][0]->line,
 									type	=> "sb");
 					}');
 
@@ -187,7 +185,7 @@ $g->add_rule('expr_N
 					'sub {
 						return CPU::Z80::Assembler::Expr->new(
 									child 	=> $_[ARGS][0],
-									line	=> $_[ARGS][0][0][LINE],
+									line	=> $_[ARGS][0][0]->line,
 									type	=> "ub");
 					}');
 
@@ -199,7 +197,7 @@ $g->add_rule('expr_list_N
 						for (@{$_[ARGS][0]}) {
 							push(@ret, CPU::Z80::Assembler::Expr->new(
 									child 	=> $_,
-									line	=> $_[ARGS][0][0][0][LINE],
+									line	=> $_[ARGS][0][0][0]->line,
 									type	=> "ub"));
 						}
 						\@ret;
@@ -211,7 +209,7 @@ $g->add_rule('expr_NN
 					'sub {
 						return CPU::Z80::Assembler::Expr->new(
 									child 	=> $_[ARGS][0],
-									line	=> $_[ARGS][0][0][LINE],
+									line	=> $_[ARGS][0][0]->line,
 									type	=> "w");
 					}');
 
@@ -224,7 +222,7 @@ $g->add_rule('expr_list_NN
 							push(@ret, 
 									CPU::Z80::Assembler::Expr->new(
 												child 	=> $_,
-												line	=> $_[ARGS][0][0][0][LINE],
+												line	=> $_[ARGS][0][0][0]->line,
 												type	=> "w"),
 									undef,		# placeholder for second byte
 								);
@@ -238,7 +236,7 @@ $g->add_rule('expr_const
 					'sub {
 						my $expr = CPU::Z80::Assembler::Expr->new(
 									child 	=> $_[ARGS][0],
-									line	=> $_[ARGS][0][0][LINE]);
+									line	=> $_[ARGS][0][0]->line);
 						return $expr->evaluate();
 					}');
 
@@ -249,14 +247,14 @@ $g->add_rule('inline_const
 					'sub {
 						my $expr = CPU::Z80::Assembler::Expr->new(
 									child 	=> $_[ARGS][0],
-									line	=> $_[ARGS][0][0][LINE]);
+									line	=> $_[ARGS][0][0]->line);
 						my $value = $expr->evaluate();
-						$_[INPUT] = node(	CPU::Z80::Assembler::Token->new(
+						$_[INPUT]->unget(CPU::Z80::Assembler::Token->new(
 														type	=> $value,
 														value 	=> $value,
 														line 	=> $expr->line,
-											),
-											$_[INPUT]);
+											)
+										);
 						return 0;	# return dummy value to keep index into values correct
 					}');
 
@@ -264,7 +262,7 @@ $g->add_rule('inline_const
 $g->add_rule('expr_text_string
 					STRING',
 					'sub { 
-						my @bytes = map {ord($_)} split(//, $_[ARGS][0][VALUE]);
+						my @bytes = map {ord($_)} split(//, $_[ARGS][0]->value);
 						return \@bytes;
 					}');
 
@@ -272,7 +270,7 @@ $g->add_rule('expr_text_number
 					NUMBER',
 					'sub {
 						my @bytes;
-						my $value = eval($_[ARGS][0][VALUE]); $@ and die $@;
+						my $value = eval($_[ARGS][0]->value); $@ and die $@; # ASSERT
 						while ($value) {
 							unshift(@bytes, $value & 0xFF);
 							$value >>= 8;
@@ -292,7 +290,7 @@ $g->add_rule('expr_text',
 						if ( @{ $_[ARGS] } > 1 ) {
 							my $last = pop(@bytes) || 0;			# last byte
 							
-							my $binop = $_[ARGS][1][0][TYPE];		# operator
+							my $binop = $_[ARGS][1][0]->type;		# operator
 							my $expr =  $_[ARGS][1][1]->build("$last $binop {}");
 							
 							return [ @bytes, $expr ];					
@@ -341,7 +339,7 @@ $g->add_rule('opcode',
 
 $g->add_rule('opcode
 					org [expr_const]', 
-					'sub {$_[PROG]->org($_[ARGS][1])}');
+					'sub {$_[PROG]->org($_[ARGS][1], $_[ARGS][0])}');
 
 # labels
 $g->add_rule('def_label
@@ -351,22 +349,81 @@ $g->add_rule('def_label
 $g->add_rule('opcode
 					NAME [def_label]?',
 					'sub {
-						my $name = $_[ARGS][0][VALUE];
+						my $name = $_[ARGS][0]->value;
 						if ( @{$_[ARGS]} > 1 ) {	# NAME = expr
 							my $expr = $_[ARGS][1];
 							$_[PROG]->symbols->{$name} = $expr;
+						}
+						elsif (exists $_[PROG]->macros->{$name}) {
+													# MACRO call
+							$_[PROG]->macros->{$name}->expand_macro($_[INPUT]);
 						}
 						else {						# NAME label
 													# define a dummy opcode that returns address
 							my $opcode = CPU::Z80::Assembler::Opcode->new(
 												child 	=> [],
-												line	=> $_[ARGS][0][LINE]);
+												line	=> $_[ARGS][0]->line);
 							$_[PROG]->add($opcode);
 							$_[PROG]->symbols->{$name} = $opcode;
 						}
 						undef;
 					}');
 
+# macro definition
+$g->add_rule('macro_arg
+					NAME 
+					',
+					'sub { 
+						#DEBUG
+						$_[ARGS][0]->value }');
+
+$g->add_rule('macro_arg2
+					, NAME 
+					',
+					'sub { 
+						#DEBUG
+						$_[ARGS][1]->value }');
+
+$g->add_rule('macro_args
+					[macro_arg] [macro_arg2]*
+					',
+					'sub { 
+						#DEBUG
+						$_[ARGS] }');
+
+$g->add_rule('macro_args_optional
+					[macro_args]?
+					',
+					'sub { 
+						#DEBUG
+						defined($_[ARGS][0]) ? $_[ARGS][0] : [] }');
+
+$g->add_rule('macro_body',
+					['{', ':', "\n"],
+					'sub {
+						$_[INPUT]->unget($_[ARGS][0]);		# push back starting token
+						my $macro = CPU::Z80::Assembler::Macro->new();
+						$macro->parse_body($_[INPUT]);
+						return $macro;
+					}');
+
+$g->add_rule('macro
+					macro NAME [macro_args_optional] [macro_body]
+					',
+					'sub {
+						my $name = $_[ARGS][1]->value;
+						exists $_[PROG]->macros->{$name}
+							and $_[ARGS][1]->error("macro $name redefined");
+
+						my $macro = $_[ARGS][3];
+						$macro->name(   $name );
+						$macro->params( $_[ARGS][2] );
+						$_[PROG]->macros->{$name} = $macro;
+					}');
+
+$g->add_rule('opcode
+					[macro] [end]',
+					'sub {undef}');
 
 load_table(asm_table->{asm});
 
