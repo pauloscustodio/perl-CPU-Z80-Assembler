@@ -10,11 +10,11 @@ use Test::More tests => 12;
 use File::Slurp;
 use File::Spec;
 
-my $infile =  		't/data/07-list.asm';
-my $bmkoutfile = 	't/data/07-list.hex';
-my $bmklstfile = 	't/data/07-list.lst';
-my $outfile = 		't/07-list.o';
-my $lstfile = 		't/07-list.lst';
+my $infile =  		't/data/list.asm';
+my $bmkoutfile = 	't/data/list.hex';
+my $bmklstfile = 	't/data/list.lst';
+my $outfile = 		't/list.o';
+my $lstfile = 		't/list.lst';
 
 	unlink $outfile, $lstfile;
 	for ($infile, $bmkoutfile, $bmklstfile) {

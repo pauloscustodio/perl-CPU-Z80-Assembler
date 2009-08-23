@@ -5,11 +5,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 48;
-use_ok 'HOP::Stream', 'list_to_stream';
+use Test::More tests => 49;
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
+use_ok 'CPU::Z80::Assembler::Stream';
 require_ok 't/test_utils.pl';
 
 our $stream;
@@ -101,11 +101,11 @@ is			$@, "\t10/(51-va)\ninput(1) : error: Expression '10 / ( 51 - 51 )': Illegal
 
 $stream = z80lexer('10+');
 eval { $expr->parse($stream) };
-is			$@, "input 1: Error: Parse error, expected one of (\"(\" NAME NUMBER STRING) at \"\\n\"\n",
+is			$@, "\t10+\ninput(1) : error: expected one of (\"(\" NAME NUMBER STRING) at \"\\n\"\n",
 			"syntax error";
 
 $stream = z80lexer('10+hl');
 eval { $expr->parse($stream) };
-is			$@, "input 1: Error: Parse error, expected one of (\"(\" NAME NUMBER STRING) at hl\n",
+is			$@, "\t10+hl\ninput(1) : error: expected one of (\"(\" NAME NUMBER STRING) at hl\n",
 			"syntax error";
 

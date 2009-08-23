@@ -5,16 +5,16 @@
 use warnings;
 use strict;
 
-use Test::More tests => 1919;
+use Test::More tests => 1920;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
-use_ok	'HOP::Stream', 'drop', 'head';
+use_ok	'CPU::Z80::Assembler::Stream';
 
 require 't/test_utils.pl';
 our $stream;
 
 isa_ok	$stream = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_token_line( 	"a adc add af af' af' and b bc bit c call ccf cp cpd cpdr cpi cpir \n", 1, "DATA");
 test_token(	"a",		"a");

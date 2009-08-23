@@ -5,11 +5,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 36;
-use_ok 'HOP::Stream', 'list_to_stream';
+use Test::More tests => 37;
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
+use_ok 'CPU::Z80::Assembler::Stream';
 require_ok 't/test_utils.pl';
 
 our $stream;

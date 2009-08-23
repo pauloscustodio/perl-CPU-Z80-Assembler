@@ -14,9 +14,10 @@ END { is $warn, undef, "no warnings"; }
 
 my $line;
 
-sub test_error { my($error_msg, $expected_error, $expected_warning) = @_;
+sub test_error { 
+	my($error_msg, $expected_error, $expected_warning) = @_;
 	my $line_nr = (caller)[2];
-	my $test_name = "line $line_nr";
+	my $test_name = "[line $line_nr]";
 		
 	eval {	$line->error($error_msg) };
 	is		$@, $expected_error, "$test_name die()";

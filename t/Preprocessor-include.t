@@ -5,19 +5,19 @@
 use warnings;
 use strict;
 
-use Test::More tests => 77;
+use Test::More tests => 78;
 use Data::Dump 'dump';
 
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Preprocessor';
-use_ok 'HOP::Stream', 'drop', 'list_to_stream';
+use_ok 'CPU::Z80::Assembler::Stream';
 
 require 't/test_utils.pl';
 our $stream;
 
 
 isa_ok	$stream = z80preprocessor('include "t/data/include.z80"'),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"NOP\n", 		1, 	't/data/include.z80');
 test_line(	"NOP\n", 		2, 	't/data/include.z80');
@@ -25,10 +25,10 @@ test_eof();
 
 
 eval {	$stream = z80preprocessor('include "NOFILE"') };
-is		$@, "Open NOFILE: No such file or directory\n", "include NOFILE";
+is		$@, "\tinclude \"NOFILE\"\ninput(1) : error: open NOFILE: No such file or directory\n", "include NOFILE";
 
 isa_ok	$stream = z80preprocessor('include "t/data/include3.z80"'),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"\tLD B,1\n", 	1,	't/data/include3.z80');
 test_line(	"\tLD A,1\n", 	1, 	't/data/include2.z80');
@@ -46,7 +46,7 @@ test_eof();
 
 
 isa_ok	$stream = z80preprocessor("%include 't/data/include.z80'"),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"NOP\n", 		1, 	't/data/include.z80');
 test_line(	"NOP\n", 		2, 	't/data/include.z80');

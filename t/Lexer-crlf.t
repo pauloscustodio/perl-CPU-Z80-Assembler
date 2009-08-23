@@ -5,10 +5,10 @@
 use warnings;
 use strict;
 
-use Test::More tests => 62;
+use Test::More tests => 63;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
-use_ok	'HOP::Stream', 'drop', 'head';
+use_ok	'CPU::Z80::Assembler::Stream';
 
 require 't/test_utils.pl';
 our $stream;
@@ -18,7 +18,7 @@ our $stream;
 # test handling of \r in Unix and Win systems
 #------------------------------------------------------------------------------
 isa_ok	$stream = z80lexer(" 1 \r 2 \r\n 3 \n 4"),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_token_line(	" 1  2 \n", 1, undef);
 test_token(	"NUMBER",  	1);

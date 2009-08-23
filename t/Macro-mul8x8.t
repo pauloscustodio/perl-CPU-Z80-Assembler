@@ -5,25 +5,13 @@
 use warnings;
 use strict;
 use CPU::Z80::Assembler;
-#$CPU::Z80::Assembler::verbose = 1;
+$CPU::Z80::Assembler::verbose = 1 if $ENV{DEBUG};
 
 use Test::More tests => 3;
 
-ok(
-    z80asm('
-        MACRO HLAGH $r {
-          $rr
-          DEFW 0
-          LD A, $r
-        }
-        HLAGH C
-    '),
-    "Macro parameter names don't clash with labels that start with them"
-);
-ok(
-    z80asm('
+ok my $bin1 = z80asm('
         MACRO MUL8x8 target, r1, r2 {   ; takes three reg parms, multiplies r1
-	  PUSH HL                       ; and r2 with result into target
+          PUSH HL                       ; and r2 with result into target
           PUSH AF
           PUSH BC
           PUSH DE
@@ -34,7 +22,7 @@ ok(
         $mulloop
           ADD HL, DE
           DJNZ $mulloop
-	  LD ($mulstore), HL
+          LD ($mulstore), HL
           JR $mulexit
         $mulstore
           DEFW 0
@@ -46,7 +34,10 @@ ok(
           LD $target, ($mulstore)
         }
         MUL8x8 HL, C, E
-    ') eq z80asm('
+    '),
+    "macro";
+
+ok my $bin2 = z80asm('
           PUSH HL
           PUSH AF
           PUSH BC
@@ -58,7 +49,7 @@ ok(
         $mulloop
           ADD HL, DE
           DJNZ $mulloop
-	  LD ($mulstore), HL
+          LD ($mulstore), HL
           JR $mulexit
         $mulstore
           DEFW 0
@@ -69,37 +60,6 @@ ok(
           POP HL
           LD HL, ($mulstore)
     '),
-    'Macros work'
-);
-ok(
-    z80asm('
-        MACRO HLAGH {
-          LD A,A
-        $label
-          DEFW $label
-        }
-        HLAGH
-        HLAGH
-    ') eq z80asm('
-          LD A,A
-          DEFW $$
-          LD A,A
-          DEFW $$
-    '),
-    'And can use the same labels without squishing each other'
-);
+    "expanded macro";
 
-## invalid macro definition
-#eval {z80asm('
-#		MACRO mymacro hl,de
-#		  NOP
-#		ENDM
-#	  ')};
-#is $@, "error", "cannot use reserved word as macro parameter";
-#
-#eval {z80asm('
-#		MACRO mymacro xx
-#		  NOP
-#	  ')};
-#is $@, "error", "macro not terminated";
-#
+is $bin1, $bin2, "macro expansion OK";

@@ -5,17 +5,17 @@
 use warnings;
 use strict;
 
-use Test::More tests => 354;
+use Test::More tests => 355;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
-use_ok	'HOP::Stream', 'drop', 'head';
+use_ok	'CPU::Z80::Assembler::Stream';
 
 require 't/test_utils.pl';
 our $stream;
 
 
 isa_ok	$stream = z80lexer("%include 't/data/include3.z80'\n"),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_token_line(	"\tLD B,1\n", 1, 't/data/include3.z80');
 test_token(	"ld", 		"ld");
@@ -87,7 +87,7 @@ test_eof();
 
 
 isa_ok	$stream = z80lexer("%include 't/data/include.z80'"),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_token_line(	"NOP\n", 1, 't/data/include.z80');
 test_token(	"nop", 		"nop");

@@ -5,27 +5,30 @@
 use warnings;
 use strict;
 
-use Test::More tests => 55;
+use Test::More tests => 56;
 use Data::Dump 'dump';
 
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Preprocessor';
-use_ok 'HOP::Stream', 'drop', 'list_to_stream';
+use_ok 'CPU::Z80::Assembler::Stream';
 
 require 't/test_utils.pl';
 our $stream;
 
-isa_ok	my $input_strm = list_to_stream(
-			"li", "ne 1, no", " file\n",
-			"line 2, no file\nline 3, no file\n%li",
-			"ne 1+1 file", ".asm\nfile.asm:1: line",
-			" 1\nfile.asm:2: line 2\n#li",
-			"ne 8 \"z.asm\"\n",
-			"z.asm:8: line 8\nz.asm:9: line 9"), 
-		'HOP::Stream';
+isa_ok	my $input_strm = CPU::Z80::Assembler::Stream->new(
+			"line 1, no file\n",
+			"line 2, no file\n",
+			"line 3, no file\n",
+			"%line 1+1 file.asm\n",
+			"file.asm:1: line 1\n",
+			"file.asm:2: line 2\n",
+			"#line 8 \"z.asm\"\n",
+			"z.asm:8: line 8\n",
+			"z.asm:9: line 9\n"), 
+		'CPU::Z80::Assembler::Stream';
 
 isa_ok	$stream = CPU::Z80::Assembler::Preprocessor::_line_stream($input_strm),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"line 1, no file\n", 		1, 	undef);
 test_line(	"line 2, no file\n", 		2, 	undef);
@@ -37,23 +40,24 @@ test_line(	"z.asm:9: line 9\n",		9, 	"z.asm");
 test_eof();
 
 
-isa_ok	$input_strm = list_to_stream(
-			"li", "ne 1, no", " file\n"), 
-		'HOP::Stream';
+isa_ok	$input_strm = CPU::Z80::Assembler::Stream->new(
+			"line 1, no file\n"), 
+		'CPU::Z80::Assembler::Stream';
 
 isa_ok	$stream = CPU::Z80::Assembler::Preprocessor::_line_stream($input_strm),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"line 1, no file\n", 		1, 	undef);
 test_eof();
 
 
-isa_ok	$input_strm = list_to_stream(
-			"li", "ne 1, no", " file\nline 2", ", no file"), 
-		'HOP::Stream';
+isa_ok	$input_strm = CPU::Z80::Assembler::Stream->new(
+			"line 1, no file\n",
+			"line 2, no file\n"), 
+		'CPU::Z80::Assembler::Stream';
 
 isa_ok	$stream = CPU::Z80::Assembler::Preprocessor::_line_stream($input_strm),
-		'HOP::Stream';
+		'CPU::Z80::Assembler::Stream';
 
 test_line(	"line 1, no file\n", 		1, 	undef);
 test_line(	"line 2, no file\n",		2, 	undef);
