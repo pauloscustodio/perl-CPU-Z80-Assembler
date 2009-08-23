@@ -1,4 +1,26 @@
 -------------------------------------------------------------------------------
+2.05_04 2009-08-23
+-------------------------------------------------------------------------------
+- New Stream class - faster than HOP::Stream, because head element is always 
+  available to be read without computation (is_promise() in HOP::Stream) and 
+  no test is needed to distinguish a stream node from a array-ref element
+  (is_node() in HOP::Stream). The stream has an head element, and a list of
+  the next elements, which may contain iterators.
+- List object uses the input to the assembler to read the lines again during
+  the listing phase, instead of globing all tokens in memory
+- Remove usage of HOP::Stream
+- Move the macro processing into the parser - removes one level of stream
+  processing
+- Added the unofficial Z80 opcodes to the test cases
+- Benchmark assembly times:
+  0.337 sjasmplus
+  2.734 z80masm-2.01
+  2.738 z80masm-2.05
+  2.898 z80masm-current
+  3.555 z80masm-2.05_03
+ 11.342 z80masm-1.03
+
+-------------------------------------------------------------------------------
 2.05_03 2009-08-11
 -------------------------------------------------------------------------------
 - Performance : 

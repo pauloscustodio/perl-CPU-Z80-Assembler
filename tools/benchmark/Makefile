@@ -53,10 +53,23 @@ clean::
 #------------------------------------------------------------------------------
 # benchmark with z80masm-$(VERSION)
 all : 
-	$(CALL) VERSION=1.03 BENCHMARK_Z80MASM
-	$(CALL) VERSION=2.01 BENCHMARK_Z80MASM
-	$(CALL) VERSION=2.05 BENCHMARK_Z80MASM
+	$(CALL) VERSION=1.03    BENCHMARK_Z80MASM
+	$(CALL) VERSION=2.01    BENCHMARK_Z80MASM
+	$(CALL) VERSION=2.05    BENCHMARK_Z80MASM
+	$(CALL) VERSION=2.05_03 BENCHMARK_Z80MASM
 	$(CALL) VERSION=current benchmark_current
+	perl -e "opendir(my $$dh, '.') or die; \
+			for (sort readdir($$dh)) { \
+				next unless /^benchmark_.*\.txt$$/i; \
+				open(my $$fh, $$_) or die; \
+				my @f = split(' ', <$$fh>); \
+				push @times, [ $$f[0], $$f[3] ]; \
+			} \
+			END { \
+				for (sort {$$a->[0] <=> $$b->[0]} @times) { \
+					printf(qq(%7.3f %%s\n), $$_->[0], $$_->[1]); \
+				} \
+			}"
 
 benchmark_current : .\.benchmark_z80masm-$(VERSION) \
 					..\..\blib\script\z80masm

@@ -5,42 +5,43 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 9;
 
-use_ok 'HOP::Stream', qw( drop list_to_stream );
+use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'CPU::Z80::Assembler::Token';
+use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
-my $warn; $SIG{__WARN__} = sub {$warn = shift};
 
 isa_ok my $g = ParserGenerator->new(), 'ParserGenerator';
 $g->add_rule('start', '', 'sub {1}');
 $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
 
-my $token = undef; my $message = "err1\n";
+my $token = undef; 
 
-eval {Parser::error_at($token, $message)};
-is $@, "Error: err1 at EOF\n", "undef token";
+eval {Parser::_expected_error_at($token, 0)};
+is $@, "error: expected start at EOF\n", "undef token";
 
-Parser::warning_at($token, $message);
-is $warn, "Warning: err1 at EOF\n", "undef token";
+$token = CPU::Z80::Assembler::Token->new(
+							type 	=> 'NUMBER', 
+							value 	=> 10, 
+							line 	=> undef);
 
-$token = [NUMBER => 10, undef];
+eval {Parser::_expected_error_at($token, 0)};
+is $@, "error: expected start at NUMBER\n", "undef token";
 
-eval {Parser::error_at($token, $message)};
-is $@, "Error: err1 at NUMBER\n", "undef token";
+$token = CPU::Z80::Assembler::Token->new(
+							type 	=> 'NUMBER',
+							value	=> 10, 
+							line 	=> CPU::Z80::Assembler::Line->new(
+												text 	=> "text\n", 
+												line_nr	=> 3, 
+												file 	=> "f1.asm"));
 
-Parser::warning_at($token, $message);
-is $warn, "Warning: err1 at NUMBER\n", "undef token";
-
-$token = [NUMBER => 10, ["text\n", 3, "f1.asm"]];
-
-eval {Parser::error_at($token, $message)};
-is $@, "f1.asm 3: Error: err1 at NUMBER\n", "undef token";
-
-Parser::warning_at($token, $message);
-is $warn, "f1.asm 3: Warning: err1 at NUMBER\n", "undef token";
+eval {Parser::_expected_error_at ($token, 0)};
+is $@, "\ttext\nf1.asm(3) : error: expected start at NUMBER\n", "undef token";
 
 # clean-up
 unlink 'Parser.pm' unless $ENV{DEBUG};

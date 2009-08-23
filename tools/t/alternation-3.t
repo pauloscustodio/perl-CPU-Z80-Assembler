@@ -5,9 +5,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 23;
 
-use_ok 'HOP::Stream', qw( drop list_to_stream );
+use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'CPU::Z80::Assembler::Token';
+use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -20,62 +22,72 @@ $g->start_rule("start");
 $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
 
-ok my $line = ["text\n", 3, "f1.asm"], "dummy line";
+isa_ok my $line = CPU::Z80::Assembler::Line->new(
+								text => "text\n", line_nr => 3, file => "f1.asm"), 
+		'CPU::Z80::Assembler::Line';
 
 my $input;
-ok $input = list_to_stream(), "empty input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(),
+ 			'CPU::Z80::Assembler::Stream';
 eval {Parser::parse($input)};
-is $@, "Error: Parse error, expected NAME at EOF\n", "parse error";
+is $@, "error: expected NAME at EOF\n", "parse error";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line],
-			), "partial input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
+			),
+ 			'CPU::Z80::Assembler::Stream';
 eval {Parser::parse($input)};
-is $@, "Error: Parse error, expected one of (\"!\" \"=\") at EOF\n", "parse error";
+is $@, "error: expected one of (\"!\" \"=\") at EOF\n", "parse error";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-			), "partial input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+			),
+ 			'CPU::Z80::Assembler::Stream';
 eval {Parser::parse($input)};
-is $@, "Error: Parse error, expected one of (NAME NUMBER) at EOF\n", "parse error";
+is $@, "error: expected one of (NAME NUMBER) at EOF\n", "parse error";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-				[NUMBER => 10, $line]
-			), "full input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 10, line => $line)
+			),
+ 			'CPU::Z80::Assembler::Stream';
 is Parser::parse($input), 10, "parse OK";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-				[NUMBER => 22, $line],
-			), "full input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 22, line => $line),
+			),
+ 			'CPU::Z80::Assembler::Stream';
 is Parser::parse($input), 22, "parse OK";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-				[NAME => "a", $line]
-			), "full input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line)
+			),
+ 			'CPU::Z80::Assembler::Stream';
 is Parser::parse($input), "a", "parse OK";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-				[NAME => "b", $line],
-			), "full input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line),
+			),
+ 			'CPU::Z80::Assembler::Stream';
 is Parser::parse($input), "b", "parse OK";
 
-ok $input = list_to_stream(
-				[NAME => "a", $line], 
-				["=" => "=", $line],
-				[NUMBER => 22, $line],
-				[NUMBER => 23, $line],
-			), "extra input";
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 22, line => $line),
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 23, line => $line),
+			),
+ 			'CPU::Z80::Assembler::Stream';
 eval {Parser::parse($input)};
-is $@, "f1.asm 3: Error: Parse error, expected EOF at NUMBER\n", "parse error";
+is $@, "\ttext\nf1.asm(3) : error: expected EOF at NUMBER\n", "parse error";
 
 # clean-up
 unlink 'Parser.pm' unless $ENV{DEBUG};

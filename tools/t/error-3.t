@@ -5,9 +5,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 
-use_ok 'HOP::Stream', qw( drop list_to_stream );
+use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'CPU::Z80::Assembler::Token';
+use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
