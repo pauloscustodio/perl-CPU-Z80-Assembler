@@ -12,7 +12,6 @@ WriteMakefile(
         'Data::Dump' 		=> 1.08,
         'File::Slurp' 		=> 9999.13,
         'File::Spec' 		=> 0,
-        'HOP::Stream' 		=> 0.02,		# 0.01 has a bug with streams of array refs
         'Regexp::Trie' 		=> 0.02,
         'Test::More' 		=> 0,
         'Text::Tabs' 		=> 2006.1117,

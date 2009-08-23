@@ -5,6 +5,17 @@
 - perlcritic
 - accept $80 and #80 as hex
 - accept %01 as binary
-- Try to speed up by discarding tokens as they are processed - no need for
+X Try to speed up by discarding tokens as they are processed - no need for
   HOP::Stream except for the listing phase, where we can read the input again,
   or keep the list of all read lines in memory.
+X Replace all die by error_at for error messages
+X Macro processing should be done within the main parsinng table, for speed
+- No need to return the "\n" tokens in the macro definition with the new method of listing
+  looking at the input files
+- List : include line numbers, file names, hex address and bytes, full input source
+- List : include list of symbols at the end
+X Test all error messages
+X More robust error_at - leave last defined token in the stream, error_at receives the 
+  stream pointer
+X error_at / warning_at : remove, use Line methods instead
+- Change JR to JP if distance too far
