@@ -1,143 +1,6 @@
 # $Id$
 
-# Preprocessor for the Z80 assembler
-
 package CPU::Z80::Assembler::Preprocessor;
-
-use strict;
-use warnings;
-use 5.008;
-
-use CPU::Z80::Assembler::Line;
-use HOP::Stream qw( append drop iterator_to_stream node promise );
-
-our $VERSION = '2.05_03';
-
-use vars qw(@EXPORT);
-use base qw(Exporter);
-@EXPORT = qw(z80preprocessor);
-
-#------------------------------------------------------------------------------
-# _input_stream(LIST)
-#	LIST is either a list of text strings to parse, or code references of
-#	iterators that return text strings to parse.
-#	Returns HOP::Stream to get each string.
-sub _input_stream {	my(@input) = @_;
-	return iterator_to_stream sub {
-		for (;;) {
-			return undef unless @input;		# end of list
-			my $elem = ((ref($input[0])||"") eq "CODE") ?
-						$input[0]->() : shift(@input);
-			return $elem if defined($elem);
-			shift(@input);				# end of this iterator
-		}
-	};
-}
-
-#------------------------------------------------------------------------------
-# _line_stream(INPUT)
-#	INPUT is a HOP::Stream of text blocks
-# 	Returns a HOP::Stream of CPU::Z80::Assembler::Line objects
-#	containing complete text lines to be parsed.
-#	Parses pre-processor-style line position information:
-#		%line 1+1 FILE
-#		#line 1 "FILE"
-# 	Parses include statements, FILE is enclosed in '', "" or <>
-#		%include FILE
-#		#include FILE
-#		INCLUDE  FILE
-#	File is included in the stream after the newline.
-sub _line_stream { my($input) = @_;
-	my $buf = "";
-	my($line_nr, $line_inc) = (1, 1);
-	my $file;
-
-	# line stream
-	my $line_promise; # to be used recursively
-	$line_promise = promise {
-		my $line;
-		while ( ! defined($line) ) {					# wait for one
-														# non-preprocessor line
-			while ( ! defined($line) ) {				# wait for one complete line
-				if ($buf =~ / \G (.* \n) /gcx) {
-					$line = $1;							# complete line found
-				}				
-				else {									# no \n in input
-					$buf = substr($buf, pos($buf)||0);	# ditch parsed text
-
-					my $next = drop($input);			# next text block
-					if (! defined($next) ) {			# end of input
-						return undef if $buf eq ""; 	# no more input, no buffer
-						$line = $buf; $buf = ""; last;	# return current buffer
-					}
-					$buf .= $next;
-				}		
-			}
-			
-			# we have either one complete line with a final \n,
-			# or the last chars of the input without \n
-			
-			# %line n+m file
-			if ($line =~ /^ \s* \%line \s+ (\d+) \+ (\d+) \s+ (\S*) /ix) {
-				($line_nr, $line_inc, $file) = ($1, $2, $3);
-				$line = undef;							# continue 
-			}
-			# #line n "file"
-			elsif ($line =~ /^ \s* \#line \s+ (\d+) \s+ \" ([^\"\n]+) \" /ix) {
-				($line_nr, $line_inc, $file) = ($1, 1, $2);
-				$line = undef;							# continue 
-			}
-			# include | #include | %include file
-			elsif ($line =~ /^ \s* [\#\%]? include \s+ 
-							   (< [^>\n]+ > | \' [^\'\n]+ \' | \" [^\"\n]+ \") /ix) {
-				# open the file
-				my $inc_file = substr($1, 1, length($1)-2);	# remove quotes
-				$line = undef;							# continue 
-
-				# insert the stream before $input
-				open(my $fh, $inc_file) or die "Open $inc_file: $!\n";
-				$line_nr += $line_inc;
-				$input = append( _input_stream( "%line 1+1 $inc_file\n",
-												sub {<$fh>},
-												defined($file) ?
-													"%line $line_nr+$line_inc $file\n" :
-													() ),
-								$input );
-			}
-			# # | %
-			elsif ($line =~ /^ \s* [\#\%] /ix) {
-				$line_nr += $line_inc;		# ignore other # or % lines
-				$line = undef;				# continue 
-			}
-			else {
-				# OK, end loop
-			}
-		}
-		my $this_line_nr = $line_nr;
-		$line_nr += $line_inc;
-		for ($line) {
-			s/\r//g;						# in case Windows file is processed in Unix
-			/\n$/ or $_ .= "\n";			# add newline if missing
-		}
-		return node(	CPU::Z80::Assembler::Line->new(
-								text => $line,
-								line_nr => $this_line_nr, file => $file ),
-						promise { $line_promise->() } );
-	};
-	return $line_promise->();
-}		
-
-#------------------------------------------------------------------------------
-# z80preprocessor(LIST)
-#	LIST is either a list of text strings to parse, or code references of
-#	iterators that return text strings to parse.
-# 	Returns a HOP::Stream of CPU::Z80::Assembler::Line objects
-#	containing complete text lines to be parsed.
-sub z80preprocessor { my(@input) = @_;
-	return _line_stream(_input_stream(@input));
-}
-
-1;
 
 #------------------------------------------------------------------------------
 
@@ -145,14 +8,32 @@ sub z80preprocessor { my(@input) = @_;
 
 CPU::Z80::Assembler::Preprocessor - Preprocessor for the Z80 assembler
 
+=cut
+
+#------------------------------------------------------------------------------
+
+use strict;
+use warnings;
+use 5.008;
+
+use CPU::Z80::Assembler::Line;
+use CPU::Z80::Assembler::Stream;
+
+our $VERSION = '2.05_04';
+
+use vars qw(@EXPORT);
+use base qw(Exporter);
+@EXPORT = qw(z80preprocessor);
+
+#------------------------------------------------------------------------------
+
 =head1 SYNOPSIS
 
     use CPU::Z80::Assembler::Preprocessor;
-    use HOP::Stream 'drop';
 
     open($fh, $file1) or die;
     my $stream = z80preprocessor("#include 'file2'\n", sub {<$fh>});
-    my $line = drop($stream);
+    my $line = $stream->get;
 
 =head1 DESCRIPTION
 
@@ -162,20 +43,140 @@ of input to scan.
 
 =head1 EXPORTS
 
-By default the 'z80preprocessor' subroutine is exported.  
-To disable that, do:
-
-    use CPU::Z80::Assembler::Preprocessor ();
+By default the 'z80preprocessor' subroutine is exported.
 
 =head1 FUNCTIONS
 
+=cut
+
+#------------------------------------------------------------------------------
+# _input_stream(LIST)
+#	LIST is either a list of text strings to parse, or code references of
+#	iterators that return text strings to parse.
+#	Returns Stream to get each string.
+# 	Assumes that the iterator returns always one line at a time, and no text
+# 	line is split in different list elements (performance).
+sub _input_stream {	
+	my(@input) = @_;
+	
+	# replace each text string in input by iterator to return each complete line
+	for (@input) {
+		if (!ref($_)) {
+			my @lines = split(/\n/, $_);
+			$_ = sub { shift(@lines) }; 
+		}
+	}
+	my $lines_strm = CPU::Z80::Assembler::Stream->new(@input);
+	
+	# create a stream that always appends a \n to the end, removing any \r
+	my $cannon_lines_strm = CPU::Z80::Assembler::Stream->new(
+				sub {
+					my $line = $lines_strm->get;
+					defined($line) or return undef;
+					for ($line) {
+						s/\r//g;				# in case Windows file is processed in Unix
+						/\n$/ or $_ .= "\n";	# add newline if missing
+					}
+					return $line;
+				});
+	return $cannon_lines_strm;
+}
+
+#------------------------------------------------------------------------------
+# _line_stream(INPUT)
+#	INPUT is a Stream of complete text lines
+# 	Returns a Stream of CPU::Z80::Assembler::Line objects
+#	containing lines to be parsed.
+#	Parses pre-processor-style line position information:
+#		%line 1+1 FILE
+#		#line 1 "FILE"
+# 	Parses include statements, FILE is enclosed in '', "" or <>
+#		%include FILE
+#		#include FILE
+#		INCLUDE  FILE
+#	File is included in the stream after the newline.
+sub _line_stream {
+	my($input) = @_;
+	my($line_nr, $line_inc) = (1, 1);
+	my $file;
+	my $stream = CPU::Z80::Assembler::Stream->new(
+		sub {
+			my $line;
+			# process all preprocessor lines
+			for(;;) {
+				$line = $input->get;
+				return undef unless defined($line);			# end of input
+				last unless $line =~ /^ \s* ( [\#\%] | include ) /ix;
+															# not preprocessor 
+
+				# %line n+m file
+				if ($line =~ /^ \s* \%line \s+ (\d+) \+ (\d+) \s+ (\S*) /ix) {
+					($line_nr, $line_inc, $file) = ($1, $2, $3);
+				}
+				# #line n "file"
+				elsif ($line =~ /^ \s* \#line \s+ (\d+) \s+ \" ([^\"\n]+) \" /ix) {
+					($line_nr, $line_inc, $file) = ($1, 1, $2);
+				}
+				# include | #include | %include file
+				elsif ($line =~ /^ \s* [\#\%]? include \s+ 
+								   (< [^>\n]+ > | \' [^\'\n]+ \' | \" [^\"\n]+ \") /ix) {
+					# open the file
+					my $inc_file = substr($1, 1, length($1)-2);	# remove quotes
+
+					# insert the stream before $input
+					open(my $fh, $inc_file) 
+						or CPU::Z80::Assembler::Line->new(
+									text 	=> $line,
+									line_nr => $line_nr, 
+									file 	=> $file,
+								)->error("open $inc_file: $!");
+					$line_nr += $line_inc;
+					my $old_input = $input;
+					$input = CPU::Z80::Assembler::Stream->new(
+									"%line 1+1 $inc_file\n",
+									sub { <$fh> },
+									defined($file) ? "%line $line_nr+$line_inc $file\n" : (),
+									sub { $old_input->get },
+								);
+				}
+				# # | %
+				else {
+					$line_nr += $line_inc;		# ignore other # or % lines
+				}
+			}
+			# $line is ready to be returned
+			my $this_line_nr = $line_nr;
+			$line_nr += $line_inc;
+			return CPU::Z80::Assembler::Line->new(
+									text 	=> $line,
+									line_nr => $this_line_nr, 
+									file 	=> $file,
+								);
+		
+		});
+	return $stream;
+}
+			
+#------------------------------------------------------------------------------
+
 =head2 z80preprocessor
 
-This takes as parameter a list of either text strings to parse, 
-or iterators that return text strings to parse.
+This takes as parameter a list of either text lines to parse, 
+or iterators that return text lines to parse.
 
-The result is a L<HOP::Stream> of L<CPU::Z80::Assembler::Line> 
+The result is a L<CPU::Z80::Assembler::Stream> of L<CPU::Z80::Assembler::Line> 
 objects that contain each of the input lines of the input.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub z80preprocessor { my(@input) = @_;
+	return _line_stream(_input_stream(@input));
+}
+
+#------------------------------------------------------------------------------
+
 
 =head1 PREPROCESSING
 
@@ -223,7 +224,7 @@ See L<CPU::Z80::Assembler>.
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
 L<CPU::Z80::Assembler::Lexer>
-L<HOP::Stream>
+L<CPU::Z80::Assembler::Stream>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
@@ -231,3 +232,6 @@ See L<CPU::Z80::Assembler>.
 
 =cut
 
+#------------------------------------------------------------------------------
+
+1;
