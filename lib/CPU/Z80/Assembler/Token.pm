@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Line;
@@ -28,8 +28,13 @@ use CPU::Z80::Assembler::Line;
 #							# line where token found
 #);
 # Faster than Class::Struct
-sub new { my($class, %args) = @_;
-	return bless [$args{type}, $args{value}, $args{line}], $class;
+sub new { 
+	my($class, %args) = @_;
+	return bless [
+				$args{type}, 
+				$args{value}, 
+				$args{line} || CPU::Z80::Assembler::Line->new()
+			], $class;
 }
 sub type  { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
 sub value { defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
@@ -45,6 +50,10 @@ sub line  { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
                     value => $value,
                     line  => CPU::Z80::Assembler::Line->new(...));
   my $token2 = $token->clone;
+  $token->error($message);
+  CPU::Z80::Assembler::Token->error_at($token, $message);
+  $token->warning($message);
+  CPU::Z80::Assembler::Token->warning_at($token, $message);
 
 =head1 DESCRIPTION
 
@@ -119,6 +128,89 @@ use overload
 	'""' 	=> \&as_string,
 	'bool'	=> sub {$_[0]},		# avoid as_string to be called in bool and numeric
 	'0+'	=> sub {$_[0]};		# context
+
+#------------------------------------------------------------------------------
+
+=head2 error
+
+Dies with the given error message, indicating the place in the input source file
+where the error occured as "FILE(LINE) : error ... at TOKEN".
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub error { 
+	my($self, $error_msg) = @_;
+	$self->line->error($self->_format_error_msg($error_msg));
+}
+
+#------------------------------------------------------------------------------
+
+=head2 error_at
+
+Same as error(), but is a class method and can receive an undef $token.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub error_at { 
+	my($class, $token, $error_msg) = @_;
+	$token = $class->new() unless defined($token);
+	$token->line->error($token->_format_error_msg($error_msg));
+}
+
+#------------------------------------------------------------------------------
+
+=head2 warning
+
+Warns with the given error message, indicating the place in the input source file
+where the error occured as "FILE(LINE) : warning ... at TOKEN".
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub warning { 
+	my($self, $error_msg) = @_;
+	$self->line->warning($self->_format_error_msg($error_msg));
+}
+
+#------------------------------------------------------------------------------
+
+=head2 warning_at
+
+Same as warning(), but is a class method and can receive an undef $token.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub warning_at { 
+	my($class, $token, $error_msg) = @_;
+	$token = $class->new() unless defined($token);
+	$token->line->warning($token->_format_error_msg($error_msg));
+}
+
+#------------------------------------------------------------------------------
+# format an error message
+sub _format_error_msg {
+	my($self, $error_msg) = @_;
+	my $type = $self->type;
+	
+	defined($error_msg) or $error_msg = ""; 
+	$error_msg =~ s/\s+$//;
+	$error_msg .= " " if $error_msg ne "";
+	$error_msg .= "at ".
+					(! defined($type) ?
+						"EOF" :
+						$type =~ /\W/ ?
+							dump($type) :
+							$type
+					);
+	return $error_msg;
+}
 
 #------------------------------------------------------------------------------
 
