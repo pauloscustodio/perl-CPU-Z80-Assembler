@@ -77,22 +77,22 @@ is	z80asm(" ORG 0x1234 : DEFW \$,\$,\$ : DEFW \$,\$,\$ "),
 
 is	$warn, undef, "no warnings";
 
-is 	z80asm(" DEFB 'hello',0x20,'worl','c'+1 "), "h wd", "mixed text and expressions";
-is	$warn, "\t DEFB 'hello',0x20,'worl','c'+1 \ninput(1) : warning: value 0x6F77 truncated to 0x77\n", "warning - value trucated";
+is 	z80asm("DEFB 'hello',0x20,'worl','c'+1"), "h wd", "mixed text and expressions";
+is	$warn, "\tDEFB 'hello',0x20,'worl','c'+1\ninput(1) : warning: value 0x6F77 truncated to 0x77\n", "warning - value trucated";
 $warn = undef;
 
 is 	z80asm(" DEFT 'hello',0x20,'worl','c'+1 "), "hello world", "mixed text and expressions";
 is	$warn, undef, "no warnings";
 
-is 	z80asm(" DEFB 'hello',0x20,'worl','c'+1 "), "h wd", "mixed text and expressions";
-is	$warn, "\t DEFB 'hello',0x20,'worl','c'+1 \ninput(1) : warning: value 0x6F77 truncated to 0x77\n", "warning - value trucated";
+is 	z80asm("DEFB 'hello',0x20,'worl','c'+1"), "h wd", "mixed text and expressions";
+is	$warn, "\tDEFB 'hello',0x20,'worl','c'+1\ninput(1) : warning: value 0x6F77 truncated to 0x77\n", "warning - value trucated";
 $warn = undef;
 
 is 	z80asm(" DEFT 'hello',0x20,'worl',1+'c' "), "hello world", "mixed text and expressions";
 is	$warn, undef, "no warnings";
 
-is 	z80asm(" DEFB 'hello worlc'+1 "), "i", "mixed text and expressions";
-is	$warn, "\t DEFB 'hello worlc'+1 \ninput(1) : warning: value 0x6569 truncated to 0x69\n", "warning - value trucated";
+is 	z80asm("DEFB 'hello worlc'+1"), "i", "mixed text and expressions";
+is	$warn, "\tDEFB 'hello worlc'+1\ninput(1) : warning: value 0x6569 truncated to 0x69\n", "warning - value trucated";
 $warn = undef;
 
 is 	z80asm(" DEFT 'hello worlc'+1 "), "hello world", "mixed text and expressions";
@@ -110,9 +110,9 @@ is	$warn, undef, "no warnings";
 is 	z80asm(" DEFT ''+1 "), "\x01", "mixed text and expressions";
 is	$warn, undef, "no warnings";
 
-is 	z80asm(" DEFB ('hello'*2) & 0xFF "), chr( ( ( ord('h') + (ord('e')<<8) ) * 2 ) & 0xFF ), 
+is 	z80asm("DEFB ('hello'*2) & 0xFF "), chr( ( ( ord('h') + (ord('e')<<8) ) * 2 ) & 0xFF ), 
 												"compute with strings";
-is 	$warn, "\t DEFB ('hello'*2) & 0xFF \ninput(1) : warning: Expression hello: extra bytes ignored\n", "warning";
+is 	$warn, "\tDEFB ('hello'*2) & 0xFF\ninput(1) : warning: Expression hello: extra bytes ignored\n", "warning";
 $warn = undef;
 
 is	$warn, undef, "no warnings";
