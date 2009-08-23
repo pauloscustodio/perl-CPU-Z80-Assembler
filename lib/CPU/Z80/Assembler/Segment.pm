@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use Class::Struct (
 		child	=> '@',		# list of children of this node
@@ -72,18 +72,20 @@ Get/set of base address of the segment.
 
 =head2 org
 
-  $self->org($address);
+  $self->org($address, $token);
 
 Changes the start address of the segment. It is a fatal error to try to 
 change the address after some opcodes have been compiled.
+
+$token is the location of the ORG instruction used for error messages.
 
 =cut
 
 #------------------------------------------------------------------------------
 
-sub org { my($self, $address) = @_;
+sub org { my($self, $address, $token) = @_;
 	if (@{$self->child}) {
-		die("ORG must be the first intruction\n");
+		$token->error("ORG must be the first intruction");
 	}
 	$self->address($address);
 }
