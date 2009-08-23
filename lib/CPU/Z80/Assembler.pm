@@ -10,13 +10,11 @@ use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Program;
 use CPU::Z80::Assembler::List;
 
-use Data::Dump qw( dump );
-use HOP::Stream qw( drop head );
 use Text::Tabs; 						# imports expand(), unexpand()
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use base qw(Exporter);
 
@@ -33,12 +31,12 @@ my @warnings;
 
 sub z80asm {
 	my(@input) = @_;
-	my $input = z80lexer(@input);
 	my $list_output = ($CPU::Z80::Assembler::verbose) ? 
-					CPU::Z80::Assembler::List->new(input => $input, output => \*STDOUT) :
+					CPU::Z80::Assembler::List->new(input => \@input, output => \*STDOUT) :
 					undef;
 	my $program = CPU::Z80::Assembler::Program->new();
-	$program->parse($input);
+	my $token_stream = z80lexer(@input);
+	$program->parse($token_stream);
 	$program->link;
 	my $bytes = $program->bytes($list_output);
 	$list_output->flush() if $list_output;
@@ -70,9 +68,7 @@ assembler.
 
 =head1 EXPORTS
 
-By default the 'z80asm' subroutine is exported.  To disable that, do:
-
-    use CPU::Z80::Assembler ();
+By default the 'z80asm' subroutine is exported.
 
 =head1 FUNCTIONS
 
@@ -144,8 +140,8 @@ use the C pre-processor.
 
 =head2 Mnemonics
 
-Standard Z80 mnemonics are used.  The "unofficial" Z80 instructions
-are not yet supported.
+Standard Z80 mnemonics as well as the "unofficial" Z80 instructions
+are supported.
 
 =head2 RST vectors
 
@@ -191,8 +187,6 @@ can refer to other labels as their name:
 Macros are supported. See L<CPU::Z80::Assembler::Macro> for details.
 
 =head1 BUGS and FEEDBACK
-
-The "unofficial" instructions are supported but need to be tested.
 
 We welcome feedback about our code, including constructive criticism.
 Bug reports should be made using L<http://rt.cpan.org/>.
