@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use Data::Dump 'dump';
 
@@ -161,13 +161,15 @@ use overload '!=' => \&is_different;
 
 =head2 error
 
-Dies with an error message pointing at the line object as "FILE(LINE) : error ...".
+Dies with the given error message, indicating the place in the input source file
+where the error occured as "FILE(LINE) : error ...".
 
 =cut
 
 #------------------------------------------------------------------------------
 
-sub error { my($self, $error_msg) = @_;
+sub error { 
+	my($self, $error_msg) = @_;
 	die $self->_error_msg("error", $error_msg);
 }
 
@@ -175,7 +177,8 @@ sub error { my($self, $error_msg) = @_;
 
 =head2 warning
 
-Warns an error message pointing at the line object as "FILE(LINE) : warning ...".
+Warns with the given error message, indicating the place in the input source file
+where the error occured as "FILE(LINE) : warning ...".
 
 =cut
 
@@ -189,11 +192,11 @@ sub warning { my($self, $error_msg) = @_;
 # error message for error() and warning()
 sub _error_msg { my($self, $type, $error_msg) = @_;
 	defined($error_msg) or $error_msg = ""; 
-	chomp($error_msg);
+	$error_msg =~ s/\s+$//;
 	
 	my $text = $self->text; 
 	defined($text) or $text = ""; 
-	chomp($text);
+	$text =~ s/\s+$//;
 	
 	my $file = $self->file;
 	my $line_nr = $self->line_nr;
