@@ -17,15 +17,16 @@ use warnings;
 use 5.008;
 
 use Text::Tabs;
-use HOP::Stream qw( drop head iterator_to_stream );
+use CPU::Z80::Assembler::Stream;
+use CPU::Z80::Assembler::Preprocessor;
 
-our $VERSION = '2.05_03';
+our $VERSION = '2.05_04';
 
 use Class::Struct (
 		output			=> '$',		# output file handle for the list
-		input			=> '$',		# input token stream with whole program
+		input			=> '$',		# input lines or iterators passed to z80asm
 		
-		_line_stream	=> '*$',	# input line stream with whole program
+		_line_stream	=> '$',		# input line stream with whole program
 		_address		=> '$',		# output address
 		
 		_current_line	=> '$',		# line of the current opcode(s)
@@ -38,7 +39,7 @@ use Class::Struct (
 =head1 SYNOPSIS
 
   use CPU::Z80::Assembler::List;
-  my $lst = CPU::Z80::Assembler::List->new(input => $input_stream, output => \*STDOUT);
+  my $lst = CPU::Z80::Assembler::List->new(input => $asm_input, output => \*STDOUT);
   $lst->add($line, $address, $bytes);
   $lst->flush();
 
@@ -58,14 +59,14 @@ Nothing.
 
 =head2 new
 
-  my $lst = CPU::Z80::Assembler::List->new(input => $input_stream, output => \*STDOUT);
+  my $lst = CPU::Z80::Assembler::List->new(input => $asm_input, output => \*STDOUT);
 
 Creates a new object, see L<Class::Struct>.
 
 =head2 input
 
-input is the token stream as returned by L<CPU::Z80::Assembler::Lexer> pointing 
-at the start of the assembly source file.
+input is the input as passed to z80asm, i.e. list of text lines to parse or iterators
+that return text lines to parse.
 
 =head2 output
 
@@ -133,11 +134,12 @@ sub flush { my($self) = @_;
 		my $rewind_count;
 		my $line;
 		for (;;) {
-			while (! defined($line = drop(${$self->_line_stream}))) {
+			while (! defined($self->_line_stream) ||
+				   ! defined($line = $self->_line_stream->get)) {
 				$rewind_count++;						# end of input, rewind
 				die "Cannot find $line in list" if $rewind_count > 1;	
 														# assert input is OK
-				$self->_init_line_stream();
+				$self->_line_stream(z80preprocessor(@{$self->input}));
 			}
 			
 			last if $line == $self->_current_line;		# found current line
@@ -159,25 +161,6 @@ sub flush { my($self) = @_;
 
 sub DESTROY { my($self) = @_;
 	$self->flush();
-}
-
-#------------------------------------------------------------------------------
-
-sub _init_line_stream { my($self) = @_;
-	my $this_line;
-	my $input = $self->input;
-	my $line_stream = iterator_to_stream(
-				sub {
-					for (;;) {
-						my $token = drop($input);
-						return undef if ! defined($token);
-						my $token_line = $token->line;
-						next if ($this_line && $token_line == $this_line);
-						$this_line = $token_line;
-						return $this_line;
-					}
-				});
-	$self->_line_stream($line_stream);
 }
 
 #------------------------------------------------------------------------------
