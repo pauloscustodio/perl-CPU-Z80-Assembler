@@ -14,12 +14,12 @@ CPU::Z80::Assembler::Preprocessor - Preprocessor for the Z80 assembler
 
 use strict;
 use warnings;
-use 5.008;
+use 5.006;
 
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.05_04';
+our $VERSION = '2.05_05';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -29,11 +29,11 @@ use base qw(Exporter);
 
 =head1 SYNOPSIS
 
-    use CPU::Z80::Assembler::Preprocessor;
+  use CPU::Z80::Assembler::Preprocessor;
 
-    open($fh, $file1) or die;
-    my $stream = z80preprocessor("#include 'file2'\n", sub {<$fh>});
-    my $line = $stream->get;
+  open($fh, $file1) or die;
+  my $stream = z80preprocessor("#include 'file2'\n", sub {<$fh>});
+  my $line = $stream->get;
 
 =head1 DESCRIPTION
 
@@ -131,10 +131,13 @@ sub _line_stream {
 									file 	=> $file,
 								)->error("open $inc_file: $!");
 					$line_nr += $line_inc;
+					
+					# create a new stream; need to call _input_stream
+					# to handle \r\n on Unix machines
 					my $old_input = $input;
 					$input = CPU::Z80::Assembler::Stream->new(
 									"%line 1+1 $inc_file\n",
-									sub { <$fh> },
+									_input_stream(sub { <$fh> })->iterator,
 									defined($file) ? "%line $line_nr+$line_inc $file\n" : (),
 									sub { $old_input->get },
 								);
@@ -182,7 +185,7 @@ sub z80preprocessor { my(@input) = @_;
 
 The following preprocessor-like lines are processed:
 
-    %line N+M FILE
+  %line N+M FILE
 
 nasm-like line directive, telling that the next input line is 
 line N from file FILE, 
@@ -190,7 +193,7 @@ followed by lines N+M, N+2*M, ...
 This information is used to generate error messages.
 Usefull to assemble a file preprocessed by nasm.
 
-    #line N "FILE"
+  #line N "FILE"
 
 cpp-like line directive, telling that the next input line is 
 line N from file FILE, 
@@ -198,11 +201,11 @@ followed by lines N+1, N+2, ...
 This information is used to generate error messages.
 Usefull to assemble a file preprocessed by cpp.
 
-    include 'FILE'
-    include "FILE"
-    include <FILE>
-    %include ...
-    #include ...
+  include 'FILE'
+  include "FILE"
+  include <FILE>
+  %include ...
+  #include ...
 
 nasm/cpp-like include directive, asking to insert the contents 
 of the given file in the input stream. The preprocessor inserts 
@@ -211,7 +214,7 @@ after the file inclusion.
 
 The easiest form to ask z80asm to assemble a file is to write:
 
-    z80asm("include 'FILE'");
+  z80asm("include 'FILE'");
 
 All the other preprocessor-like lines are ignored, i.e. lines starting with '#' or '%'.
 
