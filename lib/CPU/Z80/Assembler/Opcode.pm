@@ -14,9 +14,9 @@ CPU::Z80::Assembler::Opcode - Represents one assembly expression to be computed 
 
 use strict;
 use warnings;
-use 5.008;
+use 5.006;
 
-our $VERSION = '2.05_04';
+our $VERSION = '2.05_05';
 
 use Class::Struct (
 		child	=> '@',		# list of children of this node

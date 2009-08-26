@@ -296,6 +296,7 @@ package <NAME>;
 
 use strict;
 use warnings;
+use 5.006;
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Stream;

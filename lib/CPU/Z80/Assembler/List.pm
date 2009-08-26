@@ -14,13 +14,13 @@ CPU::Z80::Assembler::List - Assembly listing output class
 
 use strict;
 use warnings;
-use 5.008;
+use 5.006;
 
 use Text::Tabs;
 use CPU::Z80::Assembler::Stream;
 use CPU::Z80::Assembler::Preprocessor;
 
-our $VERSION = '2.05_04';
+our $VERSION = '2.05_05';
 
 use Class::Struct (
 		output			=> '$',		# output file handle for the list
