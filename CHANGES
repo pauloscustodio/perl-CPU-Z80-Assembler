@@ -1,4 +1,14 @@
 -------------------------------------------------------------------------------
+2.05_05 2009-08-26
+-------------------------------------------------------------------------------
+- Fix Parser.pm version
+- Remove dead code
+- Improve documentation 
+- Tests failed in Unix due to lack of \r processing
+- Compatible with perl 5.006, downgraded requirement from 5.008.
+- Error in macro expansion : was eating statement terminator
+
+-------------------------------------------------------------------------------
 2.05_04 2009-08-23
 -------------------------------------------------------------------------------
 - New Stream class - faster than HOP::Stream, because head element is always 
