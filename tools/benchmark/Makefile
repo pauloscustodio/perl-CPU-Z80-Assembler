@@ -57,6 +57,7 @@ all :
 	$(CALL) VERSION=2.01    BENCHMARK_Z80MASM
 	$(CALL) VERSION=2.05    BENCHMARK_Z80MASM
 	$(CALL) VERSION=2.05_03 BENCHMARK_Z80MASM
+	$(CALL) VERSION=2.05_04 BENCHMARK_Z80MASM
 	$(CALL) VERSION=current benchmark_current
 	perl -e "opendir(my $$dh, '.') or die; \
 			for (sort readdir($$dh)) { \
