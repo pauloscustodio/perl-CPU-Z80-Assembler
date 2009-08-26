@@ -59,7 +59,7 @@ use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = "<VERSION>";
+our $VERSION = "2.05_05";
 
 use base "Exporter";
 our @EXPORT = qw( z80parser );
