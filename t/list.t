@@ -35,11 +35,16 @@ is	system($^X." -I".File::Spec->catfile("blib", "lib")." ".
 	}
 
 	# insert version number in lst file as variable
+	# handle \r 
 	my $lst = read_file($lstfile);
 	$lst =~ s/\A([^\n]*v)$CPU::Z80::Assembler::VERSION/$1\$CPU::Z80::Assembler::VERSION/;
+	$lst =~ s/\r//g;
 	write_file($lstfile, $lst);
 	
-	my $lst_ok = read_file($bmklstfile) eq read_file($lstfile);
+	my $bmklst = read_file($bmklstfile);
+	$bmklst =~ s/\r//g;
+	
+	my $lst_ok = $lst eq $bmklst;
 ok 	$lst_ok, "files equal : $bmklstfile $lstfile";
 
 	my $out_hex = join(' ', map { sprintf("%02X", ord($_)) } split(//, 
