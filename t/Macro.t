@@ -7,7 +7,7 @@ use strict;
 use CPU::Z80::Assembler;
 $CPU::Z80::Assembler::verbose = 1 if $ENV{DEBUG};
 
-use Test::More tests => 3;
+use Test::More tests => 6;
 
 my($bin1, $bin2);
 
@@ -28,5 +28,14 @@ ok $bin2 = z80asm('
   ld a,1 : ld b,2
   nop : ld a,1 : ld b,2 : nop : ld a,1 : ld b,2 : nop
   ld a,2 : nop : ld a,3
+');
+is $bin1, $bin2, "macro expansion OK";
+
+
+ok $bin1 = z80asm('
+macro $m { nop } : $m : $m : $m
+');
+ok $bin2 = z80asm('
+nop : nop : nop
 ');
 is $bin1, $bin2, "macro expansion OK";
