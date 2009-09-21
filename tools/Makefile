@@ -5,16 +5,20 @@ CALL = 		$(MAKE) -nologo -$(MAKEFLAGS)
 CP =		perl -MExtUtils::Command -e cp
 MV =		perl -MExtUtils::Command -e mv
 RM_F =		perl -MExtUtils::Command -e rm_f
+Z80MASM =	perl -I..\lib ..\bin\z80masm
 
 #PATH =     	..\blib\script;$(PATH)
 #PERL5LIB = 	..\blib\lib;$(PERL5LIB)
 
 #------------------------------------------------------------------------------
 # build AsmTable.pm
-all :	AsmTable.pm
+all :	AsmTable.pm ..\lib\CPU\Z80\Assembler\AsmTable.pm
 
 AsmTable.pm : build_AsmTable.pl 
-	$(CALL) RUN_TOOL TOOL="build_AsmTable.pl" OUT="AsmTable.pm"
+	$(CALL) RUN_TOOL TOOL="build_AsmTable.pl AsmTable" OUT="AsmTable.pm"
+
+..\lib\CPU\Z80\Assembler\AsmTable.pm : build_AsmTable.pl 
+	$(CALL) RUN_TOOL TOOL="build_AsmTable.pl CPU::Z80::Assembler::AsmTable"  OUT="..\lib\CPU\Z80\Assembler\AsmTable.pm"
 
 clean::
 	-$(RM_F) AsmTable.pm
@@ -67,6 +71,23 @@ clean::
 
 realclean::
 	-$(RM_F) ..\lib\CPU\Z80\Assembler\Parser.pm
+
+
+#------------------------------------------------------------------------------
+# test compile zx48.asm
+all : zx48.bin
+
+zx48.bin : data\zx48.asm \
+			..\bin\z80masm \
+			..\lib\CPU\Z80\Assembler.pm \
+			..\lib\CPU\Z80\Assembler\*.pm
+	$(Z80MASM) data\zx48.asm zx48.bin~ > zx48.lst
+	diff zx48.bin~ data\zx48.rom
+	$(MV) zx48.bin~ zx48.bin
+
+clean::
+	-$(RM_F) zx48.bin zx48.bin~ zx48.lst
+
 
 #------------------------------------------------------------------------------
 # tools
