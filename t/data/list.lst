@@ -1,5 +1,3 @@
-CPU::Z80::Assembler - z80masm v$CPU::Z80::Assembler::VERSION
-
 0x0000: ; comment                              | 
 0x0000: macro M1 {                             | 
 0x0000:         inc hl                         | 
