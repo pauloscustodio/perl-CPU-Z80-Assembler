@@ -22,6 +22,15 @@ my($MODULE, $FILE) = @ARGV;
 my $g = ParserGenerator->new;
 
 $g->prolog('
+our $VERSION = "2.05_06";
+
+use CPU::Z80::Assembler::Expr;
+use CPU::Z80::Assembler::Opcode;
+use CPU::Z80::Assembler::JumpOpcode;
+
+use base "Exporter";
+our @EXPORT = qw( z80parser );
+
 #------------------------------------------------------------------------------
 
 =head1 NAME
@@ -58,16 +67,6 @@ The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program>.
 
 #------------------------------------------------------------------------------
 
-use CPU::Z80::Assembler::Expr;
-use CPU::Z80::Assembler::Opcode;
-use CPU::Z80::Assembler::Token;
-use CPU::Z80::Assembler::Stream;
-
-our $VERSION = "<VERSION>";
-
-use base "Exporter";
-our @EXPORT = qw( z80parser );
-
 ');
 
 $g->epilog('
@@ -82,7 +81,24 @@ sub _add_opcode {
 		my $opcode = CPU::Z80::Assembler::Opcode->new(
 									child 	=> \@bytes,
 									line	=> $args->[0]->line);
-		$program->add($opcode);
+		$program->add_opcodes($opcode);
+	}
+	return undef;
+}
+
+sub _add_jump_opcode {
+	my($args, $program, $input, @opcodes) = @_;
+	if (@opcodes) {
+		my $opcode_short = CPU::Z80::Assembler::Opcode->new(
+									child 	=> $opcodes[0],
+									line	=> $args->[0]->line);
+		my $opcode_long = CPU::Z80::Assembler::Opcode->new(
+									child 	=> $opcodes[1],
+									line	=> $args->[0]->line);
+		my $opcode = CPU::Z80::Assembler::JumpOpcode->new(
+									short_jump	=> $opcode_short,
+									long_jump	=> $opcode_long);
+		$program->add_opcodes($opcode);
 	}
 	return undef;
 }
@@ -339,7 +355,7 @@ $g->add_rule('opcode',
 
 $g->add_rule('opcode
 					org [expr_const]', 
-					'sub {$_[PROG]->org($_[ARGS][1], $_[ARGS][0])}');
+					'sub {$_[PROG]->org($_[ARGS][1])}');
 
 # labels
 $g->add_rule('def_label
@@ -359,12 +375,7 @@ $g->add_rule('opcode
 							$_[PROG]->macros->{$name}->expand_macro($_[INPUT]);
 						}
 						else {						# NAME label
-													# define a dummy opcode that returns address
-							my $opcode = CPU::Z80::Assembler::Opcode->new(
-												child 	=> [],
-												line	=> $_[ARGS][0]->line);
-							$_[PROG]->add($opcode);
-							$_[PROG]->symbols->{$name} = $opcode;
+							$_[PROG]->add_label($name, $_[ARGS][0]->line);
 						}
 						undef;
 					}');
@@ -504,11 +515,42 @@ sub add_parser_rules {
 	
 	for ($keys[-1]) {
 		$_ = dump($_);
-		s/([\[\s,])(\d+)([\]\s,])/$1.sprintf("0x%02X", $2).$3/ge;
+		s/([\[\s,])(\d+)([\]\s,])/$1._hex($2).$3/ge;
 		s/"(DIS|DIS\+0x01|NDIS|NDIS\+0x01|N|NNl|NNh|NNo)"/$expr{$1}/g;
 		s/^\[//; s/\]$//;		# transform array ref into array
-		$_ = 'sub {_add_opcode(@_, '.$_.'); }';
+		
+		if ($keys[0] =~ /DJNZ/i) {
+			# jump opcode : short : DJNZ; long : DEC B:JP NZ
+			$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
+							'['.
+							_hex(asm_table->{asm}{dec}{b}{""}[0]).', '.
+							_hex(asm_table->{asm}{jp}{nz}{','}{NN}{""}[0]).', '.
+							$expr{NNl}.', '.$expr{NNh}.']); }';
+		}
+		elsif ($keys[0] =~ /JR/i) {
+			if ($keys[1] =~ /^\w+$/) {		# JR FLAG,NN
+				$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
+							'['.
+							_hex(asm_table->{asm}{jp}{$keys[1]}{','}{NN}{""}[0]).', '.
+							$expr{NNl}.', '.$expr{NNh}.']); }';
+			}
+			else {							# JR NN
+				$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
+							'['.
+							_hex(asm_table->{asm}{jp}{NN}{""}[0]).', '.
+							$expr{NNl}.', '.$expr{NNh}.']); }';
+			}
+		}
+		else {
+			$_ = 'sub {_add_opcode(@_, '.$_.'); }';
+		}
 	}
 	
-	$g->add_rule('opcode', @keys);
+ 	$g->add_rule('opcode', @keys);
+}
+
+sub _hex {
+	my(@n) = @_;
+	return join(", ", 
+				map {sprintf("0x%02X", $_)} @n);
 }
