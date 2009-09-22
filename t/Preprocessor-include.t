@@ -5,14 +5,14 @@
 use warnings;
 use strict;
 
-use Test::More tests => 78;
+use Test::More tests => 81;
 use Data::Dump 'dump';
 
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Preprocessor';
 use_ok 'CPU::Z80::Assembler::Stream';
 
-require 't/test_utils.pl';
+require_ok 't/test_utils.pl';
 our $stream;
 
 

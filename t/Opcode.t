@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 27;
 use_ok 'CPU::Z80::Assembler::Opcode';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Line';
@@ -15,8 +15,10 @@ our $stream;
 
 isa_ok		my $opcode = CPU::Z80::Assembler::Opcode->new(),
 			'CPU::Z80::Assembler::Opcode';
-is_deeply	$opcode->child,	[], 	"no children";
-is			$opcode->line, 	undef, 	"no line";
+is_deeply	$opcode->child,			[], 	"no children";
+is			$opcode->line->text, 	undef, 	"line text";
+is			$opcode->line->line_nr, undef, 	"line line_nr";
+is			$opcode->line->file, 	undef, 	"line file";
 is			$opcode->size, 0, "size";
 
 isa_ok		my $line = CPU::Z80::Assembler::Line->new(
