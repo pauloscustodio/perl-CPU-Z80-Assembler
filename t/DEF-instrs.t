@@ -62,15 +62,15 @@ is	z80asm("ORG 0x1234 : DEFM 0x12345678+(\$ & 0xFF),0x12345678"), "\x12\x34\x56"
 
 is 	z80asm("DEFM 'hd'+1,'k'+1,'k'+1,'o'"),	"hello", "multiple DEFM expressions";
 
-is 	z80asm("ORG 0x1234\nDEFW \$\$"),
+is 	z80asm("ORG 0x1234\nDEFW \$"),
           chr(0x34).chr(0x12),
-          'DEFW $$';
-is 	z80asm("ORG 0x4567\nDEFW \$\$ + 2"),
+          'DEFW $';
+is 	z80asm("ORG 0x4567\nDEFW \$ + 2"),
           chr(0x69).chr(0x45),
-          'DEFW $$+2';
-is 	z80asm("\$hlagh = 0x27\nDEFB \$hlagh"),
+          'DEFW $+2';
+is 	z80asm("hlagh = 0x27\nDEFB hlagh"),
           chr(0x27),
-          'DEFB $label';
+          'DEFB label';
 
 is	z80asm(" ORG 0x1234 : DEFW \$,\$,\$ : DEFW \$,\$,\$ "), 
 	"\x34\x12\x34\x12\x34\x12\x3A\x12\x3A\x12\x3A\x12", "\$ invariant";
