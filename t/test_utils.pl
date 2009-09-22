@@ -2,6 +2,32 @@ use strict;
 use warnings;
 
 use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'CPU::Z80::Assembler::Opcode';
+
+sub opcodes {
+	my($start, $line_nr) = @_;
+	my @opcodes;
+
+	my $caller_line = (caller)[2];
+
+	ok $caller_line, "[line $caller_line] opcodes";
+	
+	for (0..2) {
+		isa_ok my $line = CPU::Z80::Assembler::Line->new(
+						text => "line ".($line_nr+$_)."\n", 
+						line_nr => $line_nr+$_, 
+						file => "f.asm"
+				), 'CPU::Z80::Assembler::Line';
+		isa_ok my $opcode = CPU::Z80::Assembler::Opcode->new(
+						child => [ord($start)+$_],	
+						line => $line 
+				), 'CPU::Z80::Assembler::Opcode';
+		push @opcodes, $opcode;
+	}
+	@opcodes;
+}
+
 
 sub test_line { my($text, $line_nr, $file) = @_;
 	our $stream;
