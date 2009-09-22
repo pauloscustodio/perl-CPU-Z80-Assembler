@@ -6,7 +6,6 @@ package CPU::Z80::Assembler::Parser;
 
 use strict;
 use warnings;
-use 5.006;
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Stream;
@@ -17,6 +16,15 @@ use constant {
 	ARGS => 0, PROG => 1, INPUT => 2,		# to decode args in parser functions
 };
 
+
+our $VERSION = "2.05_06";
+
+use CPU::Z80::Assembler::Expr;
+use CPU::Z80::Assembler::Opcode;
+use CPU::Z80::Assembler::JumpOpcode;
+
+use base "Exporter";
+our @EXPORT = qw( z80parser );
 
 #------------------------------------------------------------------------------
 
@@ -53,16 +61,6 @@ The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program>.
 =cut
 
 #------------------------------------------------------------------------------
-
-use CPU::Z80::Assembler::Expr;
-use CPU::Z80::Assembler::Opcode;
-use CPU::Z80::Assembler::Token;
-use CPU::Z80::Assembler::Stream;
-
-our $VERSION = "2.05_05";
-
-use base "Exporter";
-our @EXPORT = qw( z80parser );
 
 
 
@@ -18202,7 +18200,7 @@ sub _action_opcode_199 {
 }
 # opcode : org "[expr_const]"
 sub _action_opcode_20 {
-	$_[PROG]->org($_[ARGS][1], $_[ARGS][0])
+	$_[PROG]->org($_[ARGS][1])
 }
 # opcode : ccf "[end]"
 sub _action_opcode_200 {
@@ -18256,12 +18254,7 @@ sub _action_opcode_21 {
 		$_[PROG]->macros->{$name}->expand_macro($_[INPUT]);
 	}
 	else {						# NAME label
-								# define a dummy opcode that returns address
-		my $opcode = CPU::Z80::Assembler::Opcode->new(
-							child 	=> [],
-							line	=> $_[ARGS][0]->line);
-		$_[PROG]->add($opcode);
-		$_[PROG]->symbols->{$name} = $opcode;
+		$_[PROG]->add_label($name, $_[ARGS][0]->line);
 	}
 	undef;
 }
@@ -18415,7 +18408,7 @@ sub _action_opcode_246 {
 }
 # opcode : djnz "[expr_NN]" "[end]"
 sub _action_opcode_247 {
-	_add_opcode(@_, 0x10, $_[ARGS][1]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x10, $_[ARGS][1]->build('{}-$-2', type => "sb")], [0x05, 0xC2, $_[ARGS][1], undef]);
 }
 # opcode : ei "[end]"
 sub _action_opcode_248 {
@@ -18663,19 +18656,19 @@ sub _action_opcode_305 {
 }
 # opcode : jr "[expr_NN]" "[end]"
 sub _action_opcode_306 {
-	_add_opcode(@_, 0x18, $_[ARGS][1]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x18, $_[ARGS][1]->build('{}-$-2', type => "sb")], [0xC3, $_[ARGS][1], undef]);
 }
 # opcode : jr c "," "[expr_NN]" "[end]"
 sub _action_opcode_307 {
-	_add_opcode(@_, 0x38, $_[ARGS][3]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x38, $_[ARGS][3]->build('{}-$-2', type => "sb")], [0xDA, $_[ARGS][3], undef]);
 }
 # opcode : jr nc "," "[expr_NN]" "[end]"
 sub _action_opcode_308 {
-	_add_opcode(@_, 0x30, $_[ARGS][3]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x30, $_[ARGS][3]->build('{}-$-2', type => "sb")], [0xD2, $_[ARGS][3], undef]);
 }
 # opcode : jr nz "," "[expr_NN]" "[end]"
 sub _action_opcode_309 {
-	_add_opcode(@_, 0x20, $_[ARGS][3]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x20, $_[ARGS][3]->build('{}-$-2', type => "sb")], [0xC2, $_[ARGS][3], undef]);
 }
 # opcode : adc a "," "(" iy ")" "[end]"
 sub _action_opcode_31 {
@@ -18683,7 +18676,7 @@ sub _action_opcode_31 {
 }
 # opcode : jr z "," "[expr_NN]" "[end]"
 sub _action_opcode_310 {
-	_add_opcode(@_, 0x28, $_[ARGS][3]->build('{}-$-2', type => "sb"));
+	_add_jump_opcode(@_, [0x28, $_[ARGS][3]->build('{}-$-2', type => "sb")], [0xCA, $_[ARGS][3], undef]);
 }
 # opcode : ld "(" "[expr_NN]" ")" "," a "[end]"
 sub _action_opcode_311 {
@@ -21863,7 +21856,24 @@ sub _add_opcode {
 		my $opcode = CPU::Z80::Assembler::Opcode->new(
 									child 	=> \@bytes,
 									line	=> $args->[0]->line);
-		$program->add($opcode);
+		$program->add_opcodes($opcode);
+	}
+	return undef;
+}
+
+sub _add_jump_opcode {
+	my($args, $program, $input, @opcodes) = @_;
+	if (@opcodes) {
+		my $opcode_short = CPU::Z80::Assembler::Opcode->new(
+									child 	=> $opcodes[0],
+									line	=> $args->[0]->line);
+		my $opcode_long = CPU::Z80::Assembler::Opcode->new(
+									child 	=> $opcodes[1],
+									line	=> $args->[0]->line);
+		my $opcode = CPU::Z80::Assembler::JumpOpcode->new(
+									short_jump	=> $opcode_short,
+									long_jump	=> $opcode_long);
+		$program->add_opcodes($opcode);
 	}
 	return undef;
 }
