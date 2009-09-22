@@ -14,7 +14,6 @@ CPU::Z80::Assembler::Lexer - Scanner for the Z80 assembler
 
 use strict;
 use warnings;
-use 5.006;
 
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Token;
@@ -23,7 +22,7 @@ use CPU::Z80::Assembler::Preprocessor;
 use CPU::Z80::Assembler::Stream;
 use Regexp::Trie;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -112,12 +111,12 @@ sub _lexer_stream {
 											type  => lc($1),
 											value => lc($1),
 											line  => $line );
-			$text =~ / \G \$? ( [a-z_] \w* | \$ ) /gcix
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NAME",
-											value => $1,
-											line  => $line );
 			$text =~ / \G ( \d [0-9a-f]+ ) h \b /gcix			
+				and return CPU::Z80::Assembler::Token->new(
+											type  => "NUMBER",
+											value => "0x".$1,
+											line  => $line );
+			$text =~ / \G [\$\#] ( [0-9a-f]+ ) \b /gcix			
 				and return CPU::Z80::Assembler::Token->new(
 											type  => "NUMBER",
 											value => "0x".$1,
@@ -127,9 +126,19 @@ sub _lexer_stream {
 											type  => "NUMBER",
 											value => "0b".$1,
 											line  => $line );
+			$text =~ / \G \% ( [01]+ ) \b /gcix			
+				and return CPU::Z80::Assembler::Token->new(
+											type  => "NUMBER",
+											value => "0b".$1,
+											line  => $line );
 			$text =~ / \G ( \d+ | 0x [0-9a-f]+ | 0b [01]+ ) \b /gcix			
 				and return CPU::Z80::Assembler::Token->new(
 											type  => "NUMBER",
+											value => $1,
+											line  => $line );
+			$text =~ / \G ( [a-z_] \w* | \$ ) /gcix		# after numbers because of $FF syntax
+				and return CPU::Z80::Assembler::Token->new(
+											type  => "NAME",
 											value => $1,
 											line  => $line );
 			$text =~ / \G (.) /gcix					# catch all
@@ -204,8 +213,7 @@ insensitive for assembly reserved words.
     type => "NUMBER", value => $number, line => ...
 
 Numbers are returned either in decimal, hexadecimal in the form 0x****, or binary in the form 
-0b****. 
-The forms 0****H is replaced into 0x****, and the form 0****B into 0b****.
+0b****. The other forms are converted to these base forms.
 
 =head1 BUGS and FEEDBACK
 
