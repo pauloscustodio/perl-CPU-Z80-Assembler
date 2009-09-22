@@ -1,4 +1,18 @@
 -------------------------------------------------------------------------------
+2.05_06 2009-09-22
+-------------------------------------------------------------------------------
+- Move back to 5.008, CPAN of 5.006 did not compile, Regexp::Trie requires 5.008
+- '$' no longer used as label prefix, to be able to support $FF syntax 
+- '%' (bin), '$' (hex), '#' (hex) number prefixes
+- removed ORG label - does not make sense with several segments
+- Rename link() to _locate() : only address location is done; make it private, 
+  called by bytes()
+- Remove restriction on ORG - each new org creates a new segment,
+  gaps between the segments are filled with 0xFF (configurable)
+- Change 'JR' to 'JP', and 'DJNZ' to 'DEC B:JP NZ' if distance too far
+- Publish AsmTable.pm - usefull for disassembler
+
+-------------------------------------------------------------------------------
 2.05_05 2009-08-26
 -------------------------------------------------------------------------------
 - Fix Parser.pm version
