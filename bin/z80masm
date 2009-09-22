@@ -5,11 +5,12 @@
 use strict;
 
 use CPU::Z80::Assembler;
-$CPU::Z80::Assembler::verbose = 1;
+$CPU::Z80::Assembler::verbose   = 1;
+$CPU::Z80::Assembler::fill_byte = 0xFF;
 
 my $version = $CPU::Z80::Assembler::VERSION;
 
-print "CPU::Z80::Assembler - z80masm v$version\n\n";
+print STDERR "CPU::Z80::Assembler - z80masm v$version\n\n";
 
 my($infile, $outfile) = splice(@ARGV, 0, 2);
 defined($infile) && @ARGV == 0
