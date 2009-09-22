@@ -14,24 +14,34 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 
 use strict;
 use warnings;
-use 5.006;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Stream;
 
-use Class::Struct (
-		child	=> '@',		# list of children of this node
-		line 	=> 'CPU::Z80::Assembler::Line',
-							# line where tokens found
-		type 	=> '$',		# one of:
-							#	"sb" - signed byte
-							#	"ub" - unsigned byte
-							#	"w"  - 2 byte word
-);
+#use Class::Struct (
+#		child	=> '@',		# list of children of this node
+#		line 	=> 'CPU::Z80::Assembler::Line',
+#							# line where tokens found
+#		type 	=> '$',		# one of:
+#							#	"sb" - signed byte
+#							#	"ub" - unsigned byte
+#							#	"w"  - 2 byte word
+#);
+sub new { 
+	my($class, %args) = @_;
+	bless [
+		$args{type}, 
+		$args{line} 	|| CPU::Z80::Assembler::Line->new(),
+		$args{child} 	|| [], 
+	], $class;
+}
+sub type	{ defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
+sub line 	{ defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
+sub child	{ defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
 
 #------------------------------------------------------------------------------
 
@@ -47,7 +57,7 @@ use Class::Struct (
 =head1 DESCRIPTION
 
 This module defines the class that represents one assembly expression to be
-computed at link time. It extends the class L<CPU::Z80::Assembler::Node>.
+computed at link time.
 
 =head1 EXPORTS
 
@@ -325,7 +335,6 @@ See L<CPU::Z80::Assembler>.
 
 L<CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Line>
-L<CPU::Z80::Assembler::Node>
 L<Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE

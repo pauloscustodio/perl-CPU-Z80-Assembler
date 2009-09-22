@@ -14,35 +14,44 @@ CPU::Z80::Assembler::Opcode - Represents one assembly expression to be computed 
 
 use strict;
 use warnings;
-use 5.006;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
-use Class::Struct (
-		child	=> '@',		# list of children of this node
-		line 	=> 'CPU::Z80::Assembler::Line',
-							# line where tokens found
-		address	=> '$',		# address where loaded
-);
+use CPU::Z80::Assembler::Line;
+
+sub new { 
+	my($class, %args) = @_;
+	bless [
+		$args{address}, 					# address where loaded
+		$args{line} 	|| CPU::Z80::Assembler::Line->new(),
+											# line where tokens found
+		$args{child} 	|| [], 				# list of children of this node
+											# each child is a byte value or an expression
+											# to compute the byte(s)
+	], $class;
+}
+sub address { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
+sub line 	{ defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
+sub child	{ defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
+
+#------------------------------------------------------------------------------
 
 =head1 SYNOPSIS
 
   use CPU::Z80::Assembler::Opcode;
-  my $opcode = CPU::Z80::Assembler::Opcode->new(
+  $opcode = CPU::Z80::Assembler::Opcode->new(
 					address => 0,
 					line => $line,
 					child => [byte, byte, ["type", $expr]]);
-  my $value = $opcode->evaluate;
+  $value = $opcode->evaluate;
   $bytes = $opcode->bytes($address, \%symbol_table);
-  my $size = $opcode->size;
+  $size = $opcode->size;
 
 =head1 DESCRIPTION
 
 This module defines the class that represents one assembly instruction to be
 added to the object code. The instruction can contain references to
 L<CPU::Z80::Assembler::Expr> expressions that are computed at link time.
-
-This class extends the class L<CPU::Z80::Assembler::Node>.
 
 =head1 EXPORTS
 
@@ -78,8 +87,6 @@ Get/set the line - text, file name and line number where the token was read.
 
 =head2 evaluate
 
-  $value = $opcode->evaluate
-
 Called when opcode is referred to by a label, returns the opcode address.
 
 =cut
@@ -103,7 +110,9 @@ with the result object code.
 
 #------------------------------------------------------------------------------
 
-sub bytes { my($self, $address, $symbol_table) = @_;
+sub bytes { 
+	my($self, $address, $symbol_table) = @_;
+	
 	my $bytes = "";
 	for my $expr (@{$self->child}) {
 		if (! defined($expr)) {
