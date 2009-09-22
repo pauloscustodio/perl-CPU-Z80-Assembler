@@ -14,12 +14,11 @@ CPU::Z80::Assembler::Preprocessor - Preprocessor for the Z80 assembler
 
 use strict;
 use warnings;
-use 5.006;
 
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

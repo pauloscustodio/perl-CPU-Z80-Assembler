@@ -14,13 +14,12 @@ CPU::Z80::Assembler::Macro - Macro pre-processor for the Z80 assembler
 
 use strict;
 use warnings;
-use 5.006;
 
 use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter

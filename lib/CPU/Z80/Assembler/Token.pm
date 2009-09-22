@@ -14,9 +14,8 @@ CPU::Z80::Assembler::Token - One token retrieved from the input
 
 use strict;
 use warnings;
-use 5.006;
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
 
 use Data::Dump 'dump';
 use CPU::Z80::Assembler::Line;

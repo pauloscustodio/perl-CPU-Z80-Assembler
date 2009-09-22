@@ -4,7 +4,6 @@ package CPU::Z80::Assembler;
 
 use strict;
 use warnings;
-use 5.006;
 
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Program;
@@ -14,7 +13,9 @@ use Text::Tabs; 						# imports expand(), unexpand()
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.05_05';
+our $VERSION = '2.05_06';
+our $verbose;
+our $fill_byte = 0xFF;
 
 use base qw(Exporter);
 
@@ -28,7 +29,6 @@ sub z80asm {
 	my $program = CPU::Z80::Assembler::Program->new();
 	my $token_stream = z80lexer(@input);
 	$program->parse($token_stream);
-	$program->link;
 	my $bytes = $program->bytes($list_output);
 	$list_output->flush() if $list_output;
 	return $bytes;
@@ -47,6 +47,7 @@ CPU::Z80::Assembler - a Z80 assembler
   use CPU::Z80::Assembler;
 
   $CPU::Z80::Assembler::verbose = 1;
+  our $CPU::Z80::Assembler::fill_byte = 0xFF;
   $binary = z80asm(q{
       ORG 0x1000
       LD A, 1
@@ -135,8 +136,23 @@ See L<CPU::Z80::Assembler::Lexer> for details on the allowed source file tokens.
 
 =head2 Numbers
 
-Numbers can be supplied in either decimal, hexadecimal, or binary. Numbers must start with a digit 0 to 9.
-Hex numbers have a leading 0x (0x****) or a trailing H (0****H). Binary numbers have a leading 0b (0b****) or a trailing B (****B).
+Numbers can be supplied in either decimal, hexadecimal or binary. Numbers must start with a digit 0 to 9:
+
+=over 4
+
+=item Decimal
+
+159
+
+=item Hexadecimal
+
+0xFA21, 0FA21H, $FA21, #FA21
+
+=item Binary
+
+0b12, 12B, %12
+
+=back
 
 =head2 Pseudo-instructions
 
@@ -161,8 +177,7 @@ include the quotes surrounding it or newlines.
 
 Tell the assembler to start building the code at this address.  Must
 be the first instruction and can only appear once.  If absent,
-defaults to 0x0000.  This value is available in an assembler label called
-'org'.
+defaults to 0x0000.
 
 =item INCLUDE "filename"
 
@@ -198,7 +213,7 @@ for the convenience of those using the CPU::Emulator::Z80 module.
 
 =head2 Labels
 
-Labels may be preceded by a dollar sign '$', must start with a letter or
+Labels must start with a letter or
 underscore,
 and consist solely of letters, underscores and numbers.  They default
 to having the value of the address they are created at.  If you want
