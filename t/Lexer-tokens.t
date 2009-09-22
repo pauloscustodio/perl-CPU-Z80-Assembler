@@ -5,12 +5,12 @@
 use warnings;
 use strict;
 
-use Test::More tests => 1920;
+use Test::More tests => 1845;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
 use_ok	'CPU::Z80::Assembler::Stream';
 
-require 't/test_utils.pl';
+require_ok 't/test_utils.pl';
 our $stream;
 
 isa_ok	$stream = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
@@ -311,37 +311,11 @@ test_token(	"STRING", 	"and");
 test_token(	"STRING", 	"quote");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"Identifier INDENTIFIER indentifier \$Identifier \$INDENTIFIER \$indentifier \n", 21, "DATA");
+test_token_line(	"Identifier INDENTIFIER indentifier \$ cplx dy daaz det _012\n", 21, "DATA");
 test_token(	"NAME",		"Identifier");
 test_token(	"NAME",		"INDENTIFIER");
 test_token(	"NAME",		"indentifier");
-test_token(	"NAME",		"Identifier");
-test_token(	"NAME",		"INDENTIFIER");
-test_token(	"NAME",		"indentifier");
-test_token(	"\n", 		"\n");
-
-test_token_line(	"\$cpl \$d \$daa \$de \$dec \$di \$djnz \$e \$ei \$ex \$exx \$h \$halt \$hl \$i \$im \$ \$\$\n", 22, "DATA");
-test_token(	"NAME",		"cpl");
-test_token(	"NAME",		"d");
-test_token(	"NAME",		"daa");
-test_token(	"NAME",		"de");
-test_token(	"NAME",		"dec");
-test_token(	"NAME",		"di");
-test_token(	"NAME",		"djnz");
-test_token(	"NAME",		"e");
-test_token(	"NAME",		"ei");
-test_token(	"NAME",		"ex");
-test_token(	"NAME",		"exx");
-test_token(	"NAME",		"h");
-test_token(	"NAME",		"halt");
-test_token(	"NAME",		"hl");
-test_token(	"NAME",		"i");
-test_token(	"NAME",		"im");
 test_token(	"NAME",		"\$");
-test_token(	"NAME",		"\$");
-test_token(	"\n", 		"\n");
-
-test_token_line(	" cplx dy daaz det _012\n", 23, "DATA");
 test_token(	"NAME",		"cplx");
 test_token(	"NAME",		"dy");
 test_token(	"NAME",		"daaz");
@@ -349,18 +323,31 @@ test_token(	"NAME",		"det");
 test_token(	"NAME",		"_012");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"0 1 0xAF 0xaf 0x100 0b01 0b10 0afh 0110b 0AFH 0110B\n", 24, "DATA");
+test_token_line(	"0 1 234 567 89\n", 22, "DATA");
 test_token(	"NUMBER", 	"0");
 test_token(	"NUMBER", 	"1");
+test_token(	"NUMBER", 	"234");
+test_token(	"NUMBER", 	"567");
+test_token(	"NUMBER", 	"89");
+test_token(	"\n", 		"\n");
+
+test_token_line(	"0xAF 0xaf 0x100 0afh 0AFH \$af #af\n", 23, "DATA");
 test_token(	"NUMBER", 	"0xAF");
 test_token(	"NUMBER", 	"0xaf");
 test_token(	"NUMBER", 	"0x100");
+test_token(	"NUMBER", 	"0x0af");
+test_token(	"NUMBER", 	"0x0AF");
+test_token(	"NUMBER", 	"0xaf");
+test_token(	"NUMBER", 	"0xaf");
+test_token(	"\n", 		"\n");
+
+test_token_line(	"0b01 0b10 0b010 010b 010B %010\n", 24, "DATA");
 test_token(	"NUMBER", 	"0b01");
 test_token(	"NUMBER", 	"0b10");
-test_token(	"NUMBER", 	"0x0af");
-test_token(	"NUMBER", 	"0b0110");
-test_token(	"NUMBER", 	"0x0AF");
-test_token(	"NUMBER", 	"0b0110");
+test_token(	"NUMBER", 	"0b010");
+test_token(	"NUMBER", 	"0b010");
+test_token(	"NUMBER", 	"0b010");
+test_token(	"NUMBER", 	"0b010");
 test_token(	"\n", 		"\n");
 
 test_eof();
@@ -387,7 +374,7 @@ ORG STOP DEFB DEFW DEFT DEFM
 'unclosed string ; 
 "unclosed string ; 
 'clo;sed' "string" 'with''quote' "and""quote" ; comment '
-Identifier INDENTIFIER indentifier $Identifier $INDENTIFIER $indentifier 
-$cpl $d $daa $de $dec $di $djnz $e $ei $ex $exx $h $halt $hl $i $im $ $$
- cplx dy daaz det _012
-0 1 0xAF 0xaf 0x100 0b01 0b10 0afh 0110b 0AFH 0110B
+Identifier INDENTIFIER indentifier $ cplx dy daaz det _012
+0 1 234 567 89
+0xAF 0xaf 0x100 0afh 0AFH $af #af
+0b01 0b10 0b010 010b 010B %010
