@@ -7,46 +7,65 @@ use strict;
 use CPU::Z80::Assembler;
 # $CPU::Z80::Assembler::verbose =1;
 
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 is	z80asm('
 	ORG 0x1234
-; Test ORG as first instruction
-$start
-	JP $start
+start
+	JP start
 '),
 	"\xC3\x34\x12", "ORG as first instruction";
 
 is	z80asm('
-; Test ORG as not first instruction
+; hello
 	ORG 0x1234
-$start
-	JP $start
+start
+	JP start
 '),
-	"\xC3\x34\x12", "ORG as second instruction";
+	"\xC3\x34\x12", "ORG after comment";
 
-eval { z80asm('
+is	z80asm('
 	NOP
-; Test ORG after some code
-	ORG 0x1234
-$start
-	JP $start
-') };
-like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
+	ORG 1
+start
+	JP start
+'),
+	"\x00\xC3\x01\x00", "ORG after some code";
+
+is	z80asm('
+	ORG 3
+	NOP
+	ORG 4
+start
+	JP start
+'),
+	"\x00\xC3\x04\x00", "two contiguous ORGs";
+
+$CPU::Z80::Assembler::fill_byte = 0xFF;
+is	z80asm('
+	ORG 3
+	NOP
+	ORG 5
+start
+	JP start
+'),
+	"\x00\xFF\xC3\x05\x00", "two non-contiguous ORGs";
+
+$CPU::Z80::Assembler::fill_byte = 0x1F;
+is	z80asm('
+	ORG 2
+	NOP
+	ORG 5
+start
+	JP start
+'),
+	"\x00\x1F\x1F\xC3\x05\x00", "two non-contiguous ORGs";
 
 eval { z80asm('
-	ORG 0x10
-	DEFB 0x30, 0x31, 0x32, 0x33, 0x34
-	ORG 0x15
-	DEFB 0x35, 0x36, 0x37, 0x38, 0x39
+ORG 0x10
+DEFB 0x30, 0x31, 0x32, 0x33, 0x34
+ORG 0x11
+DEFB 0x35, 0x36, 0x37, 0x38, 0x39
 ') };
-like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
-
-eval { z80asm('
-	ORG 0x10
-	DEFB 0x30, 0x31, 0x32, 0x33, 0x34
-	ORG 0x16
-	DEFB 0x35, 0x36, 0x37, 0x38, 0x39
-	') };
-like	$@, qr/ORG must be the first intruction/, "ORG must be first instruction";
+is $@, "\tDEFB 0x35, 0x36, 0x37, 0x38, 0x39\ninput(5) : error: segments overlap, previous ends at 0x0015, next starts at 0x0011\n", "segment overlap";
 
