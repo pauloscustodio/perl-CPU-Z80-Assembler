@@ -12,8 +12,8 @@ use Test::More tests => 3;
 ok my $bin1 = z80asm('
         MACRO HLAGH {
           LD A,A
-        $label
-          DEFW $label
+        label
+          DEFW label
         }
         HLAGH
         HLAGH
@@ -22,9 +22,9 @@ ok my $bin1 = z80asm('
 
 ok my $bin2 = z80asm('
           LD A,A
-          DEFW $$
+          DEFW $
           LD A,A
-          DEFW $$
+          DEFW $
     '),
     "expanded macro";
 

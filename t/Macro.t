@@ -33,7 +33,7 @@ is $bin1, $bin2, "macro expansion OK";
 
 
 ok $bin1 = z80asm('
-macro $m { nop } : $m : $m : $m
+macro m1 { nop } : m1 : m1 : m1
 ');
 ok $bin2 = z80asm('
 nop : nop : nop

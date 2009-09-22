@@ -15,23 +15,23 @@ ok my $bin1 = z80asm('
           PUSH AF
           PUSH BC
           PUSH DE
-          LD B, $r1
-          LD E, $r2
+          LD B, r1
+          LD E, r2
           LD HL, 0
           LD D, 0
-        $mulloop
+        mulloop
           ADD HL, DE
-          DJNZ $mulloop
-          LD ($mulstore), HL
-          JR $mulexit
-        $mulstore
+          DJNZ mulloop
+          LD (mulstore), HL
+          JR mulexit
+        mulstore
           DEFW 0
-        $mulexit
+        mulexit
           POP DE
           POP BC
           POP AF
           POP HL
-          LD $target, ($mulstore)
+          LD target, (mulstore)
         }
         MUL8x8 HL, C, E
     '),
@@ -46,19 +46,19 @@ ok my $bin2 = z80asm('
           LD E, E
           LD HL, 0
           LD D, 0
-        $mulloop
+        mulloop
           ADD HL, DE
-          DJNZ $mulloop
-          LD ($mulstore), HL
-          JR $mulexit
-        $mulstore
+          DJNZ mulloop
+          LD (mulstore), HL
+          JR mulexit
+        mulstore
           DEFW 0
-        $mulexit
+        mulexit
           POP DE
           POP BC
           POP AF
           POP HL
-          LD HL, ($mulstore)
+          LD HL, (mulstore)
     '),
     "expanded macro";
 

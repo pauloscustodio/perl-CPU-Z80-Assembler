@@ -53,8 +53,8 @@ is $@, "\tENDM\ninput(4) : error: expected \"}\" at endm\n",
 
 		
 eval { z80asm('
-MACRO HLAGH $r1 {
-  LD $r1
+MACRO HLAGH r1 {
+  LD r1
 }
 HLAGH { A, C 
 ') };
@@ -73,8 +73,8 @@ is $@, "\tHLAGH A\ninput(5) : error: too many macro arguments at a\n",
 
 
 eval { z80asm('
-MACRO HLAGH $r1 {
-  ADD a, $r1
+MACRO HLAGH r1 {
+  ADD a, r1
 }
 HLAGH B, C
 ') };
@@ -83,8 +83,8 @@ is $@, "\tHLAGH B, C\ninput(5) : error: too many macro arguments at \",\"\n",
 
 
 eval { z80asm('
-MACRO HLAGH $r1, $r2 {
-  ADD $r1, $r2
+MACRO HLAGH r1, r2 {
+  ADD r1, r2
 }
 HLAGH B, C, D
 ') };
@@ -93,8 +93,8 @@ is $@, "\tHLAGH B, C, D\ninput(5) : error: too many macro arguments at \",\"\n",
 
 
 eval { z80asm('
-MACRO HLAGH $r1 {
-  ADD a, $r1
+MACRO HLAGH r1 {
+  ADD a, r1
 }
 HLAGH
 ') };
@@ -103,8 +103,8 @@ is $@, "\tHLAGH\ninput(5) : error: expected value for macro parameter r1 at \"\\
 
 
 eval { z80asm('
-MACRO HLAGH $r1, $r2 {
-  ADD $r1, $r2
+MACRO HLAGH r1, r2 {
+  ADD r1, r2
 }
 HLAGH A
 ') };
@@ -113,8 +113,8 @@ is $@, "\tHLAGH A\ninput(5) : error: expected \",\" after macro parameter r1 at 
 
 
 eval { z80asm('
-MACRO HLAGH $r1, $r2 {
-  ADD $r1, $r2
+MACRO HLAGH r1, r2 {
+  ADD r1, r2
 }
 HLAGH A,
 ') };

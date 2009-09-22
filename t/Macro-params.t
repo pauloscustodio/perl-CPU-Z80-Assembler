@@ -13,73 +13,73 @@ my($bin1, $bin2);
 
 ok $bin1 = z80asm('
 MACRO HLAGH {
-  DEFW $rr
+  DEFW ss
   LD A, 0
-$rr
+ss
 }
 HLAGH
 '), "Macro without parameters";
 ok $bin2 = z80asm('
-  DEFW $rr
+  DEFW ss
   LD A, 0
-$rr
+ss
 '), "expanded macro";
 is $bin1, $bin2, "macro expansion OK";
 
 
 ok $bin1 = z80asm('
-MACRO HLAGH $r {
-  DEFW $rr
-  LD A, $r
-$rr
+MACRO HLAGH s {
+  DEFW ss
+  LD A, s
+ss
 }
 HLAGH C
 '), "Macro parameter names don't clash with labels that start with them";
 ok $bin2 = z80asm('
-  DEFW $rr
+  DEFW ss
   LD A, C
-$rr
+ss
 '), "expanded macro";
 is $bin1, $bin2, "macro expansion OK";
 
 
 ok $bin1 = z80asm('
-MACRO HLAGH $r1,$r2 {
-  DEFW $rr
-  LD $r1, $r2
-$rr
+MACRO HLAGH r1,r2 {
+  DEFW ss
+  LD r1, r2
+ss
 }
 HLAGH A, C
 '), "Macro with 2 parameters";
 ok $bin2 = z80asm('
-  DEFW $rr
+  DEFW ss
   LD A, C
-$rr
+ss
 '), "expanded macro";
 is $bin1, $bin2, "macro expansion OK";
 
 
 ok $bin1 = z80asm('
-MACRO HLAGH $r1,$r2,$r3 {
-  DEFW $rr
-  LD $r1, $r2
-  LD $r2, $r3
-$rr
+MACRO HLAGH r1,r2,r3 {
+  DEFW ss
+  LD r1, r2
+  LD r2, r3
+ss
 }
 HLAGH A, C, D
 '), "Macro with 3 parameters";
 ok $bin2 = z80asm('
-  DEFW $rr
+  DEFW ss
   LD A, C
   LD C, D
-$rr
+ss
 '), "expanded macro";
 is $bin1, $bin2, "macro expansion OK";
 
 
 ok $bin1 = z80asm('
-MACRO HLAGH $r1 {
-  LD $r1
+MACRO HLAGH r1 {
+  LD r1
 }
 HLAGH { A, C }
 '), "Braces in macro argument";
