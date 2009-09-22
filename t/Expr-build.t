@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 37;
+use Test::More tests => 39;
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';

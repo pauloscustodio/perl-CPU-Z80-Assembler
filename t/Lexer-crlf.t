@@ -5,12 +5,12 @@
 use warnings;
 use strict;
 
-use Test::More tests => 63;
+use Test::More tests => 66;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
 use_ok	'CPU::Z80::Assembler::Stream';
 
-require 't/test_utils.pl';
+require_ok 't/test_utils.pl';
 our $stream;
 
 
