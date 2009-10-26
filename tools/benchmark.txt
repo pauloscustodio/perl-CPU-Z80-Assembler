@@ -1,3 +1,0 @@
-# asm_file_MD5:z80masm_version                           	assemble_time_seconds
-bmk_z80.asm-8d1ad16927d41fd4fcdfdee1b23c7b08:z80masm-1.03	10.2697672128677
-bmk_z80.asm-8d1ad16927d41fd4fcdfdee1b23c7b08:z80masm-2.01_01	4.03580284118652

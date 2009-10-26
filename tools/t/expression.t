@@ -1,0 +1,165 @@
+#!perl
+
+# $Id$
+
+use strict;
+use warnings;
+
+use Test::More tests => 19;
+use Data::Dump 'pp';
+
+use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'CPU::Z80::Assembler::Token';
+use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'ParserGenerator';
+
+unlink 'Parser.pm';
+
+isa_ok my $g = ParserGenerator->new(), 'ParserGenerator';
+
+isa_ok my $line = CPU::Z80::Assembler::Line->new(
+								text => "text\n", line_nr => 3, file => "f1.asm"), 
+		'CPU::Z80::Assembler::Line';
+
+my $input;
+
+# expression grammar
+$g->add_rule('unop', 
+					['-', '+', '!', '~'], 
+					'sub {$_[ARGS][0]}');
+$g->add_rule('binop', 
+					['*', '/', '%', 
+					 '+', '-', 
+					 '<<', '>>', 
+					 '<', '>', '<=', '>=', 
+					 '==', '!=', 
+					 '&', '|', '^', 
+					 '&&', '||'], 
+					'sub {$_[ARGS][0]}');
+$g->add_rule('term
+					[unop]*', ['NUMBER', 'NAME'],
+					'sub {$_[ARGS]}');
+$g->add_rule('term
+					[unop]* ( [expr] )',
+					'sub {
+						[ @{$_[ARGS]}[0 .. $#{$_[ARGS]} - 3], 	# unop*
+						  $_[ARGS][-3],							# (
+						  @{$_[ARGS][-2]},						# [expr]
+						  $_[ARGS][-1],							# )
+						]
+					}');
+$g->add_rule('term2
+					[binop] [term]',
+					'sub {[$_[ARGS][0], @{$_[ARGS][1]}]}');
+$g->add_rule('expr
+					[term] [term2]*',
+					'sub {
+						my @ret;
+						for (@{$_[ARGS]}) {
+							push(@ret, @$_);
+						}
+						\@ret;
+					}');
+
+# test
+$g->start_rule('expr');
+$g->write('Parser', 'Parser.pm');
+use_ok 'Parser';
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
+			], "parse ok";
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+			], "parse ok";
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+			], "parse ok";
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+			], "parse ok";
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+			], "parse ok";
+
+isa_ok $input = CPU::Z80::Assembler::Stream->new(
+				CPU::Z80::Assembler::Token->new(type => "(", value => "(", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => ")", value => ")", line => $line), 
+			),
+ 			'CPU::Z80::Assembler::Stream';
+is_deeply Parser::parse($input), [
+				CPU::Z80::Assembler::Token->new(type => "(", value => "(", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+				CPU::Z80::Assembler::Token->new(type => ")", value => ")", line => $line), 
+			], "parse ok";
