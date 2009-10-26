@@ -1,294 +1,412 @@
 # $Id$
 
-# Implement the z80masm macro processor
-
 package CPU::Z80::Assembler::Macro;
+
+#------------------------------------------------------------------------------
+
+=head1 NAME
+
+CPU::Z80::Assembler::Macro - Macro pre-processor for the Z80 assembler
+
+=cut
+
+#------------------------------------------------------------------------------
 
 use strict;
 use warnings;
-use 5.008;
 
-use HOP::Stream ':all';
+use CPU::Z80::Assembler::Token;
+use CPU::Z80::Assembler::Parser;
+use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.05';
-
-use vars qw(@EXPORT);
-use base qw(Exporter);
-@EXPORT = qw(z80pp);
-
-my %STMT_END; 	for ("\n", "LINE", ":"     ) { $STMT_END{$_}++ }
-my %ARG_END; 	for ("\n", "LINE", ":", ",") { $ARG_END{$_}++ }
+our $VERSION = '2.06';
 
 #------------------------------------------------------------------------------
-use Class::Struct 'CPU::Z80::Assembler::MacroDef' => [
-	name	=> '$',			# macro name
-	params 	=> '@',			# list of macro parameter names
-	locals	=> '%',			# list of macro local labels
-	tokens	=> '$',			# stream of macro tokens
-];
+# Class::Struct cannot be used with Exporter
+#use Class::Struct (
+#	name	=> '$',			# macro name
+#	params 	=> '@',			# list of macro parameter names
+#	locals	=> '%',			# list of macro local labels
+#	tokens	=> '@',			# list of macro tokens
+#);
+sub new { my($class, %args) = @_;
+	return bless [
+				$args{name}, 
+				$args{params}	|| [], 
+				$args{locals}	|| {}, 
+				$args{tokens}	|| []
+			], $class;
+}
+sub name   { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
+sub params { defined($_[1]) ? $_[0][1] = $_[1] : $_[0][1] }
+sub locals { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
+sub tokens { defined($_[1]) ? $_[0][3] = $_[1] : $_[0][3] }
 
 #------------------------------------------------------------------------------
-# ($macro, $input) = _define_macro($input, $last_line)
-#	Parse macro definition, return the macro definition and contents
-#	Leave the $input at a stream containing all seen LINE tokens during the 
-#	macro definition
-sub _define_macro {
-	my($input, $last_line) = @_;
-	my $macro = CPU::Z80::Assembler::MacroDef->new;
-	
-	# get macro name
+
+=head1 SYNOPSIS
+
+  use CPU::Z80::Assembler::Macro;
+
+  my $macro = CPU::Z80::Assembler::Macro->new(
+                  name   => $name,
+                  params => \@params_names,
+                  locals => \%local_labels,
+                  tokens => \@token_list);
+  $macro->parse_body($input);
+  $macro->expand_macro($input);
+
+=head1 DESCRIPTION
+
+This module provides a macro pre-processor to parse macro definition statements,
+and expand macro calls in the token stream. Both the input and output streams
+are L<CPU::Z80::Assembler::Stream> objects returning sequences of tokens as defined 
+in L<CPU::Z80::Assembler::Lexer>.
+
+The object created by new() describes one macro. It is used during the parse phase
+to define the macro object while reading the input token stream.
+
+=head1 EXPORTS
+
+None.
+
+=head1 FUNCTIONS
+
+=head2 new
+
+Creates a new macro definition object, see L<Class::Struct>.
+
+=head2 name
+
+Get/set the macro name.
+
+=head2 params
+
+Get/set the formal parameter names list.
+
+=head2 locals
+
+Get/set the list of local macro labels, stored as a hash.
+
+=head2 tokens
+
+Get/set the list of tokens in the macro definition.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+=head2 parse_body
+
+This method is called with the token input stream pointing at the first token
+after the macro parameter list, i.e. the '{' or ':' or "\n" character.
+
+It parses the macro body, leaving the input stream after the last token of the
+macro definition ('endm' or closing '}'), with all the "\n" characters of the
+macro defintion pre-pended, and filling in locals() and tokens().
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub parse_body {
+	my($self, $input) = @_;
 	my $token;
-	($token = head($input)) && $token->[0] eq 'NAME'
-		or die "Macro name needed\n";
-	$macro->name( $token->[1] );
-	drop($input);
 	
-	# get macro parameters
-	while (($token = head($input)) && $token->[0] eq 'NAME') {
-		push(@{$macro->params}, $token->[1]);		# store param name
-		drop($input);
-		if (($token = head($input)) && $token->[0] eq ',') {
-			drop($input);							# eat comma
-		}
-	}
-
 	# skip {
 	my $opened_brace;
-	($token = head($input)) 
-		or die "Macro body needed\n";	
-	if ($token->[0] eq '{') {
-		drop($input);
+	defined($token = $input->head) 
+		or CPU::Z80::Assembler::Token->error_at($token, "macro body not found");	
+	if ($token->type eq '{') {
+		$input->get;
 		$opened_brace++;
 	}
-	elsif (exists($STMT_END{$token->[0]})) {
+	elsif ($token->type =~ /^[:\n]$/) {
 		# OK, macro body follows on next line
 	}
 	else {
-		die "Unexpected '",$token->[0],"'\n";
+		$token->error("unexpected '". $token->type ."'");
 	}
-		
+	
 	# retrieve tokens
 	my @macro_tokens;
 	my @line_tokens;
+	my %locals;
+
+	# need to note all the labels in the macro, 
+	# i.e. NAME after statement end
+	my $last_stmt_end = 1;
+
 	my $parens = 0;
-	my $last_stmt_end = 1;							# last statement finished
-	
-	# include LINE of macro definition
-	push(@macro_tokens, $last_line) if $last_line;		
-	
-	while ($token = head($input)) {
-		my $label = $token->[0];
-		if ($label eq "LINE") {
-			push(@macro_tokens, $token);
-			push(@line_tokens, $token);
-			drop($input);
-		}
-		elsif ($label eq '{') {
+	while (defined($token = $input->head)) {
+		my $type = $token->type;
+		if ($type eq "{") {
 			$parens++;
-			push(@macro_tokens, $token);
-			drop($input);
+			push @macro_tokens, $token;
+			$input->get;
 		}
-		elsif ($label eq 'endm') {
-			drop($input);							# skip delimiter
+		elsif ($type eq "endm") {
+			$opened_brace 
+				and $token->error("expected \"}\"");
+			$input->get;							# skip delimiter
 			last;
 		}
-		elsif ($label eq '}') {
+		elsif ($type eq "}") {
 			if ($parens > 0) {
 				$parens--;
-				push(@macro_tokens, $token);
-				drop($input);
+				push @macro_tokens, $token;
+				$input->get;
 			}
 			else {
-				drop($input) if $opened_brace;		# skip delimiter
+				$input->get if $opened_brace;		# skip delimiter
 				last;
 			}
 		}
-		elsif ($label eq "NAME" && $last_stmt_end) {
-			$macro->locals->{$token->[1]}++;
-			push(@macro_tokens, $token);
-			drop($input);
+		elsif ($type eq "NAME" && $last_stmt_end) {	# local label
+			$locals{$token->value}++;
+			push @macro_tokens, $token;
+			$input->get;
 		}
 		else {
-			push(@macro_tokens, $token);
-			drop($input);
+			push @macro_tokens, $token;
+			push @line_tokens,  $token if $type eq "\n";	
+											# save new-lines for listing
+			$input->get;
 		}
-		$last_stmt_end = exists($STMT_END{$token->[0]});
+		$last_stmt_end = ($type =~ /^[:\n]$/);
 	}
-	die "Macro body not finished\n" unless $token;
-	die "Unmatched braces\n" if $parens != 0;
+	defined($token) 
+		or CPU::Z80::Assembler::Token->error_at($token, "macro body not finished");
+	($parens == 0)
+		or $token->error("Unmatched braces");
 	
-	# macro contents and line tokens as streams
-	$macro->tokens( list_to_stream(@macro_tokens) );
-	my $line_stream =  list_to_stream(@line_tokens);
-
 	# prepend all seen LINE tokens in input
-	$input = append( $line_stream, $input );
+	$input->unget(@line_tokens);
 	
-	return ($macro, $input);
+	$self->tokens(\@macro_tokens);
+	$self->locals(\%locals);					
 }
 
 #------------------------------------------------------------------------------
-# $stream = _expand_macro($macro, $args, $instance)
-#	Return a stream that returns the tokens of the expanded macro
-# 	Renames defined labels
-sub _expand_macro {
-	my($macro, $args, $instance) = @_;
 
-	# compute parameter expansion
-	my @params = @{$macro->params};
-	my @args = @$args;
-	my %params;
-	for (0 .. $#params) {
-		$params{shift(@params)} = shift(@args);
-	}
-	die "Too many arguments to macro\n" if @args;
+=head2 expand_macro
+
+This method is called with the input stream pointing at the first token
+after the macro name in a macro call. It parses the macro arguments, if any
+and expands the macro call, inserting the expanded tokens in the input stream.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub expand_macro {
+	my($self, $input) = @_;
+	our $instance++;									# unique ID for local labels
+	
+	my $start_token = $input->head;						# for error messages
+	defined($start_token) or die;						# must have at least a "\n"
+	
+	my $args = $self->parse_macro_arguments($input);
 	
 	# compute token expansion
-	my $expand_stream;
-	my $input = $macro->tokens;
-	$expand_stream = promise {
-		for(;;) {
-			my $token = drop($input) or return undef;		# end of expansion
-			if ($token->[0] eq 'NAME') {
-				my $name = $token->[1];
-				if (exists $params{$name}) {
-					$input = append($params{$name}, $input);
-					# get next token
-				}
-				elsif (exists $macro->locals->{$name}) {
-					my $new_token = ['NAME', "_macro_".$instance."_".$name];
-					return node($new_token, promise { $expand_stream->() });
+	my $macro_stream  = CPU::Z80::Assembler::Stream->new(@{$self->tokens});
+	my $expand_stream = CPU::Z80::Assembler::Stream->new(
+		sub {
+			for(;;) {
+				my $token = $macro_stream->get;
+				defined($token) or return undef;		# end of expansion
+				
+				$token = $token->clone;					# make a copy
+				$token->line($start_token->line);		# set the line of invocation
+				
+				if ($token->type eq 'NAME') {
+					my $name = $token->value;
+					if (exists $args->{$name}) {
+						my @tokens = @{$args->{$name}};	# expansion of the name
+						return sub {shift @tokens};		# insert a new iterator to return	
+														# these - $macro_stream->unget();
+														# would allow recursive expansion 
+														# of arg names - not intended
+					}
+					elsif (exists $self->locals->{$name}) {
+						$token->value("_macro_".$instance."_".$name);
+						return $token;
+					}
+					else {
+						return $token;
+					}
 				}
 				else {
-					return node($token, promise { $expand_stream->() });
+					return $token;
 				}
 			}
-			else {
-				return node($token, promise { $expand_stream->() });
-			}
-		}
-	};
-	return $expand_stream->();
+		});
+		
+	# prepend the expanded stream in the input
+	$input->unget($expand_stream->iterator);
 }
 
 #------------------------------------------------------------------------------
-# ($sequence, $input) = _extract_argument($input)
-#	Extract the sequence of input tokens from $input into $sequence up to and
+
+=head2 parse_macro_arguments
+
+This method is called with the input stream pointing at the first token
+after the macro name in a macro call. It parses the macro arguments, leaves 
+the input stream after the macro call, and returns an hash reference mapping
+formal argument names to list of tokens in the actual parameters.
+
+The arguments are list of tokens separated by ','. An argument can be enclosed
+in braces '{' '}' to allow ',' to be passed - the braces are not part of the argument
+value.
+
+=cut
+
+#------------------------------------------------------------------------------
+
+sub parse_macro_arguments {
+	my($self, $input) = @_;
+	my %args;
+	my $token;
+	
+	my @params = @{$self->params};						# formal parameters
+	for (my $i = 0; $i < @params; $i++) {
+		my $param = $params[$i];
+		$token = $input->head;
+		defined($token) && $token->type !~ /^[:\n,]$/
+			or CPU::Z80::Assembler::Token->error_at($token, 
+										"expected value for macro parameter $param");
+		my @arg = $self->_parse_argument($input);
+		$args{$param} = \@arg;
+		
+		if ($i != $#params) {							# expect a comma
+			$token = $input->head;
+			defined($token) && $token->type eq ','
+				or CPU::Z80::Assembler::Token->error_at($token, 
+										"expected \",\" after macro parameter $param");
+			$input->get;
+		}
+	}
+	
+	# expect end of statement, keep input at end of statement marker
+	$token = $input->head;
+	(!defined($token) || $token->type =~ /^[:\n]$/)
+		or CPU::Z80::Assembler::Token->error_at($token, "too many macro arguments");
+	
+	return \%args;
+}
+
+#------------------------------------------------------------------------------
+# @tokens = _parse_argument($input)
+#	Extract the sequence of input tokens from $input into @tokens up to and
 #	not including the delimiter token
-sub _extract_argument {
-	my($input) = @_;
+sub _parse_argument {
+	my($class, $input) = @_;
 	my $token;	
 
 	# retrieve tokens
-	my @sequence;
+	my @tokens;
 	my $parens = 0;
 	my $opened_brace;
-	while ($token = head($input)) {
-		my $label = $token->[0];
-		if (exists($ARG_END{$label}) && $parens == 0) {
+	while (defined($token = $input->head)) {
+		my $type = $token->type;
+		if ($type =~ /^[:\n,]$/ && $parens == 0) {
 			last;
 		}
-		elsif ($label eq '{') {
+		elsif ($type eq '{') {
 			$parens++;
-			push(@sequence, $token) if $opened_brace++;
-			drop($input);
+			push(@tokens, $token) if $opened_brace++;
+			$input->get;
 		}
-		elsif ($label eq '}') {
+		elsif ($type eq '}') {
 			if ($parens > 0) {
 				$parens--;
-				push(@sequence, $token) if --$opened_brace;
-				drop($input);
+				push(@tokens, $token) if --$opened_brace;
+				$input->get;
 			}
 			else {
-				drop($input) if $opened_brace;		# skip delimiter
+				$input->get if $opened_brace;		# skip delimiter
 				last;
 			}
 		}
 		else {
-			push(@sequence, $token);
-			drop($input);
+			push(@tokens, $token);
+			$input->get;
 		}
 	}
-	die "Unmatched braces\n" if $parens != 0;
+	CPU::Z80::Assembler::Token->error_at($token, "unmatched braces") 
+		if $parens != 0;
 
-	my $sequence = list_to_stream(@sequence);
-	return ($sequence, $input);
+	return @tokens;
 }
 
 #------------------------------------------------------------------------------
-# ($args, $input) = _macro_arguments($input)
-#	Get the comma-delimited tokens into the @$args array of streams
-sub _macro_arguments {
-	my($input) = @_;
-	my @args;
-	for(;;) {
-		my $token = head($input) or last;			# end of line
-		last if exists($STMT_END{$token->[0]});		# end of args
-		
-		(my $arg, $input) = _extract_argument($input);
-		push(@args, $arg);
-		
-		if (($token = head($input)) && $token->[0] eq ',') {
-			drop($input);							# eat comma
-		}
-		else {
-			last;
-		}
-	}
-	return (\@args, $input);
-}
+
+=head1 SYNTAX
+
+=head2 Macros
+
+Macros are created thus.  This example creates an "instruction" called MAGIC
+that takes two parameters:
+
+    MACRO MAGIC param1, param2 {
+        LD param1, 0
+        BIT param2, L
+        label = 0x1234
+        ... more real instructions go here.
+    }
+
+Within the macro, param1, param2 etc will be replaced with whatever
+parameters you pass to the macro.  So, for example, this:
+
+    MAGIC HL, 2
+
+Is the same as:
+
+    LD HL, 0
+    BIT 2, L
+    ...
+
+Any labels that you define inside a macro are local to that macro.  Actually
+they're not but they get renamed to _macro_NN_... so that they
+effectively *are* local.
+
+There is an alternative syntax, for compatibility with other assemblers, with exactly the
+same effect.
+
+    MACRO MAGIC param1, param2
+        LD param1, 0
+        BIT param2, L
+        label = 0x1234
+        ... more real instructions go here.
+    ENDM
+
+A ',' can be passed as part of a macro argument, by enclosing the arguments between {braces}.
+
+    MACRO PAIR x {
+        LD x
+    }
+    PAIR {A,B}
+
+expands to:
+
+    LD A,B
+
+=head1 BUGS and FEEDBACK
+
+See L<CPU::Z80::Assembler>.
+
+=head1 SEE ALSO
+
+L<CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Lexer>
+L<CPU::Z80::Assembler::Stream>
+
+=head1 AUTHORS, COPYRIGHT and LICENCE
+
+See L<CPU::Z80::Assembler>.
+
+=cut
 
 #------------------------------------------------------------------------------
-# z80pp(INPUT)
-# 	INPUT is a HOP::Stream of lexical tokens, as returned by _lexer_stream()
-#	The result HOP::Stream does not contain macro definitions, and contains 
-#	all the expanded macro instantiations.
-#	The macro syntax is:
-#		MACRO name param1, param2, param3 {
-#			macro statements
-#		}
-#	or:
-#		MACRO name param1, param2, param3
-#			macro statements
-#		ENDM
-# 	The macro call is coded as:
-#		name value1,value2,value3
-#	which is expanded to all the macro statements, with param* replaced by value*
-sub z80pp {
-	my($input) = @_;
-	
-	my $instance;
-	my %macros;
-	my $last_line;						# last LINE token received
-	
-	my $expand_promise;					# to be used recursively
-	$expand_promise = sub {
-		for(;;) {
-			my $token = drop($input) or return undef;
-			my $label = $token->[0];
-			if ($label eq "LINE") {
-				$last_line = $token;	# save for later
-				return node($token, promise { $expand_promise->() });
-			}
-			elsif ($label eq 'macro') {
-				(my $macro, $input) = _define_macro($input, $last_line);
-				my $name = $macro->name;
-				die "Error: macro $name redefined\n" if exists $macros{$name};
-				$macros{$name} = $macro;
-				# get next token
-			}
-			elsif ($label eq 'NAME' && exists $macros{$token->[1]}) {
-				(my $args, $input) = _macro_arguments($input);
-				my $expanded = _expand_macro($macros{$token->[1]}, $args, ++$instance);
-				$input = append($expanded, $input);
-				# get next token
-			}
-			else {
-				return node($token, promise { $expand_promise->() });
-			}
-		}
-	};
-	return $expand_promise->();
-}
 
 1;
