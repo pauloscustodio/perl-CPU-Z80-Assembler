@@ -1,0 +1,29 @@
+- Differentiate read-only and read-write labels; if label is redefined, check
+  consistency with multiple usage before and after each re-definition
+- TASM compatibility:
+	- .MODULE xxx and local labels starting by '_'
+	- .BLOCK / .DEFS - advance instruction pointer
+	- .BYTE / DB / DEFB
+	- .WORD / DW / DEFW
+	- #define macros for text substitution, including "\\\n" continuation lines
+	- #ifdef, #ifndef, #else, #endif on defined macros
+	- accept #if EXPR, computed at bytes() phase
+	- .END label : define start label
+	- .EQU / = / .SET to define symbol values
+	- .EXPORT directive to export a list of labels to a file that may be 
+	  included in another assembly
+	- .FILL to fill a number of bytes with a value
+	- .ORG may be used to reserve space
+	- *= / $= as synonyms to .ORG
+	- generate symbol table (command line option)
+	- .TEXT for double-quoted strings, that accept escape sequences
+	- Single quoted strings - no escape sequences
+- Accept -I for include path, open file searches in include path
+- Test performance of lexer based on Regexp::Assemble
+- perlcritic
+- No need to return the "\n" tokens in the macro definition with the new 
+  method of listing looking at the input files
+- List : include line numbers, file names, hex address and bytes, full 
+  input source
+- List : include list of symbols at the end
+- Disallow label re-definition

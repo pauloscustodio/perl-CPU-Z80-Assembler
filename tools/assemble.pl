@@ -1,6 +1,5 @@
 #!perl
 
-#------------------------------------------------------------------------------
 # $Id$
 # Assemble with sjasmplus and compare result of our internal assembly
 # with the output of sjasmplus

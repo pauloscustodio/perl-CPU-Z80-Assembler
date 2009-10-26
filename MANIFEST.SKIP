@@ -3,6 +3,7 @@
 
 # Developper tools
 ^tools\b
+^TODO\.txt
 
 #!start included C:\Perl\lib\ExtUtils\MANIFEST.SKIP
 # Avoid version control files.
