@@ -22,7 +22,7 @@ use CPU::Z80::Assembler::Preprocessor;
 use CPU::Z80::Assembler::Stream;
 use Regexp::Trie;
 
-our $VERSION = '2.06';
+our $VERSION = '2.07';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

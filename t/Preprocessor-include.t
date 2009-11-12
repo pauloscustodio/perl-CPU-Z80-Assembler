@@ -5,7 +5,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 81;
+use Test::More tests => 82;
 use Data::Dump 'dump';
 
 use_ok 'CPU::Z80::Assembler::Line';
@@ -15,6 +15,11 @@ use_ok 'CPU::Z80::Assembler::Stream';
 require_ok 't/test_utils.pl';
 our $stream;
 
+# get error message for non-existent-file
+my $file = "this-file-does-not-exist";
+ok ! -f $file;
+open(my $fh, $file);
+my $file_not_found = $!;
 
 isa_ok	$stream = z80preprocessor('include "t/data/include.z80"'),
 		'CPU::Z80::Assembler::Stream';
@@ -25,7 +30,7 @@ test_eof();
 
 
 eval {	$stream = z80preprocessor('include "NOFILE"') };
-is		$@, "\tinclude \"NOFILE\"\ninput(1) : error: open NOFILE: No such file or directory\n", "include NOFILE";
+is		$@, "\tinclude \"NOFILE\"\ninput(1) : error: open NOFILE: $file_not_found\n", "include NOFILE";
 
 isa_ok	$stream = z80preprocessor('include "t/data/include3.z80"'),
 		'CPU::Z80::Assembler::Stream';
