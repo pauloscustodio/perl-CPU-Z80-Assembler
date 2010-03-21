@@ -18,7 +18,7 @@ use warnings;
 use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

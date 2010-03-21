@@ -15,7 +15,7 @@ CPU::Z80::Assembler::Stream - Object to encapsulate an iterator to be able to un
 use strict;
 use warnings;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 #------------------------------------------------------------------------------
 

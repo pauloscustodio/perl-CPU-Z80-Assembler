@@ -73,4 +73,4 @@ is			$jump->short_jump->address,	3, 		"short address";
 is			$jump->long_jump->address,	3, 		"short address";
 is			$jump->line->text, 			3, 		"line text";
 is			$jump->line->line_nr, 		3, 		"line line_nr";
-is			$jump->short_jump->line,	$jump->long_jump->line,		"same line";
+is			$jump->short_jump->line->as_string,	$jump->long_jump->line->as_string,		"same line";

@@ -15,7 +15,7 @@ CPU::Z80::Assembler::Line - One line of text retrieved from the input
 use strict;
 use warnings;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 use Data::Dump 'dump';
 

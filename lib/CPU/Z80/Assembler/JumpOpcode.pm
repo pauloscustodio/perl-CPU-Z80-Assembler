@@ -16,7 +16,7 @@ computed at link time
 use strict;
 use warnings;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 use CPU::Z80::Assembler::Line;
 

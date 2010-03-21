@@ -19,7 +19,7 @@ use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Stream;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter

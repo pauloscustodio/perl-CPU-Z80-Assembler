@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------
+2.08 2010-03-21
+-------------------------------------------------------------------------------
+- Failed t/JumpOpcode.t test 36 in perl 5.11.5, operation "eq": no method found 
+  when comparing two CPU::Z80::Assembler::Line; 
+  convert to string before passing on to is()
+
+-------------------------------------------------------------------------------
 2.07 2009-11-12
 -------------------------------------------------------------------------------
 - One test of t/Preprocessor-include.t failed on localized version of $!

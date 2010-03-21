@@ -19,7 +19,7 @@ use Text::Tabs;
 use CPU::Z80::Assembler::Stream;
 use CPU::Z80::Assembler::Preprocessor;
 
-our $VERSION = '2.07';
+our $VERSION = '2.08';
 
 use Class::Struct (
 		output			=> '$',		# output file handle for the list
