@@ -29,14 +29,14 @@ sub MY::postamble {
 # On Win32, pl2bat is always run, even if nothing changed, because z80masm is copied and not touched
 # Trick it
 
-pure_all :: .touched
+pure_all :: touched
 
-.touched : $(INST_SCRIPT)$(DFSEP)z80masm
+touched : $(INST_SCRIPT)$(DFSEP)z80masm
 	$(TOUCH) $(INST_SCRIPT)$(DFSEP)z80masm
-	$(TOUCH) .touched
+	$(TOUCH) touched
 
 clean ::
-	- $(RM_F) .touched
+	- $(RM_F) touched
 
 # generate the parser - developper only, specific Win32
 gentools : 
