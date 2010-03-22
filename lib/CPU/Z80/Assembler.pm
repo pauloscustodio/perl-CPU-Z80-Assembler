@@ -13,7 +13,7 @@ use Text::Tabs; 						# imports expand(), unexpand()
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.08';
+our $VERSION = '2.08_01';
 our $verbose;
 our $fill_byte = 0xFF;
 
