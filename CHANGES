@@ -1,8 +1,13 @@
 -------------------------------------------------------------------------------
+2.09 2010-03-23
+-------------------------------------------------------------------------------
+- bump version
+
+-------------------------------------------------------------------------------
 2.08_01 2010-03-22
 -------------------------------------------------------------------------------
-- CPAN cannot unpack tarball, permission denied; try to give full control to
-  Win7 source files before make dist
+- CPAN cannot unpack tarball, permission denied; give full control to
+  Win7 source files before make dist, add noacl to cygwin fstab
 
 -------------------------------------------------------------------------------
 2.08 2010-03-21
