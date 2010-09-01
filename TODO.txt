@@ -27,3 +27,8 @@
   input source
 - List : include list of symbols at the end
 - Disallow label re-definition
+- nasm macros
+- separate build into object files, libraries, linker
+- RST label does not work; maybe alternate RST / CALL, depending on address?
+- higher level structures
+- Do we need CPU::Z80::Assembler::Line::text()?
