@@ -7,7 +7,6 @@ lib/CPU/Z80/Assembler/AsmTable.pm
 lib/CPU/Z80/Assembler/Expr.pm
 lib/CPU/Z80/Assembler/JumpOpcode.pm
 lib/CPU/Z80/Assembler/Lexer.pm
-lib/CPU/Z80/Assembler/Line.pm
 lib/CPU/Z80/Assembler/List.pm
 lib/CPU/Z80/Assembler/Macro.pm
 lib/CPU/Z80/Assembler/Opcode.pm
@@ -43,10 +42,6 @@ t/Lexer-comments.t
 t/Lexer-crlf.t
 t/Lexer-include.t
 t/Lexer-tokens.t
-t/Line-clone.t
-t/Line-equal.t
-t/Line-error.t
-t/Line-new.t
 t/list.t
 t/Macro-error.t
 t/Macro-locals.t
@@ -59,9 +54,6 @@ t/ORG-instrs.t
 t/pod-coverage.t
 t/pod.t
 t/Preprocessor-include.t
-t/Preprocessor-input.t
-t/Preprocessor-line.t
-t/Preprocessor-pp.t
 t/Program-jumps.t
 t/Program-label.t
 t/Program-locate.t
