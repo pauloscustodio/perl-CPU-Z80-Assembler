@@ -195,15 +195,15 @@ The offset of a (ix-NDIS) expression.
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 #------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ See L<CPU::Z80::Assembler>.
 use strict;
 use warnings;
 
-our $VERSION = "2.09";
+our $VERSION = "2.10";
 
 require Exporter;
 our @ISA =    qw( Exporter  );
@@ -227,9 +227,8 @@ sub asm_table { return $table; }
 	# convert numbers to hex
 	my $table_dump = dump($table);
 	for ($table_dump) {
-		s/"0"/0/g;
-		s/(\d+)\s+(=>)/$1 $2/g;
 		s/\b(\d+)\b/ sprintf("0x%02X", $1) /ge;
+		s/"(0x[0-9a-f]+)"/$1/gi;
 	}
 	my $prog = basename($0);
 
