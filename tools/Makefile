@@ -1,11 +1,13 @@
 # $Id$
 
-CALL = 		$(MAKE) -nologo -$(MAKEFLAGS)
-
 CP =		perl -MExtUtils::Command -e cp
 MV =		perl -MExtUtils::Command -e mv
 RM_F =		perl -MExtUtils::Command -e rm_f
 Z80MASM =	perl -I..\lib ..\bin\z80masm
+
+GLOB = 		perl -e "print join ' ', <@ARGV>"
+GLOB_T =	$(shell $(GLOB) t/*.t)
+GLOB_PM =	$(shell $(GLOB) ../lib/CPU/Z80/*.pm ../lib/CPU/Z80/Assembler/*.pm)
 
 #PATH =     	..\blib\script;$(PATH)
 #PERL5LIB = 	..\blib\lib;$(PERL5LIB)
@@ -15,10 +17,10 @@ Z80MASM =	perl -I..\lib ..\bin\z80masm
 all :	AsmTable.pm ..\lib\CPU\Z80\Assembler\AsmTable.pm
 
 AsmTable.pm : build_AsmTable.pl 
-	$(CALL) RUN_TOOL TOOL="build_AsmTable.pl AsmTable" OUT="AsmTable.pm"
+	$(MAKE) RUN_TOOL TOOL="build_AsmTable.pl AsmTable" OUT="AsmTable.pm"
 
 ..\lib\CPU\Z80\Assembler\AsmTable.pm : build_AsmTable.pl 
-	$(CALL) RUN_TOOL TOOL="build_AsmTable.pl CPU::Z80::Assembler::AsmTable"  OUT="..\lib\CPU\Z80\Assembler\AsmTable.pm"
+	$(MAKE) RUN_TOOL TOOL="build_AsmTable.pl CPU::Z80::Assembler::AsmTable"  OUT="..\lib\CPU\Z80\Assembler\AsmTable.pm"
 
 clean::
 	-$(RM_F) AsmTable.pm
@@ -31,7 +33,7 @@ all :	..\t\data\test_z80.asm
 	$(CP) test_z80.asm ..\t\data\test_z80.asm
 
 test_z80.asm : build_test_z80.pl AsmTable.pm 
-	$(CALL) RUN_TOOL TOOL="build_test_z80.pl" OUT="test_z80.asm"
+	$(MAKE) RUN_TOOL TOOL="build_test_z80.pl" OUT="test_z80.asm"
 
 clean::
 	-$(RM_F) test_z80.asm
@@ -60,10 +62,10 @@ realclean::
 all : ..\lib\CPU\Z80\Assembler\Parser.pm
 
 ..\lib\CPU\Z80\Assembler\Parser.pm : build_Parser.pl AsmTable.pm ParserGenerator.pm t\result.txt
-	build_Parser.pl CPU::Z80::Assembler::Parser ..\lib\CPU\Z80\Assembler\Parser.pm
+	perl build_Parser.pl CPU::Z80::Assembler::Parser ..\lib\CPU\Z80\Assembler\Parser.pm
 
-t\result.txt : t\*.t ParserGenerator.pm
-	prove -I..\lib t\*.t > t\result.txt~
+t\result.txt : $(GLOB_T) ParserGenerator.pm
+	prove -I..\lib -I..\..\Asm-Preproc\lib t\*.t > t\result.txt~
 	$(MV) t\result.txt~ t\result.txt
 
 clean::
@@ -77,10 +79,7 @@ realclean::
 # test compile zx48.asm
 all : zx48.bin
 
-zx48.bin : data\zx48.asm \
-			..\bin\z80masm \
-			..\lib\CPU\Z80\Assembler.pm \
-			..\lib\CPU\Z80\Assembler\*.pm
+zx48.bin : data\zx48.asm ..\bin\z80masm $(GLOB_PM)
 	$(Z80MASM) data\zx48.asm zx48.bin~ > zx48.lst
 	diff zx48.bin~ data\zx48.rom
 	$(MV) zx48.bin~ zx48.bin
