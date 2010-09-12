@@ -15,15 +15,15 @@ CPU::Z80::Assembler::Opcode - Represents one assembly expression to be computed 
 use strict;
 use warnings;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
-use CPU::Z80::Assembler::Line;
+use Asm::Preproc::Line;
 
 sub new { 
 	my($class, %args) = @_;
 	bless [
 		$args{address}, 					# address where loaded
-		$args{line} 	|| CPU::Z80::Assembler::Line->new(),
+		$args{line} 	|| Asm::Preproc::Line->new(),
 											# line where tokens found
 		$args{child} 	|| [], 				# list of children of this node
 											# each child is a byte value or an expression
@@ -51,7 +51,7 @@ sub child	{ defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
 
 This module defines the class that represents one assembly instruction to be
 added to the object code. The instruction can contain references to
-L<CPU::Z80::Assembler::Expr> expressions that are computed at link time.
+L<CPU::Z80::Assembler::Expr|CPU::Z80::Assembler::Expr> expressions that are computed at link time.
 
 =head1 EXPORTS
 
@@ -73,7 +73,7 @@ The number of children is the number of bytes stored in the object code for
 this instruction.
 
 Each child is either a scalar containing the byte value to be added to the object code,
-or a L<CPU::Z80::Assembler::Expr> expression to be evaluated at link time. In case
+or a L<CPU::Z80::Assembler::Expr|CPU::Z80::Assembler::Expr> expression to be evaluated at link time. In case
 of a word expression, then a special undef value is used as a placeholder to keep
 the C<child> list the correct size.
 
@@ -148,17 +148,16 @@ sub size { my($self) = @_;
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Line>
-L<CPU::Z80::Assembler::ode>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<Asm::Preproc::Line|Asm::Preproc::Line>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

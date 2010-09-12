@@ -15,7 +15,7 @@ CPU::Z80::Assembler::Program - Represents one assembly program
 use strict;
 use warnings;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Segment;
@@ -62,7 +62,7 @@ sub macros 			{ defined($_[1]) ? $_[0][4] = $_[1] : $_[0][4] }
 =head1 DESCRIPTION
 
 This module defines the class that represents one assembly program composed of
-L<CPU::Z80::Assembler::Segment>.
+L<CPU::Z80::Assembler::Segment|CPU::Z80::Assembler::Segment>.
 
 =head1 EXPORTS
 
@@ -72,22 +72,22 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Struct>.
+Creates a new object, see L<Class::Struct|Class::Struct>.
 
 =head2 child
 
-Each child is one L<CPU::Z80::Assembler::Segment> object, in the order found in the
+Each child is one L<CPU::Z80::Assembler::Segment|CPU::Z80::Assembler::Segment> object, in the order found in the
 program.
 
 =head2 symbols
 
 Hash of all symbols defined in the program. The key is the symbol name, and 
-the value is either a scalar for a constant, a L<CPU::Z80::Assembler::Expr> for 
-an expression, or a L<CPU::Z80::Assembler::Opcode> for a label.
+the value is either a scalar for a constant, a L<CPU::Z80::Assembler::Expr|CPU::Z80::Assembler::Expr> for 
+an expression, or a L<CPU::Z80::Assembler::Opcode|CPU::Z80::Assembler::Opcode> for a label.
 
 =head2 macros
 
-Hash of macro names to L<CPU::Z80::Assembler::Macro> objects for all defined macros.
+Hash of macro names to L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro> objects for all defined macros.
 
 =cut
 
@@ -98,7 +98,7 @@ Hash of macro names to L<CPU::Z80::Assembler::Macro> objects for all defined mac
   $program->parse($input);
 
 Parse the assembly program and collect the opcodes into the object. $input is
-a stream of tokens as retrieved by L<CPU::Z80::Assembler::Lexer> C<z80lexer>.
+a stream of tokens as retrieved by L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer> C<z80lexer>.
 
 =cut
 
@@ -115,7 +115,7 @@ sub parse { my($self, $input) = @_;
 Get/Set the current segment. The current segment is the one where new opcodes 
 are added.
 
-When called without arguments returns a L<CPU::Z80::Assembler::Segment> object
+When called without arguments returns a L<CPU::Z80::Assembler::Segment|CPU::Z80::Assembler::Segment> object
 of the current segment.
 
 When called with a $name, it sets the segment with the given name as current.
@@ -434,7 +434,7 @@ complete object code.
 
 Gaps between segments are filled with $CPU::Z80::Assembler::fill_byte.
 
-$list_output is an optional L<CPU::Z80::Assembler::List> object to dump the assembly
+$list_output is an optional L<CPU::Z80::Assembler::List|CPU::Z80::Assembler::List> object to dump the assembly
 listing to.
 
 =cut
@@ -490,18 +490,18 @@ sub bytes {
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Segment>
-L<CPU::Z80::Assembler::Parser>
-L<Class::Struct>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Segment|CPU::Z80::Assembler::Segment>
+L<CPU::Z80::Assembler::Parser|CPU::Z80::Assembler::Parser>
+L<Class::Struct|Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

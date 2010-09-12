@@ -15,16 +15,16 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 use strict;
 use warnings;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
-use CPU::Z80::Assembler::Line;
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
-use CPU::Z80::Assembler::Stream;
+use Asm::Preproc::Stream;
+use Asm::Preproc::Line;
 
 #use Class::Struct (
 #		child	=> '@',		# list of children of this node
-#		line 	=> 'CPU::Z80::Assembler::Line',
+#		line 	=> 'Asm::Preproc::Line',
 #							# line where tokens found
 #		type 	=> '$',		# one of:
 #							#	"sb" - signed byte
@@ -35,7 +35,7 @@ sub new {
 	my($class, %args) = @_;
 	bless [
 		$args{type}, 
-		$args{line} 	|| CPU::Z80::Assembler::Line->new(),
+		$args{line} 	|| Asm::Preproc::Line->new(),
 		$args{child} 	|| [], 
 	], $class;
 }
@@ -67,7 +67,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Struct>.
+Creates a new object, see L<Class::Struct|Class::Struct>.
 
 =head2 type
 
@@ -120,7 +120,8 @@ Get/set the line - text, file name and line number where the token was read.
 
   $expr->parse($input);
 
-Parses an expression at the given $input stream (L<CPU::Z80::Assembler::Stream>), 
+Parses an expression at the given $input stream 
+(L<Asm::Preproc::Stream|Asm::Preproc::Stream>), 
 leaves the stream pointer after the expression and updates the expression object. 
 Dies if the expression cannot be parsed.
 
@@ -225,7 +226,7 @@ sub evaluate { my($self, $address, $symbol_table, $seen) = @_;
   $new_expr = $expr->build($expr_text, @init_args)
 
 Build and return a new expresion object with an expression based on the current
-object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler::Lexer>.
+object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>.
 The special token '{}' is used to refer to this expression.
 
 For example, to return a new expression object that, when evaluated, gives the double
@@ -329,17 +330,17 @@ sub bytes { my($self, $address, $symbol_table) = @_;
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Line>
-L<Class::Struct>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<Asm::Preproc::Line|Asm::Preproc::Line>
+L<Class::Struct|Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

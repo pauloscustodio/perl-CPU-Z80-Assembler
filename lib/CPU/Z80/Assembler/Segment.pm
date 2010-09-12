@@ -15,13 +15,13 @@ CPU::Z80::Assembler::Segment - Represents one segment of assembly opcodes
 use strict;
 use warnings;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
-use CPU::Z80::Assembler::Line;
+use Asm::Preproc::Line;
 
 #use Class::Struct (
 #		child	=> '@',		# list of children of this node
-#		line 	=> 'CPU::Z80::Assembler::Line',
+#		line 	=> 'Asm::Preproc::Line',
 #							# line of first token
 #		name	=> '$',		# name of the segment
 #		address	=> '$',		# start address of segment
@@ -31,7 +31,7 @@ sub new {
 	bless [
 		$args{name}, 
 		$args{address}, 
-		$args{line} 	|| CPU::Z80::Assembler::Line->new(),
+		$args{line} 	|| Asm::Preproc::Line->new(),
 		$args{child} 	|| [], 
 	], $class;
 }
@@ -55,7 +55,7 @@ sub child 	{ defined($_[1]) ? $_[0][3] = $_[1] : $_[0][3] }
 =head1 DESCRIPTION
 
 This module defines the class that represents one continuous segment of assembly 
-instruction opcodes L<CPU::Z80::Assembler::Opcode>.
+instruction opcodes L<CPU::Z80::Assembler::Opcode|CPU::Z80::Assembler::Opcode>.
 
 =head1 EXPORTS
 
@@ -65,11 +65,11 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Struct>.
+Creates a new object, see L<Class::Struct|Class::Struct>.
 
 =head2 child
 
-Each child is one L<CPU::Z80::Assembler::Opcode> object.
+Each child is one L<CPU::Z80::Assembler::Opcode|CPU::Z80::Assembler::Opcode> object.
 
 =head2 name
 
@@ -114,18 +114,18 @@ sub add {
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Line>
-L<CPU::Z80::Assembler::Opcode>
-L<Class::Struct>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Opcode|CPU::Z80::Assembler::Opcode>
+L<Asm::Preproc::Line|Asm::Preproc::Line>
+L<Class::Struct|Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

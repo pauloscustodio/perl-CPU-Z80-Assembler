@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use Data::Dump 'dump';
-use CPU::Z80::Assembler::Stream;
+use Asm::Preproc::Stream;
 use CPU::Z80::Assembler::Token;
 use Carp;
 
@@ -17,7 +17,7 @@ use constant {
 };
 
 
-our $VERSION = "2.09";
+our $VERSION = "2.10";
 
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
@@ -40,8 +40,8 @@ CPU::Z80::Assembler::Parser - Parser for the Z80 assembler
 =head1 DESCRIPTION
 
 This module converts an input stream of tokens returned by the
-L<CPU::Z80::Assembler::Lexer> to a binary object code that is returned in the
-passed L<CPU::Z80::Assembler::Program> object.
+L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer> to a binary object code that is returned in the
+passed L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program> object.
 
 =head1 EXPORTS
 
@@ -53,10 +53,10 @@ By default the z80parser subroutines is exported.
 
 This function is just a wrapper around the parse function.
 It takes as parameter a stream of assembly tokens as returned by the 
-lexer and a L<CPU::Z80::Assembler::Program> object to collect the 
+lexer and a L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program> object to collect the 
 object code.
 
-The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program>.
+The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>.
 
 =cut
 
@@ -21734,7 +21734,7 @@ sub _action_unop_1 {
 
   $result = parse($input, $user, $start_rule)
 
-This function receives the input token stream (L<CPU::Z80::Assembler::Stream>), 
+This function receives the input token stream (L<Asm::Preproc::Stream|Asm::Preproc::Stream>), 
 a user pointer and an optional start rule number. 
 
 It parses the input stream, leaving the stream at the first unparsed
@@ -21744,11 +21744,11 @@ start rule.
 The function dies with an error message indicating the input that cannot be parsed in 
 case of a parse error.
 
-$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token> with 
+$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> with 
 the token type, the token value and the input source line
 where the token was read.
 
-The input source line is a L<CPU::Z80::Assembler::Line> with the text of the 
+The input source line is a L<Asm::Preproc::Line|Asm::Preproc::Line> with the text of the 
 whole input source line, the line number and the source file name. 
 This is used at error messages.
 
@@ -21882,16 +21882,16 @@ sub _add_jump_opcode {
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler::Lexer>
-L<CPU::Z80::Assembler::Program>
+L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
+L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

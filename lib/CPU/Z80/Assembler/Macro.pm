@@ -17,9 +17,9 @@ use warnings;
 
 use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Parser;
-use CPU::Z80::Assembler::Stream;
+use Asm::Preproc::Stream;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter
@@ -60,8 +60,9 @@ sub tokens { defined($_[1]) ? $_[0][3] = $_[1] : $_[0][3] }
 
 This module provides a macro pre-processor to parse macro definition statements,
 and expand macro calls in the token stream. Both the input and output streams
-are L<CPU::Z80::Assembler::Stream> objects returning sequences of tokens as defined 
-in L<CPU::Z80::Assembler::Lexer>.
+are L<Asm::Preproc::Stream|Asm::Preproc::Stream> objects returning sequences 
+of tokens as defined 
+in L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>.
 
 The object created by new() describes one macro. It is used during the parse phase
 to define the macro object while reading the input token stream.
@@ -74,7 +75,7 @@ None.
 
 =head2 new
 
-Creates a new macro definition object, see L<Class::Struct>.
+Creates a new macro definition object, see L<Class::Struct|Class::Struct>.
 
 =head2 name
 
@@ -209,8 +210,8 @@ sub expand_macro {
 	my $args = $self->parse_macro_arguments($input);
 	
 	# compute token expansion
-	my $macro_stream  = CPU::Z80::Assembler::Stream->new(@{$self->tokens});
-	my $expand_stream = CPU::Z80::Assembler::Stream->new(
+	my $macro_stream  = Asm::Preproc::Stream->new(@{$self->tokens});
+	my $expand_stream = Asm::Preproc::Stream->new(
 		sub {
 			for(;;) {
 				my $token = $macro_stream->get;
@@ -393,17 +394,17 @@ expands to:
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Lexer>
-L<CPU::Z80::Assembler::Stream>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
+L<Asm::Preproc::Stream|Asm::Preproc::Stream>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 

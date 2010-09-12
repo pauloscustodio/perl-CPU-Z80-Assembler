@@ -15,14 +15,14 @@ CPU::Z80::Assembler::Lexer - Scanner for the Z80 assembler
 use strict;
 use warnings;
 
-use CPU::Z80::Assembler::Line;
+use Asm::Preproc::Line;
 use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Macro;
 use CPU::Z80::Assembler::Preprocessor;
-use CPU::Z80::Assembler::Stream;
+use Asm::Preproc::Stream;
 use Regexp::Trie;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -41,11 +41,12 @@ use base qw(Exporter);
 
 This module provides a scanner to split the input source into 
 tokens for the assembler. The scanner calls z80preprocessor from 
-L<CPU::Z80::Assembler::Preprocessor> to handle file includes, and 
-L<CPU::Z80::Assembler::Macro> to handle macro pre-processing
+L<CPU::Z80::Assembler::Preprocessor|CPU::Z80::Assembler::Preprocessor> to handle file includes, and 
+L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro> to handle macro pre-processing
 
-The tokens are returned as a L<CPU::Z80::Assembler::Stream> of
-L<CPU::Z80::Assembler::Token>. The tokens returned from the scanner 
+The tokens are returned as a L<Asm::Preproc::Stream|Asm::Preproc::Stream> 
+of L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token>. 
+The tokens returned from the scanner 
 are already the result of file inclusion and macro expansion.
 
 =head1 EXPORTS
@@ -74,7 +75,7 @@ my $SYMBOLS_RE = _regexp("
 
 #------------------------------------------------------------------------------
 # _lexer_stream(INPUT)
-# 	INPUT is a Stream of $line = CPU::Z80::Assembler::Line,
+# 	INPUT is a Stream of $line = Asm::Preproc::Line,
 #	as returned by z80preprocessor()
 #	The result Stream contains CPU::Z80::Assembler:Token objects
 #	with token type, value, and the line where found
@@ -84,7 +85,7 @@ sub _lexer_stream {
 	my $line;
 	my $text = "";
 	
-	my $stream = CPU::Z80::Assembler::Stream->new(
+	my $stream = Asm::Preproc::Stream->new(
 	sub {
 		for(;;) {
 			if ( $text =~ / \G \z /gcix) {			# line consumed, get next
@@ -172,12 +173,12 @@ sub _regexp { my(@strings) = @_;
 This takes as parameter a list of either text lines to parse, 
 or iterators that return text lines to parse.
 
-The result is a L<CPU::Z80::Assembler::Stream> of 
-L<CPU::Z80::Assembler::Token> 
+The result is a L<Asm::Preproc::Stream|Asm::Preproc::Stream> of 
+L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> 
 objects that contain each of the input tokens of the input.
 
 Each token contains a type string, a value and a 
-L<CPU::Z80::Assembler::Line> object pointing at the input line
+L<Asm::Preproc::Line|Asm::Preproc::Line> object pointing at the input line
 where the token was found.
 
 =cut
@@ -217,20 +218,20 @@ Numbers are returned either in decimal, hexadecimal in the form 0x****, or binar
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Line>
-L<CPU::Z80::Assembler::Token>
-L<CPU::Z80::Assembler::Preprocessor>
-L<CPU::Z80::Assembler::Macro>
-L<CPU::Z80::Assembler::Stream>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token>
+L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro>
+L<Asm::Preproc|Asm::Preproc>
+L<Asm::Preproc::Stream|Asm::Preproc::Stream>
+L<Asm::Preproc::Line|Asm::Preproc::Line>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 
