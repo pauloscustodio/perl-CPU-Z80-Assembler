@@ -5,17 +5,17 @@
 use warnings;
 use strict;
 
-use Test::More tests => 358;
+use Test::More;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
-use_ok	'CPU::Z80::Assembler::Stream';
+use_ok	'Asm::Preproc::Stream';
 
 require_ok 't/test_utils.pl';
 our $stream;
 
 
 isa_ok	$stream = z80lexer("%include 't/data/include3.z80'\n"),
-		'CPU::Z80::Assembler::Stream';
+		'Asm::Preproc::Stream';
 
 test_token_line(	"\tLD B,1\n", 1, 't/data/include3.z80');
 test_token(	"ld", 		"ld");
@@ -76,6 +76,21 @@ test_token(	",",  		",");
 test_token(	"NUMBER",  	"7");
 test_token(	"\n", 		"\n");
 
+test_token_line(	"NOP\n", 1, 't/data/include.z80');
+test_token(	"nop", 		"nop");
+test_token(	"\n", 		"\n");
+
+test_token_line(	"NOP\n", 2, 't/data/include.z80');
+test_token(	"nop", 		"nop");
+test_token(	"\n", 		"\n");
+
+test_token_line(	"\tLD A,8\n", 9, 't/data/include2.z80');
+test_token(	"ld", 		"ld");
+test_token(	"a",  		"a");
+test_token(	",",  		",");
+test_token(	"NUMBER",  	"8");
+test_token(	"\n", 		"\n");
+
 test_token_line(	"\tLD B,3\n", 3, 't/data/include3.z80');
 test_token(	"ld", 		"ld");
 test_token(	"b",  		"b");
@@ -87,7 +102,7 @@ test_eof();
 
 
 isa_ok	$stream = z80lexer("%include 't/data/include.z80'"),
-		'CPU::Z80::Assembler::Stream';
+		'Asm::Preproc::Stream';
 
 test_token_line(	"NOP\n", 1, 't/data/include.z80');
 test_token(	"nop", 		"nop");
@@ -98,3 +113,6 @@ test_token(	"nop", 		"nop");
 test_token(	"\n", 		"\n");
 
 test_eof();
+
+
+done_testing;
