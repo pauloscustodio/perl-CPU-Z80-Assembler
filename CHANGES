@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
+2.10 2010-09-12
+-------------------------------------------------------------------------------
+- Make CPU::Z80::Assembler::Preprocessor as a wrapper to Asm::Preproc
+- Error messages stopped showing actual text of line containing the 
+  error - cluters the display
+- Use L<zzz|zzz> instead of L<zzz> in POD to avoid "the zzz manpage" rendering
+
+-------------------------------------------------------------------------------
 2.09 2010-03-23
 -------------------------------------------------------------------------------
 - bump version

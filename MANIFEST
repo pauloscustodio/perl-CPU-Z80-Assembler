@@ -15,7 +15,6 @@ lib/CPU/Z80/Assembler/Parser.pm
 lib/CPU/Z80/Assembler/Preprocessor.pm
 lib/CPU/Z80/Assembler/Program.pm
 lib/CPU/Z80/Assembler/Segment.pm
-lib/CPU/Z80/Assembler/Stream.pm
 lib/CPU/Z80/Assembler/Token.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -70,12 +69,6 @@ t/Program-org.t
 t/Program-segment.t
 t/Program-split_segment.t
 t/Segment.t
-t/Stream-1.t
-t/Stream-2.t
-t/Stream-3.t
-t/Stream-4.t
-t/Stream-5.t
-t/Stream-6.t
 t/test_utils.pl
 t/Token-error.t
 t/Token-new.t
