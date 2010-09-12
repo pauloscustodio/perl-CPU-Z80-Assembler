@@ -613,7 +613,7 @@ L022C:  DEFB    $E3             ; READ
 L0246:  DEFB    $7E             ; ~
         DEFB    $DC             ; BRIGHT
         DEFB    $DA             ; PAPER
-        DEFB    $5C             ; \
+        DEFB    $5C             ; \ ;
         DEFB    $B7             ; ATN
         DEFB    $7B             ; {
         DEFB    $7D             ; }
