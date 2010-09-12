@@ -22,7 +22,7 @@ my($MODULE, $FILE) = @ARGV;
 my $g = ParserGenerator->new;
 
 $g->prolog('
-our $VERSION = "2.09";
+our $VERSION = "2.10";
 
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
@@ -45,8 +45,8 @@ CPU::Z80::Assembler::Parser - Parser for the Z80 assembler
 =head1 DESCRIPTION
 
 This module converts an input stream of tokens returned by the
-L<CPU::Z80::Assembler::Lexer> to a binary object code that is returned in the
-passed L<CPU::Z80::Assembler::Program> object.
+L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer> to a binary object code that is returned in the
+passed L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program> object.
 
 =head1 EXPORTS
 
@@ -58,10 +58,10 @@ By default the z80parser subroutines is exported.
 
 This function is just a wrapper around the parse function.
 It takes as parameter a stream of assembly tokens as returned by the 
-lexer and a L<CPU::Z80::Assembler::Program> object to collect the 
+lexer and a L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program> object to collect the 
 object code.
 
-The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program>.
+The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>.
 
 =cut
 
@@ -107,16 +107,16 @@ sub _add_jump_opcode {
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler::Lexer>
-L<CPU::Z80::Assembler::Program>
+L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
+L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 
