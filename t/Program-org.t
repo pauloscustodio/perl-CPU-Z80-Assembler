@@ -131,7 +131,7 @@ is $program->child->[1], $program->segment("CODE1"), "name";
 is $program->child->[1]->address, 11, "name";
 
 eval {$program->bytes};
-is $@, "\tline 3\nf.asm(3) : error: segments overlap, previous ends at 0x000D, next starts at 0x000B\n", "overlap";
+is $@, "f.asm(3) : error: segments overlap, previous ends at 0x000D, next starts at 0x000B\n", "overlap";
 
 
 # two segments, no ORG, no ORG
