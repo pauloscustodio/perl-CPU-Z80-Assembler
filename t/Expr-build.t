@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 39;
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
-use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'Asm::Preproc::Stream';
 require_ok 't/test_utils.pl';
 
 our $stream;
@@ -19,9 +19,8 @@ $SIG{__WARN__} = sub {$warn = shift};
 END { is $warn, undef, "no warnings"; }
 
 # construct
-isa_ok		my $line = CPU::Z80::Assembler::Line->new(
-						text => "hello\n", line_nr => 10, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line = Asm::Preproc::Line->new("hello\n", "f.asm", 10),
+			'Asm::Preproc::Line';
 
 isa_ok		my $expr = CPU::Z80::Assembler::Expr->new(line => $line),
 			'CPU::Z80::Assembler::Expr';

@@ -5,11 +5,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 36;
+use Test::More;
 
 use_ok 'CPU::Z80::Assembler::JumpOpcode';
 use_ok 'CPU::Z80::Assembler::Opcode';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Lexer';
 
@@ -19,17 +19,14 @@ my $stream = z80lexer('2');
 ok 			$expr->parse($stream), "parse expr";
 is			$expr->evaluate, 2, "eval expr";
 
-isa_ok		my $line1 = CPU::Z80::Assembler::Line->new(
-						text => 1, line_nr => 1, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line1 = Asm::Preproc::Line->new(1, "f.asm", 1),
+			'Asm::Preproc::Line';
 
-isa_ok		my $line2 = CPU::Z80::Assembler::Line->new(
-						text => 2, line_nr => 2, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line2 = Asm::Preproc::Line->new(2, "f.asm", 2),
+			'Asm::Preproc::Line';
 
-isa_ok		my $line3 = CPU::Z80::Assembler::Line->new(
-						text => 3, line_nr => 3, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line3 = Asm::Preproc::Line->new(3, "f.asm", 3),
+			'Asm::Preproc::Line';
 
 isa_ok		my $short_jump = CPU::Z80::Assembler::Opcode->new(
 						address => 1, line => $line1, child => [1,$expr]),
@@ -73,4 +70,5 @@ is			$jump->short_jump->address,	3, 		"short address";
 is			$jump->long_jump->address,	3, 		"short address";
 is			$jump->line->text, 			3, 		"line text";
 is			$jump->line->line_nr, 		3, 		"line line_nr";
-is			$jump->short_jump->line->as_string,	$jump->long_jump->line->as_string,		"same line";
+
+done_testing;

@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 205;
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
-use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'Asm::Preproc::Stream';
 require_ok 't/test_utils.pl';
 
 my $warn; 
@@ -17,9 +17,8 @@ $SIG{__WARN__} = sub {$warn = shift};
 END { is $warn, undef, "no warnings"; }
 
 # construct
-isa_ok		my $line = CPU::Z80::Assembler::Line->new(
-						text => "hello\n", line_nr => 10, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line = Asm::Preproc::Line->new("hello\n", "f.asm", 10),
+			'Asm::Preproc::Line';
 
 isa_ok		my $expr = CPU::Z80::Assembler::Expr->new(line => $line),
 			'CPU::Z80::Assembler::Expr';
@@ -40,8 +39,8 @@ is			$expr->line->text, 		"2+3:\n", 	"line text";
 is			$expr->line->line_nr, 	1,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(":", ":");
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(@{$expr->child}),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
+			'Asm::Preproc::Stream';
 test_token('NUMBER', 2);
 test_token("+", "+");
 test_token('NUMBER', 3);
@@ -58,8 +57,8 @@ is			$expr->line->text, 		"4+5\n", 	"line text";
 is			$expr->line->line_nr, 	2,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token("\n", "\n");
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(@{$expr->child}),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
+			'Asm::Preproc::Stream';
 test_token('NUMBER', 4);
 test_token("+", "+");
 test_token('NUMBER', 5);
@@ -76,8 +75,8 @@ is			$expr->line->text, 		"6+7)\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(")", ")");
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(@{$expr->child}),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
+			'Asm::Preproc::Stream';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
@@ -94,8 +93,8 @@ is			$expr->line->text, 		"6+7]\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token("]", "]");
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(@{$expr->child}),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
+			'Asm::Preproc::Stream';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
@@ -112,16 +111,16 @@ is			$expr->line->text, 		"6+7,\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(",", ",");
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(@{$expr->child}),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
+			'Asm::Preproc::Stream';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
 test_eof();
 is			$expr->evaluate, 6+7,		"eval expression";
 
-isa_ok $stream = CPU::Z80::Assembler::Stream->new(),
-			'CPU::Z80::Assembler::Stream';
+isa_ok $stream = Asm::Preproc::Stream->new(),
+			'Asm::Preproc::Stream';
 eval {$expr->parse($stream)};
 is $@, "error: expected one of (\"(\" NAME NUMBER STRING) at EOF\n", "expression not found";
 is			$expr->evaluate, 0,			"eval expression";
@@ -132,19 +131,19 @@ $stream = z80lexer(
 ,
 ');
 eval {$expr->parse($stream)};
-is $@, "\t,\nFILE(4) : error: expected one of (\"(\" NAME NUMBER STRING) at \",\"\n", "expression not found";
+is $@, "FILE(4) : error: expected one of (\"(\" NAME NUMBER STRING) at \",\"\n", "expression not found";
 is			$expr->evaluate, 0,			"eval expression";
 
 
 $stream = z80lexer('(6]');
 eval {$expr->parse($stream)};
-is $@, "\t(6]\ninput(1) : error: expected \")\" at \"]\"\n", "Unbalanced parentheses";
+is $@, "-(1) : error: expected \")\" at \"]\"\n", "Unbalanced parentheses";
 is			$expr->evaluate, 0,			"eval expression";
 
 
 $stream = z80lexer('(6');
 eval {$expr->parse($stream)};
-is $@, "\t(6\ninput(1) : error: expected \")\" at \"\\n\"\n", "Unbalanced parentheses";
+is $@, "-(1) : error: expected \")\" at \"\\n\"\n", "Unbalanced parentheses";
 is			$expr->evaluate, 0,			"eval expression";
 
 

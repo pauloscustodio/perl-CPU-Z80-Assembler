@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 51;
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
-use_ok 'CPU::Z80::Assembler::Stream';
+use_ok 'Asm::Preproc::Stream';
 require_ok 't/test_utils.pl';
 
 our $stream;
@@ -19,9 +19,8 @@ $SIG{__WARN__} = sub {$warn = shift};
 END { is $warn, undef, "no warnings"; }
 
 # construct
-isa_ok		my $line = CPU::Z80::Assembler::Line->new(
-						text => "hello\n", line_nr => 10, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line = Asm::Preproc::Line->new("hello\n", "f.asm", 10),
+			'Asm::Preproc::Line';
 
 isa_ok		my $expr = CPU::Z80::Assembler::Expr->new(line => $line),
 			'CPU::Z80::Assembler::Expr';
@@ -49,16 +48,16 @@ is			$dollar->bytes(-0x80), "\x80", "bytes";
 
 is			$warn, undef, "no warnings";
 is			$dollar->bytes(0x100), "\x00", "bytes";
-is			$warn, "\t\$\ninput(1) : warning: value 0x100 truncated to 0x00\n", "truncated value";
+is			$warn, "-(1) : warning: value 0x100 truncated to 0x00\n", "truncated value";
 $warn = undef;
 
 is			$warn, undef, "no warnings";
 is			$dollar->bytes(0x101), "\x01", "bytes";
-is			$warn, "\t\$\ninput(1) : warning: value 0x101 truncated to 0x01\n", "truncated value";
+is			$warn, "-(1) : warning: value 0x101 truncated to 0x01\n", "truncated value";
 $warn = undef;
 
 eval {$dollar->bytes(-0x81)};
-is			$@, "\t\$\ninput(1) : error: value -0x81 out of range\n", "out of range";
+is			$@, "-(1) : error: value -0x81 out of range\n", "out of range";
 
 
 
@@ -68,16 +67,16 @@ is			$dollar->bytes(0x7F), "\x7F", "bytes";
 is			$dollar->bytes(-0x80), "\x80", "bytes";
 
 eval {$dollar->bytes(-0x81)};
-is			$@, "\t\$\ninput(1) : error: value -0x81 out of range\n", "out of range";
+is			$@, "-(1) : error: value -0x81 out of range\n", "out of range";
 
 eval {$dollar->bytes(-0x82)};
-is			$@, "\t\$\ninput(1) : error: value -0x82 out of range\n", "out of range";
+is			$@, "-(1) : error: value -0x82 out of range\n", "out of range";
 
 eval {$dollar->bytes(0x80)};
-is			$@, "\t\$\ninput(1) : error: value 0x80 out of range\n", "out of range";
+is			$@, "-(1) : error: value 0x80 out of range\n", "out of range";
 
 eval {$dollar->bytes(0x81)};
-is			$@, "\t\$\ninput(1) : error: value 0x81 out of range\n", "out of range";
+is			$@, "-(1) : error: value 0x81 out of range\n", "out of range";
 
 
 
@@ -91,10 +90,10 @@ is			$dollar->bytes(0x10001), "\x01\x00", "bytes no warning";
 is			$dollar->bytes(-0x8000), "\x00\x80", "bytes";
 
 eval {$dollar->bytes(-0x8001)};
-is			$@, "\t\$\ninput(1) : error: value -0x8001 out of range\n", "out of range";
+is			$@, "-(1) : error: value -0x8001 out of range\n", "out of range";
 
 eval {$dollar->bytes(-0x8002)};
-is			$@, "\t\$\ninput(1) : error: value -0x8002 out of range\n", "out of range";
+is			$@, "-(1) : error: value -0x8002 out of range\n", "out of range";
 
 
 my %symbols = ( va => 51 );
