@@ -15,15 +15,15 @@ CPU::Z80::Assembler::Token - One token retrieved from the input
 use strict;
 use warnings;
 
-our $VERSION = '2.09';
+our $VERSION = '2.10';
 
 use Data::Dump 'dump';
-use CPU::Z80::Assembler::Line;
+use Asm::Preproc::Line;
 
 #use Class::Struct (
 #		type 	=> '$',		# type of token
 #		value 	=> '$',		# token attribute
-#		line 	=> 'CPU::Z80::Assembler::Line',
+#		line 	=> 'Asm::Preproc::Line',
 #							# line where token found
 #);
 # Faster than Class::Struct
@@ -32,7 +32,7 @@ sub new {
 	return bless [
 				$args{type}, 
 				$args{value}, 
-				$args{line} || CPU::Z80::Assembler::Line->new()
+				$args{line} || Asm::Preproc::Line->new()
 			], $class;
 }
 sub type  { defined($_[1]) ? $_[0][0] = $_[1] : $_[0][0] }
@@ -47,7 +47,7 @@ sub line  { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
   my $token = CPU::Z80::Assembler::Token->new(
                     type  => $type,
                     value => $value,
-                    line  => CPU::Z80::Assembler::Line->new(...));
+                    line  => Asm::Preproc::Line->new(...));
   my $token2 = $token->clone;
   $token->error($message);
   CPU::Z80::Assembler::Token->error_at($token, $message);
@@ -58,7 +58,7 @@ sub line  { defined($_[1]) ? $_[0][2] = $_[1] : $_[0][2] }
 
 This module defines the data structure to represent one token of input text to be assembled,
 as retrived by the lexer.
-The object is created by L<Class::Struct> and contains
+The object is created by L<Class::Struct|Class::Struct> and contains
 the token type and value, and the input line where it was found in the input.
 The input line is used for error messages.
 
@@ -70,7 +70,7 @@ Nothing.
 
 =head2 new
 
-Creates a new object, see L<Class::Struct>.
+Creates a new object, see L<Class::Struct|Class::Struct>.
 
 =head2 type
 
@@ -104,29 +104,6 @@ sub clone {
 		line	=> $self->line->clone,
 	);
 }
-
-#------------------------------------------------------------------------------
-
-=head2 as_string
-
-  print $self->as_string;
-  print "$self";
-
-Converts to string, for debug purposes. Overloads the double-quote operator.
-
-=cut
-
-#------------------------------------------------------------------------------
-
-sub as_string { my($self) = @_;
-	return "[".dump($self->type).", ".dump($self->value).", ".
-			(defined($self->line) ? $self->line->as_string : "undef")."]";	
-}
-
-use overload
-	'""' 	=> \&as_string,
-	'bool'	=> sub {$_[0]},		# avoid as_string to be called in bool and numeric
-	'0+'	=> sub {$_[0]};		# context
 
 #------------------------------------------------------------------------------
 
@@ -215,17 +192,17 @@ sub _format_error_msg {
 
 =head1 BUGS and FEEDBACK
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Line>
-L<Class::Struct>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+L<Asm::Preproc::Line|Asm::Preproc::Line>
+L<Class::Struct|Class::Struct>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 
-See L<CPU::Z80::Assembler>.
+See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 
