@@ -5,8 +5,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 34;
-use_ok 'CPU::Z80::Assembler::Line';
+use Test::More;
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Token';
 
 my $token;
@@ -14,16 +14,14 @@ isa_ok 	$token = CPU::Z80::Assembler::Token->new(),
 		'CPU::Z80::Assembler::Token';
 is		$token->type,  			undef, "no type";
 is		$token->value, 			undef, "no value";
-isa_ok	$token->line,			'CPU::Z80::Assembler::Line';
+isa_ok	$token->line,			'Asm::Preproc::Line';
 is		$token->line->text, 	undef, "no line text";
 is		$token->line->line_nr, 	undef, "no line line_nr";
 is		$token->line->file, 	undef, "no line file";
-is		"$token", '[undef, undef, [undef, undef, undef]]', "string";
 
 my $line;
-isa_ok	$line = CPU::Z80::Assembler::Line->new(
-						text => "hello\n", line_nr => 10, file => "f.asm" ),
-		'CPU::Z80::Assembler::Line';
+isa_ok	$line = Asm::Preproc::Line->new("hello\n", "f.asm", 10),
+		'Asm::Preproc::Line';
 
 isa_ok 	$token = CPU::Z80::Assembler::Token->new(
 						type => "WORD", value => "hello", line => $line ),
@@ -33,7 +31,6 @@ is		$token->value, 			"hello", 	"value";
 is		$token->line->text, 	"hello\n", 	"line text";
 is		$token->line->line_nr, 	10, 		"line line_nr";
 is		$token->line->file, 	"f.asm", 	"line file";
-is		"$token", '["WORD", "hello", ["hello\\n", 10, "f.asm"]]', "string";
 
 my $token2;
 isa_ok	$token2 = $token->clone,
@@ -61,3 +58,5 @@ is		$token->value, 			'', "no value";
 is		$token->line->text, 	'', 	"no line text";
 is		$token->line->line_nr, 	'', "no line line_nr";
 is		$token->line->file, 	'', 	"no line file";
+
+done_testing;
