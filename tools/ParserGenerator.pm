@@ -298,7 +298,7 @@ use strict;
 use warnings;
 
 use Data::Dump 'dump';
-use CPU::Z80::Assembler::Stream;
+use Asm::Preproc::Stream;
 use CPU::Z80::Assembler::Token;
 use Carp;
 
@@ -326,7 +326,7 @@ use constant {
 
   $result = parse($input, $user, $start_rule)
 
-This function receives the input token stream (L<CPU::Z80::Assembler::Stream>), 
+This function receives the input token stream (L<Asm::Preproc::Stream|Asm::Preproc::Stream>), 
 a user pointer and an optional start rule number. 
 
 It parses the input stream, leaving the stream at the first unparsed
@@ -336,11 +336,11 @@ start rule.
 The function dies with an error message indicating the input that cannot be parsed in 
 case of a parse error.
 
-$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token> with 
+$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> with 
 the token type, the token value and the input source line
 where the token was read.
 
-The input source line is a L<CPU::Z80::Assembler::Line> with the text of the 
+The input source line is a L<Asm::Preproc::Line|Asm::Preproc::Line> with the text of the 
 whole input source line, the line number and the source file name. 
 This is used at error messages.
 
