@@ -8,15 +8,15 @@ use strict;
 use Test::More tests => 1845;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
-use_ok	'CPU::Z80::Assembler::Stream';
+use_ok	'Asm::Preproc::Stream';
 
 require_ok 't/test_utils.pl';
 our $stream;
 
 isa_ok	$stream = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
-		'CPU::Z80::Assembler::Stream';
+		'Asm::Preproc::Stream';
 
-test_token_line( 	"a adc add af af' af' and b bc bit c call ccf cp cpd cpdr cpi cpir \n", 1, "DATA");
+test_token_line( 	"a adc add af af' af' and b bc bit c call ccf cp cpd cpdr cpi cpir\n", 1, "DATA");
 test_token(	"a",		"a");
 test_token(	"adc", 		"adc");
 test_token(	"add", 		"add");
@@ -37,7 +37,7 @@ test_token(	"cpi", 		"cpi");
 test_token(	"cpir",		"cpir");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"cpl d daa de dec di djnz e ei ex exx h halt hl i im \n", 2, "DATA");
+test_token_line(	"cpl d daa de dec di djnz e ei ex exx h halt hl i im\n", 2, "DATA");
 test_token(	"cpl", 		"cpl");
 test_token(	"d", 		"d");
 test_token(	"daa", 		"daa");
@@ -56,7 +56,7 @@ test_token(	"i", 		"i");
 test_token(	"im", 		"im");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"in inc ind indr ini inir ix iy jp jr l ld ldd lddr ldi ldir m \n", 3, "DATA");
+test_token_line(	"in inc ind indr ini inir ix iy jp jr l ld ldd lddr ldi ldir m\n", 3, "DATA");
 test_token(	"in", 		"in");
 test_token(	"inc", 		"inc");
 test_token(	"ind", 		"ind");
@@ -76,7 +76,7 @@ test_token(	"ldir",		"ldir");
 test_token(	"m", 		"m");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"nc neg nop nz or otdr otir out outd outi p pe po pop push \n", 4, "DATA");
+test_token_line(	"nc neg nop nz or otdr otir out outd outi p pe po pop push\n", 4, "DATA");
 test_token(	"nc", 		"nc");
 test_token(	"neg", 		"neg");
 test_token(	"nop", 		"nop");
@@ -94,7 +94,7 @@ test_token(	"pop", 		"pop");
 test_token(	"push", 	"push");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"res ret reti retn rl rla rlc rlca rld rr rra rrc rrca rrd rst \n", 5, "DATA");
+test_token_line(	"res ret reti retn rl rla rlc rlca rld rr rra rrc rrca rrd rst\n", 5, "DATA");
 test_token(	"res", 		"res");
 test_token(	"ret", 		"ret");
 test_token(	"reti",		"reti");
@@ -164,7 +164,7 @@ test_token(	"deft",		"deft");
 test_token(	"defm",		"defm");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"A ADC ADD AF AF' AF' AND B BC BIT C CALL CCF CP CPD CPDR CPI CPIR \n", 10, "DATA");
+test_token_line(	"A ADC ADD AF AF' AF' AND B BC BIT C CALL CCF CP CPD CPDR CPI CPIR\n", 10, "DATA");
 test_token(	"a", 		"a");
 test_token(	"adc", 		"adc");
 test_token(	"add", 		"add");
@@ -185,7 +185,7 @@ test_token(	"cpi", 		"cpi");
 test_token(	"cpir",		"cpir");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"CPL D DAA DE DEC DI DJNZ E EI EX EXX H HALT HL I IM \n", 11, "DATA");
+test_token_line(	"CPL D DAA DE DEC DI DJNZ E EI EX EXX H HALT HL I IM\n", 11, "DATA");
 test_token(	"cpl", 		"cpl");
 test_token(	"d", 		"d");
 test_token(	"daa", 		"daa");
@@ -204,7 +204,7 @@ test_token(	"i", 		"i");
 test_token(	"im", 		"im");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"IN INC IND INDR INI INIR IX IY JP JR L LD LDD LDDR LDI LDIR M \n", 12, "DATA");
+test_token_line(	"IN INC IND INDR INI INIR IX IY JP JR L LD LDD LDDR LDI LDIR M\n", 12, "DATA");
 test_token(	"in", 		"in");
 test_token(	"inc", 		"inc");
 test_token(	"ind", 		"ind");
@@ -224,7 +224,7 @@ test_token(	"ldir",		"ldir");
 test_token(	"m", 		"m");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"NC NEG NOP NZ OR OTDR OTIR OUT OUTD OUTI P PE PO POP PUSH \n", 13, "DATA");
+test_token_line(	"NC NEG NOP NZ OR OTDR OTIR OUT OUTD OUTI P PE PO POP PUSH\n", 13, "DATA");
 test_token(	"nc", 		"nc");
 test_token(	"neg", 		"neg");
 test_token(	"nop", 		"nop");
@@ -242,7 +242,7 @@ test_token(	"pop", 		"pop");
 test_token(	"push",		"push");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"RES RET RETI RETN RL RLA RLC RLCA RLD RR RRA RRC RRCA RRD RST \n", 14, "DATA");
+test_token_line(	"RES RET RETI RETN RL RLA RLC RLCA RLD RR RRA RRC RRCA RRD RST\n", 14, "DATA");
 test_token(	"res", 		"res");
 test_token(	"ret", 		"ret");
 test_token(	"reti",		"reti");
@@ -290,13 +290,13 @@ test_token(	"deft",		"deft");
 test_token(	"defm",		"defm");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"'unclosed string ; \n", 18, "DATA");
+test_token_line(	"'unclosed string ;\n", 18, "DATA");
 test_token(	"'", 		"'");
 test_token(	"NAME",		"unclosed");
 test_token(	"NAME",		"string");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"\"unclosed string ; \n", 19, "DATA");
+test_token_line(	"\"unclosed string ;\n", 19, "DATA");
 test_token(	"\"", 		"\"");
 test_token(	"NAME",		"unclosed");
 test_token(	"NAME",		"string");

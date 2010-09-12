@@ -11,7 +11,7 @@ use_ok 'CPU::Z80::Assembler::Program';
 use_ok 'CPU::Z80::Assembler::Segment';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Opcode';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
 
 require_ok 't/test_utils.pl';
@@ -31,15 +31,12 @@ ok 			$stream = $expr->parse($stream), "parse expr";
 is			$expr->evaluate(10, $program->symbols), 10+51, "eval expr";
 
 
-isa_ok		my $line1 = CPU::Z80::Assembler::Line->new(
-						text => "line 1\n", line_nr => 1, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
-isa_ok		my $line2 = CPU::Z80::Assembler::Line->new(
-						text => "line 2\n", line_nr => 2, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
-isa_ok		my $line3 = CPU::Z80::Assembler::Line->new(
-						text => "line 3\n", line_nr => 3, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line1 = Asm::Preproc::Line->new("line 1\n", "f.asm", 1),
+			'Asm::Preproc::Line';
+isa_ok		my $line2 = Asm::Preproc::Line->new("line 2\n", "f.asm", 2),
+			'Asm::Preproc::Line';
+isa_ok		my $line3 = Asm::Preproc::Line->new("line 3\n", "f.asm", 3),
+			'Asm::Preproc::Line';
 
 isa_ok 		my $segment = $program->segment("CODE"),
 			'CPU::Z80::Assembler::Segment';

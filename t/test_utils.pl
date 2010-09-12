@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 
-use_ok 'CPU::Z80::Assembler::Stream';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Stream';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Opcode';
 
 sub opcodes {
@@ -14,11 +14,9 @@ sub opcodes {
 	ok $caller_line, "[line $caller_line] opcodes";
 	
 	for (0..2) {
-		isa_ok my $line = CPU::Z80::Assembler::Line->new(
-						text => "line ".($line_nr+$_)."\n", 
-						line_nr => $line_nr+$_, 
-						file => "f.asm"
-				), 'CPU::Z80::Assembler::Line';
+		isa_ok my $line = Asm::Preproc::Line->new("line ".($line_nr+$_)."\n",
+												  "f.asm", $line_nr+$_),
+				'Asm::Preproc::Line';
 		isa_ok my $opcode = CPU::Z80::Assembler::Opcode->new(
 						child => [ord($start)+$_],	
 						line => $line 
@@ -34,7 +32,7 @@ sub test_line { my($text, $line_nr, $file) = @_;
 
 	my $caller_line = (caller)[2];
 	my $token = $stream->get;
-	isa_ok $token, 'CPU::Z80::Assembler::Line';
+	isa_ok $token, 'Asm::Preproc::Line';
 	is $text, 		$token->text, 		"[line $caller_line] text";
 	is $line_nr, 	$token->line_nr, 	"[line $caller_line] line_nr";
 	is $file, 		$token->file, 		"[line $caller_line] file";
@@ -46,7 +44,7 @@ sub test_token_line { my($text, $line_nr, $file) = @_;
 	
 	my $caller_line = (caller)[2];
 	ok my $token = $stream->head, "[line $caller_line] head";
-	isa_ok $line = $token->line, 'CPU::Z80::Assembler::Line';
+	isa_ok $line = $token->line, 'Asm::Preproc::Line';
 	
 	is $line->text, 	$text, 		"[line $caller_line] text";
 	is $line->line_nr, 	$line_nr, 	"[line $caller_line] line_nr";

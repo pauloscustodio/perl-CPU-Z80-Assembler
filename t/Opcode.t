@@ -8,7 +8,7 @@ use warnings;
 use Test::More tests => 27;
 use_ok 'CPU::Z80::Assembler::Opcode';
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Lexer';
 
 our $stream;
@@ -21,9 +21,8 @@ is			$opcode->line->line_nr, undef, 	"line line_nr";
 is			$opcode->line->file, 	undef, 	"line file";
 is			$opcode->size, 0, "size";
 
-isa_ok		my $line = CPU::Z80::Assembler::Line->new(
-						text => "hello\n", line_nr => 10, file => "f.asm" ),
-			'CPU::Z80::Assembler::Line';
+isa_ok		my $line = Asm::Preproc::Line->new("hello\n", "f.asm", 10),
+			'Asm::Preproc::Line';
 
 $opcode->line($line);
 is			$opcode->line->text, 		"hello\n", 	"line text";

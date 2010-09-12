@@ -11,7 +11,7 @@ use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Program';
 use_ok 'CPU::Z80::Assembler::JumpOpcode';
 use_ok 'CPU::Z80::Assembler::Opcode';
-use_ok 'CPU::Z80::Assembler::Line';
+use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Token';
 
@@ -33,11 +33,8 @@ sub LABEL ($) {
 	ok $caller_line, "[line $caller_line]";
 	
 	my $text = "$label:\n";
-	isa_ok my $line = CPU::Z80::Assembler::Line->new(
-									text 	=> $text,
-									line_nr	=> 1,
-									file	=> "f.asm"),
-			'CPU::Z80::Assembler::Line';
+	isa_ok my $line = Asm::Preproc::Line->new($text, "f.asm", 1),
+			'Asm::Preproc::Line';
 
 	$program->add_label($label, $line);
 	$bytes .= "";
@@ -51,11 +48,8 @@ sub NOPs ($) {
 	ok $caller_line, "[line $caller_line]";
 	
 	my $text = " NOP :" x $num . "\n";
-	isa_ok my $line = CPU::Z80::Assembler::Line->new(
-									text 	=> $text,
-									line_nr	=> 1,
-									file	=> "f.asm"),
-			'CPU::Z80::Assembler::Line';
+	isa_ok my $line = Asm::Preproc::Line->new($text, "f.asm", 1),
+			'Asm::Preproc::Line';
 
 	isa_ok my $nops = CPU::Z80::Assembler::Opcode->new(
 									child 	=> [(0) x $num],
@@ -75,11 +69,8 @@ sub JUMP ($$$$) {
 	my $label = (split(' ', $instr))[-1];
 	my $text = " ".$instr."\n";
 	
-	isa_ok my $line = CPU::Z80::Assembler::Line->new(
-									text 	=> $text,
-									line_nr	=> 1,
-									file	=> "f.asm"),
-			'CPU::Z80::Assembler::Line';
+	isa_ok my $line = Asm::Preproc::Line->new($text, "f.asm", 1),
+			'Asm::Preproc::Line';
 			
 	isa_ok my $t_name = CPU::Z80::Assembler::Token->new(
 									type	=> 'NAME',
