@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 9;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -24,18 +24,13 @@ my $token = undef;
 eval {Parser::_expected_error_at($token, 0)};
 is $@, "error: expected start at EOF\n", "undef token";
 
-$token = CPU::Z80::Assembler::Token->new(
-							type 	=> 'NUMBER', 
-							value 	=> 10, 
-							line 	=> undef);
+$token = Asm::Preproc::Token->new(NUMBER => 10, undef);
 
 eval {Parser::_expected_error_at($token, 0)};
 is $@, "error: expected start at NUMBER\n", "undef token";
 
-$token = CPU::Z80::Assembler::Token->new(
-							type 	=> 'NUMBER',
-							value	=> 10, 
-							line 	=> Asm::Preproc::Line->new("text\n", "f1.asm", 3));
+$token = Asm::Preproc::Token->new(NUMBER => 10, 
+								Asm::Preproc::Line->new("text\n", "f1.asm", 3));
 
 eval {Parser::_expected_error_at ($token, 0)};
 is $@, "f1.asm(3) : error: expected start at NUMBER\n", "undef token";

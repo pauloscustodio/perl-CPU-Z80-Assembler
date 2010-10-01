@@ -5,7 +5,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 1845;
+use Test::More;
 
 use_ok	'CPU::Z80::Assembler::Lexer';
 use_ok	'Asm::Preproc::Stream';
@@ -324,33 +324,36 @@ test_token(	"NAME",		"_012");
 test_token(	"\n", 		"\n");
 
 test_token_line(	"0 1 234 567 89\n", 22, "DATA");
-test_token(	"NUMBER", 	"0");
-test_token(	"NUMBER", 	"1");
-test_token(	"NUMBER", 	"234");
-test_token(	"NUMBER", 	"567");
-test_token(	"NUMBER", 	"89");
+test_token(	"NUMBER", 	0);
+test_token(	"NUMBER", 	1);
+test_token(	"NUMBER", 	234);
+test_token(	"NUMBER", 	567);
+test_token(	"NUMBER", 	89);
 test_token(	"\n", 		"\n");
 
 test_token_line(	"0xAF 0xaf 0x100 0afh 0AFH \$af #af\n", 23, "DATA");
-test_token(	"NUMBER", 	"0xAF");
-test_token(	"NUMBER", 	"0xaf");
-test_token(	"NUMBER", 	"0x100");
-test_token(	"NUMBER", 	"0x0af");
-test_token(	"NUMBER", 	"0x0AF");
-test_token(	"NUMBER", 	"0xaf");
-test_token(	"NUMBER", 	"0xaf");
+test_token(	"NUMBER", 	0xaf);
+test_token(	"NUMBER", 	0xaf);
+test_token(	"NUMBER", 	0x100);
+test_token(	"NUMBER", 	0xaf);
+test_token(	"NUMBER", 	0xaf);
+test_token(	"NUMBER", 	0xaf);
+test_token(	"NUMBER", 	0xaf);
 test_token(	"\n", 		"\n");
 
 test_token_line(	"0b01 0b10 0b010 010b 010B %010\n", 24, "DATA");
-test_token(	"NUMBER", 	"0b01");
-test_token(	"NUMBER", 	"0b10");
-test_token(	"NUMBER", 	"0b010");
-test_token(	"NUMBER", 	"0b010");
-test_token(	"NUMBER", 	"0b010");
-test_token(	"NUMBER", 	"0b010");
+test_token(	"NUMBER", 	0b01);
+test_token(	"NUMBER", 	0b10);
+test_token(	"NUMBER", 	0b10);
+test_token(	"NUMBER", 	0b10);
+test_token(	"NUMBER", 	0b10);
+test_token(	"NUMBER", 	0b10);
 test_token(	"\n", 		"\n");
 
 test_eof();
+
+
+done_testing();
 
 
 __DATA__

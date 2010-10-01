@@ -15,11 +15,11 @@ CPU::Z80::Assembler::Macro - Macro pre-processor for the Z80 assembler
 use strict;
 use warnings;
 
-use CPU::Z80::Assembler::Token;
 use CPU::Z80::Assembler::Parser;
 use Asm::Preproc::Stream;
+use Asm::Preproc::Token;
 
-our $VERSION = '2.10';
+our $VERSION = '2.11';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter
@@ -117,7 +117,7 @@ sub parse_body {
 	# skip {
 	my $opened_brace;
 	defined($token = $input->head) 
-		or CPU::Z80::Assembler::Token->error_at($token, "macro body not found");	
+		or Asm::Preproc::Token->error_at($token, "macro body not found");	
 	if ($token->type eq '{') {
 		$input->get;
 		$opened_brace++;
@@ -177,7 +177,7 @@ sub parse_body {
 		$last_stmt_end = ($type =~ /^[:\n]$/);
 	}
 	defined($token) 
-		or CPU::Z80::Assembler::Token->error_at($token, "macro body not finished");
+		or Asm::Preproc::Token->error_at($token, "macro body not finished");
 	($parens == 0)
 		or $token->error("Unmatched braces");
 	
@@ -274,7 +274,7 @@ sub parse_macro_arguments {
 		my $param = $params[$i];
 		$token = $input->head;
 		defined($token) && $token->type !~ /^[:\n,]$/
-			or CPU::Z80::Assembler::Token->error_at($token, 
+			or Asm::Preproc::Token->error_at($token, 
 										"expected value for macro parameter $param");
 		my @arg = $self->_parse_argument($input);
 		$args{$param} = \@arg;
@@ -282,7 +282,7 @@ sub parse_macro_arguments {
 		if ($i != $#params) {							# expect a comma
 			$token = $input->head;
 			defined($token) && $token->type eq ','
-				or CPU::Z80::Assembler::Token->error_at($token, 
+				or Asm::Preproc::Token->error_at($token, 
 										"expected \",\" after macro parameter $param");
 			$input->get;
 		}
@@ -291,7 +291,7 @@ sub parse_macro_arguments {
 	# expect end of statement, keep input at end of statement marker
 	$token = $input->head;
 	(!defined($token) || $token->type =~ /^[:\n]$/)
-		or CPU::Z80::Assembler::Token->error_at($token, "too many macro arguments");
+		or Asm::Preproc::Token->error_at($token, "too many macro arguments");
 	
 	return \%args;
 }
@@ -334,7 +334,7 @@ sub _parse_argument {
 			$input->get;
 		}
 	}
-	CPU::Z80::Assembler::Token->error_at($token, "unmatched braces") 
+	Asm::Preproc::Token->error_at($token, "unmatched braces") 
 		if $parens != 0;
 
 	return @tokens;

@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 13;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -21,10 +21,10 @@ $g->prolog('use Asm::Preproc::Stream;');
 $g->add_rule('const
 					NUMBER',
 					'sub {
-						$_[INPUT]->unget(CPU::Z80::Assembler::Token->new(
-										type  => "NAME",
-										value => "v".$_[ARGS][0]->value,
-										line  => Asm::Preproc::Line->new("text\n", "f1.asm", 3)));
+						$_[INPUT]->unget(Asm::Preproc::Token->new(
+										NAME => "v".$_[ARGS][0]->value,
+										Asm::Preproc::Line->new(
+													"text\n", "f1.asm", 3)));
 						undef;
 					}');
 $g->add_rule('start 
@@ -44,17 +44,15 @@ eval {Parser::parse($input)};
 is $@, "error: expected NUMBER at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 10, line => $line), 
-			),
+				Asm::Preproc::Token->new(NUMBER	=> 10,	$line)),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "v10", line => $line), 
+				Asm::Preproc::Token->new(NAME	=> "v10",	$line), 
 			], "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 10, line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-			),
+				Asm::Preproc::Token->new(NUMBER	=> 10,	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected EOF at NAME\n", "parse error";

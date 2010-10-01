@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 23;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -29,58 +29,51 @@ eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "error: expected \"=\" at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("="	=> "=", $line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "error: expected one of (NAME NUMBER) at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 10, line => $line)
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line),
+				Asm::Preproc::Token->new(NUMBER	=> 10,	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), 10, "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 22, line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line),
+				Asm::Preproc::Token->new(NUMBER	=> 22,	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), 22, "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line)
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line),
+				Asm::Preproc::Token->new(NAME	=> "a", $line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "a", "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line),
+				Asm::Preproc::Token->new(NAME	=> "b", $line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "b", "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 22, line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 23, line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line),
+				Asm::Preproc::Token->new(NUMBER	=> 22,	$line),
+				Asm::Preproc::Token->new(NUMBER	=> 23,	$line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected EOF at NUMBER\n", "parse error";

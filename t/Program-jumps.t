@@ -11,9 +11,9 @@ use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Program';
 use_ok 'CPU::Z80::Assembler::JumpOpcode';
 use_ok 'CPU::Z80::Assembler::Opcode';
-use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Token';
+use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 
 my($program, $bytes, $code, %labels);
 
@@ -72,26 +72,14 @@ sub JUMP ($$$$) {
 	isa_ok my $line = Asm::Preproc::Line->new($text, "f.asm", 1),
 			'Asm::Preproc::Line';
 			
-	isa_ok my $t_name = CPU::Z80::Assembler::Token->new(
-									type	=> 'NAME',
-									value	=> $label,
-									line	=> $line),
-			'CPU::Z80::Assembler::Token';
-	isa_ok my $t_minus = CPU::Z80::Assembler::Token->new(
-									type	=> '-',
-									value	=> '-',
-									line	=> $line),
-			'CPU::Z80::Assembler::Token';
-	isa_ok my $t_dollar = CPU::Z80::Assembler::Token->new(
-									type	=> 'NAME',
-									value	=> '$',
-									line	=> $line),
-			'CPU::Z80::Assembler::Token';
-	isa_ok my $t_2 = CPU::Z80::Assembler::Token->new(
-									type	=> 'NUMBER',
-									value	=> 2,
-									line	=> $line),
-			'CPU::Z80::Assembler::Token';
+	isa_ok my $t_name = Asm::Preproc::Token->new(NAME => $label, $line),
+			'Asm::Preproc::Token';
+	isa_ok my $t_minus = Asm::Preproc::Token->new('-' => '-', $line),
+			'Asm::Preproc::Token';
+	isa_ok my $t_dollar = Asm::Preproc::Token->new(NAME => '$', $line),
+			'Asm::Preproc::Token';
+	isa_ok my $t_2 = Asm::Preproc::Token->new(NUMBER => 2, $line),
+			'Asm::Preproc::Token';
 			
 	isa_ok my $short_expr = CPU::Z80::Assembler::Expr->new(
 									child	=> [$t_name, $t_minus, $t_dollar, $t_minus, $t_2],

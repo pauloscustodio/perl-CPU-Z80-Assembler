@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 15;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -30,21 +30,19 @@ eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "a", "parse OK";
 is $input->head, undef, "empty stream";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line),
+				Asm::Preproc::Token->new(NAME	=> "b",	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "a", "parse OK";
 is_deeply $input, Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line),
-			), "not empty stream";
+				Asm::Preproc::Token->new(NAME	=> "b",	$line)), 
+			"not empty stream";
 
 # clean-up
 unlink 'Parser.pm' unless $ENV{DEBUG};

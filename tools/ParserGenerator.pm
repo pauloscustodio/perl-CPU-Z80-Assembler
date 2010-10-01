@@ -299,7 +299,7 @@ use warnings;
 
 use Data::Dump 'dump';
 use Asm::Preproc::Stream;
-use CPU::Z80::Assembler::Token;
+use Asm::Preproc::Token;
 use Carp;
 
 use constant {
@@ -336,7 +336,7 @@ start rule.
 The function dies with an error message indicating the input that cannot be parsed in 
 case of a parse error.
 
-$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> with 
+$input is a stream of tokens, each token is a L<Asm::Preproc::Token|Asm::Preproc::Token> with 
 the token type, the token value and the input source line
 where the token was read.
 
@@ -420,7 +420,7 @@ sub _expected_error_at {
 	my($token, $state) = @_;
 	
 	my @expected = sort map {_format_token($_)} keys %{$state_table[$state]};
-	CPU::Z80::Assembler::Token->error_at(
+	Asm::Preproc::Token->error_at(
 			$token,
 			"expected ".
 			(scalar(@expected) == 1 ? "@expected" : "one of (@expected)")

@@ -22,11 +22,12 @@ my($MODULE, $FILE) = @ARGV;
 my $g = ParserGenerator->new;
 
 $g->prolog('
-our $VERSION = "2.10";
+our $VERSION = "2.11";
 
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::JumpOpcode;
+use Asm::Preproc::Token;
 
 use base "Exporter";
 our @EXPORT = qw( z80parser );
@@ -265,12 +266,9 @@ $g->add_rule('inline_const
 									child 	=> $_[ARGS][0],
 									line	=> $_[ARGS][0][0]->line);
 						my $value = $expr->evaluate();
-						$_[INPUT]->unget(CPU::Z80::Assembler::Token->new(
-														type	=> $value,
-														value 	=> $value,
-														line 	=> $expr->line,
-											)
-										);
+						$_[INPUT]->unget(Asm::Preproc::Token->new($value,
+																  $value,
+																  $expr->line));
 						return 0;	# return dummy value to keep index into values correct
 					}');
 

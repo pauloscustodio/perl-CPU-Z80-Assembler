@@ -15,12 +15,13 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 use strict;
 use warnings;
 
-our $VERSION = '2.10';
+our $VERSION = '2.11';
 
 use CPU::Z80::Assembler::Lexer;
 use CPU::Z80::Assembler::Parser;
 use Asm::Preproc::Stream;
 use Asm::Preproc::Line;
+use Asm::Preproc::Token;
 
 #use Class::Struct (
 #		child	=> '@',		# list of children of this node
@@ -251,11 +252,8 @@ sub build {	my($self, $expr_text, @init_args) = @_;
 				or die "unmatched {}";
 				
 			# refer to this expression
-			push(@{$new_expr->child},
-					CPU::Z80::Assembler::Token->new(
-										type => 'EXPR',
-										value => $self,
-										line => $line));
+			push(@{$new_expr->child}, 
+					Asm::Preproc::Token->new(EXPR => $self, $line));
 		}
 		else {
 			$token->line($line);

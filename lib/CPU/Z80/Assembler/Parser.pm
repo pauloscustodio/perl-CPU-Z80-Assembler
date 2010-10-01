@@ -9,7 +9,7 @@ use warnings;
 
 use Data::Dump 'dump';
 use Asm::Preproc::Stream;
-use CPU::Z80::Assembler::Token;
+use Asm::Preproc::Token;
 use Carp;
 
 use constant {
@@ -17,11 +17,12 @@ use constant {
 };
 
 
-our $VERSION = "2.10";
+our $VERSION = "2.11";
 
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::JumpOpcode;
+use Asm::Preproc::Token;
 
 use base "Exporter";
 our @EXPORT = qw( z80parser );
@@ -14248,12 +14249,9 @@ sub _action_inline_const_14 {
 				child 	=> $_[ARGS][0],
 				line	=> $_[ARGS][0][0]->line);
 	my $value = $expr->evaluate();
-	$_[INPUT]->unget(CPU::Z80::Assembler::Token->new(
-									type	=> $value,
-									value 	=> $value,
-									line 	=> $expr->line,
-						)
-					);
+	$_[INPUT]->unget(Asm::Preproc::Token->new($value,
+											  $value,
+											  $expr->line));
 	return 0;	# return dummy value to keep index into values correct
 }
 # macro : macro NAME "[macro_args_optional]" "[macro_body]"
@@ -21744,7 +21742,7 @@ start rule.
 The function dies with an error message indicating the input that cannot be parsed in 
 case of a parse error.
 
-$input is a stream of tokens, each token is a L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> with 
+$input is a stream of tokens, each token is a L<Asm::Preproc::Token|Asm::Preproc::Token> with 
 the token type, the token value and the input source line
 where the token was read.
 
@@ -21828,7 +21826,7 @@ sub _expected_error_at {
 	my($token, $state) = @_;
 	
 	my @expected = sort map {_format_token($_)} keys %{$state_table[$state]};
-	CPU::Z80::Assembler::Token->error_at(
+	Asm::Preproc::Token->error_at(
 			$token,
 			"expected ".
 			(scalar(@expected) == 1 ? "@expected" : "one of (@expected)")

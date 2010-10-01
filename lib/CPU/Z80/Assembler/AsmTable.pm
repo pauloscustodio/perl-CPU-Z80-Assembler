@@ -91,7 +91,7 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 use strict;
 use warnings;
 
-our $VERSION = "2.10";
+our $VERSION = "2.11";
 
 require Exporter;
 our @ISA =    qw( Exporter  );

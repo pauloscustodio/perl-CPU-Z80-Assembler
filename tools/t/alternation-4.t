@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 13;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -31,15 +31,13 @@ eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "a", "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "=", value => "=", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a", $line), 
+				Asm::Preproc::Token->new("="	=> "=", $line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected EOF at \"=\"\n", "parse error";

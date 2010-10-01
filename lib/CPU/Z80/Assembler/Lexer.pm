@@ -15,14 +15,13 @@ CPU::Z80::Assembler::Lexer - Scanner for the Z80 assembler
 use strict;
 use warnings;
 
-use Asm::Preproc::Line;
-use CPU::Z80::Assembler::Token;
+use Asm::Preproc::Lexer;
+use Asm::Preproc::Stream;
 use CPU::Z80::Assembler::Macro;
 use CPU::Z80::Assembler::Preprocessor;
-use Asm::Preproc::Stream;
 use Regexp::Trie;
 
-our $VERSION = '2.10';
+our $VERSION = '2.11';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -45,7 +44,7 @@ L<CPU::Z80::Assembler::Preprocessor|CPU::Z80::Assembler::Preprocessor> to handle
 L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro> to handle macro pre-processing
 
 The tokens are returned as a L<Asm::Preproc::Stream|Asm::Preproc::Stream> 
-of L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token>. 
+of L<Asm::Preproc::Token|Asm::Preproc::Token>. 
 The tokens returned from the scanner 
 are already the result of file inclusion and macro expansion.
 
@@ -59,7 +58,8 @@ By default the 'z80lexer' subroutine is exported.
 
 #------------------------------------------------------------------------------
 # Keywords and composed symbols
-my $KEYWORD_RE = _regexp("
+my %KEYWORDS;
+for (split(" ", "
 				a adc add af af' and b bc bit c call ccf cp cpd cpdr cpi cpir 
 				cpl d daa de dec di djnz e ei equ ex exx exa h halt hl im 
 				in inc ind indr ini inir ix iy jp jr l ld ldd lddr ldi ldir m 
@@ -68,11 +68,57 @@ my $KEYWORD_RE = _regexp("
 				sbc scf set sla sll sli sp sra srl sub xor z
 				ixh ixl iyh iyl hx lx hy ly xh xl yh yl i r f
 				org stop defb db defw dw deft dt defm dm macro endm
-			");
+			")) {
+	$KEYWORDS{$_}++;
+}
 my $SYMBOLS_RE = _regexp("
 				<< >> == != >= <= 
 			");
 
+#------------------------------------------------------------------------------
+# lexer
+my $lexer = Asm::Preproc::Lexer->new(
+	
+	# ignore comments and blanks except newline
+	COMMENT	=> qr/ ; .* /ix,			undef,		
+	BLANKS	=> qr/ [\t\f\r ]+ /ix,		undef,
+
+	# newline
+	NEWLINE	=> qr/ \n /ix,				sub {["\n", "\n"]},
+
+	# string - return without quotes
+	STRING	=> qr/ (?| ' ( [^']* ) '
+					 | " ( [^"]* ) " ) /ix,
+										sub {[$_[0], $1]},
+	
+	# numbers
+	NUMBER	=> qr/ ( \d [0-9a-f]+ ) h \b /ix,
+										sub {[$_[0], oct("0x".$1)]},
+
+	NUMBER	=> qr/ [\$\#] ( [0-9a-f]+ ) \b /ix,
+										sub {[$_[0], oct("0x".$1)]},
+										
+	NUMBER	=> qr/ ( [01]+ ) b \b /ix,	sub {[$_[0], oct("0b".$1)]},
+										
+	NUMBER	=> qr/ % ( [01]+ ) \b /ix,	sub {[$_[0], oct("0b".$1)]},
+										
+	NUMBER	=> qr/ 0x [0-9a-f]+ | 0b [01]+ \b /ix,
+										sub {[$_[0], oct(lc($_[1]))]},
+										
+	NUMBER	=> qr/ \d+ \b /ix,			sub {[$_[0], 0+$_[1]]},
+										
+	# name or keyword, after numbers because of $FF syntax
+	NAME	=> qr/ af' | [a-z_]\w* | \$ /ix,
+										sub { my($t, $v) = @_;
+											my $k = lc($v);
+											$KEYWORDS{$k} ? [$k, $k] : [$t, $v];
+										},
+										
+	# symbols
+	SYMBOL	=> qr/ $SYMBOLS_RE | . /ix,	sub {[$_[1], $_[1]]},
+
+);										
+	
 #------------------------------------------------------------------------------
 # _lexer_stream(INPUT)
 # 	INPUT is a Stream of $line = Asm::Preproc::Line,
@@ -82,74 +128,10 @@ my $SYMBOLS_RE = _regexp("
 #	Reserved words are returned with type = value in lower case.
 sub _lexer_stream {
 	my($input) = @_;
-	my $line;
-	my $text = "";
+	my $this_lexer = $lexer->clone;		# compile $lexer only once
+	$this_lexer->input( $input );		# define our input stream
 	
-	my $stream = Asm::Preproc::Stream->new(
-	sub {
-		for(;;) {
-			if ( $text =~ / \G \z /gcix) {			# line consumed, get next
-				$line = $input->get;				# and loop back
-				defined($line) or return undef;		# end of input
-				$text = $line->text;
-			}
-			$text =~ / \G ; .* /gcix				# ignore comments
-			    and next;
-			$text =~ / \G (\n) /gcix				# comment / newline
-			    and return CPU::Z80::Assembler::Token->new(
-											type  => $1,
-											value => $1,
-											line  => $line );
-			$text =~ / \G [\t\f\r ]+ /gcix
-			    and next;							# ignore blanks, except newline
-			$text =~ / \G ( \' [^\']* \' | \" [^\"]* \" ) /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "STRING",
-											value => substr($1, 1, length($1)-2),
-											line  => $line );
-			$text =~ / \G ( af\' | $KEYWORD_RE \b | $SYMBOLS_RE ) /gcix
-				and return CPU::Z80::Assembler::Token->new(
-											type  => lc($1),
-											value => lc($1),
-											line  => $line );
-			$text =~ / \G ( \d [0-9a-f]+ ) h \b /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NUMBER",
-											value => "0x".$1,
-											line  => $line );
-			$text =~ / \G [\$\#] ( [0-9a-f]+ ) \b /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NUMBER",
-											value => "0x".$1,
-											line  => $line );
-			$text =~ / \G ( [01]+ ) b \b /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NUMBER",
-											value => "0b".$1,
-											line  => $line );
-			$text =~ / \G \% ( [01]+ ) \b /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NUMBER",
-											value => "0b".$1,
-											line  => $line );
-			$text =~ / \G ( \d+ | 0x [0-9a-f]+ | 0b [01]+ ) \b /gcix			
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NUMBER",
-											value => $1,
-											line  => $line );
-			$text =~ / \G ( [a-z_] \w* | \$ ) /gcix		# after numbers because of $FF syntax
-				and return CPU::Z80::Assembler::Token->new(
-											type  => "NAME",
-											value => $1,
-											line  => $line );
-			$text =~ / \G (.) /gcix					# catch all
-				and return CPU::Z80::Assembler::Token->new(
-											type  => $1,
-											value => $1,
-											line  => $line );	
-		}
-	});
-	return $stream;
+	return $this_lexer->stream;
 }
 
 #------------------------------------------------------------------------------
@@ -174,7 +156,7 @@ This takes as parameter a list of either text lines to parse,
 or iterators that return text lines to parse.
 
 The result is a L<Asm::Preproc::Stream|Asm::Preproc::Stream> of 
-L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> 
+L<Asm::Preproc::Token|Asm::Preproc::Token> 
 objects that contain each of the input tokens of the input.
 
 Each token contains a type string, a value and a 
@@ -223,11 +205,11 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 =head1 SEE ALSO
 
 L<CPU::Z80::Assembler|CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token>
 L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro>
 L<Asm::Preproc|Asm::Preproc>
 L<Asm::Preproc::Stream|Asm::Preproc::Stream>
 L<Asm::Preproc::Line|Asm::Preproc::Line>
+L<Asm::Preproc::Token|Asm::Preproc::Token>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 

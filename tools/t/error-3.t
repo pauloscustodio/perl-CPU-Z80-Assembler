@@ -5,11 +5,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More;
 
-use_ok 'CPU::Z80::Assembler::Token';
-use_ok 'Asm::Preproc::Stream';
-use_ok 'Asm::Preproc::Line';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -31,3 +28,6 @@ $g->add_rule("start", "", "sub{1}");
 
 # clean-up
 unlink 'Parser.pm' unless $ENV{DEBUG};
+
+
+done_testing();

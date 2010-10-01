@@ -17,7 +17,7 @@ while (<$fh>) {
     my $expectedbinary = join(
         '',
         map {
-            chr(eval "0x$_")
+            chr(hex($_))
         } split(" ", $expectedbytes)
     );
     my $binary = eval { z80asm("\nORG 0x$address\n$code\n") };

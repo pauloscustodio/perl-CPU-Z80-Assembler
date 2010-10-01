@@ -19,7 +19,7 @@ use Asm::Preproc;
 use Asm::Preproc::Line;
 use Asm::Preproc::Stream;
 
-our $VERSION = '2.10';
+our $VERSION = '2.11';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -75,7 +75,7 @@ sub z80preprocessor {
 					or return undef;			# end of input
 				
 				# handle "INCLUDE"
-				if (${$line->rtext} =~ /^\s*(include\s+.*)/i) {
+				if ($line->text =~ /^\s*(include\s+.*)/i) {
 					$pp->include_list("%$1");	# handle %include...
 					next;						# get next line
 				}

@@ -8,9 +8,9 @@ use warnings;
 use Test::More tests => 19;
 use Data::Dump 'pp';
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -66,99 +66,99 @@ $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line),
 			], "parse ok";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			], "parse ok";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			], "parse ok";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
 			], "parse ok";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
+				Asm::Preproc::Token->new("*"	=> "*",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
+				Asm::Preproc::Token->new("*"	=> "*",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 			], "parse ok";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => "(", value => "(", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => ")", value => ")", line => $line), 
+				Asm::Preproc::Token->new("("	=> "(",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
+				Asm::Preproc::Token->new("*"	=> "*",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
+				Asm::Preproc::Token->new(")"	=> ")",	$line), 
 			),
  			'Asm::Preproc::Stream';
 is_deeply Parser::parse($input), [
-				CPU::Z80::Assembler::Token->new(type => "(", value => "(", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "+", value => "+", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 1, line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "*", value => "*", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => "-", value => "-", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "b", line => $line), 
-				CPU::Z80::Assembler::Token->new(type => ")", value => ")", line => $line), 
+				Asm::Preproc::Token->new("("	=> "(",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
+				Asm::Preproc::Token->new("*"	=> "*",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
+				Asm::Preproc::Token->new(")"	=> ")",	$line), 
 			], "parse ok";

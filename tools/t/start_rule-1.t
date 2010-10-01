@@ -7,9 +7,9 @@ use warnings;
 
 use Test::More tests => 27;
 
-use_ok 'CPU::Z80::Assembler::Token';
 use_ok 'Asm::Preproc::Stream';
 use_ok 'Asm::Preproc::Line';
+use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
 
 unlink 'Parser.pm';
@@ -48,42 +48,36 @@ like $@, qr/rule 'norule' not found/, "parse error";
 
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input), "a", "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input, $user, "name"), "a", "parse OK";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NAME', value => "a", line => $line),
-			),
+				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input, $user, "number")};
 is $@, "f1.asm(3) : error: expected NUMBER at NAME\n", "parse error";
 
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 24, line => $line),
-			),
+				Asm::Preproc::Token->new(NUMBER	=> 24,	$line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected NAME at NUMBER\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 24, line => $line),
-			),
+				Asm::Preproc::Token->new(NUMBER	=> 24,	$line)),
  			'Asm::Preproc::Stream';
 eval {Parser::parse($input, $user, "name")};
 is $@, "f1.asm(3) : error: expected NAME at NUMBER\n", "parse error";
 
 isa_ok $input = Asm::Preproc::Stream->new(
-				CPU::Z80::Assembler::Token->new(type => 'NUMBER', value => 24, line => $line),
-			),
+				Asm::Preproc::Token->new(NUMBER	=> 24,	$line)),
  			'Asm::Preproc::Stream';
 is Parser::parse($input, $user, "number"), 24, "parse OK";
 

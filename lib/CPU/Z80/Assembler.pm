@@ -13,7 +13,7 @@ use Text::Tabs; 						# imports expand(), unexpand()
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.10';
+our $VERSION = '2.11';
 our $verbose;
 our $fill_byte = 0xFF;
 
@@ -80,7 +80,7 @@ of L<Asm::Preproc::Line|Asm::Preproc::Line> objects.
 
 This stream of lines is passed on to the L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
 to scan the input and return a L<CPU::Z80::Assembler::Stream|CPU::Z80::Assembler::Stream> of 
-L<CPU::Z80::Assembler::Token|CPU::Z80::Assembler::Token> objects.
+L<Asm::Preproc::Token|Asm::Preproc::Token> objects.
 
 The stream of tokens is passed on to L<CPU:Z80::Assembler::Parser|CPU:Z80::Assembler::Parser> that parses the 
 input and generates the object image in L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>. 
@@ -150,7 +150,7 @@ Numbers can be supplied in either decimal, hexadecimal or binary. Numbers must s
 
 =item Binary
 
-0b12, 12B, %12
+0b10, 10B, %10
 
 =back
 

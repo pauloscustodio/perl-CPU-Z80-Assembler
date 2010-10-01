@@ -9,7 +9,7 @@ WriteMakefile(
     VERSION_FROM 	=> 'VERSION',
     depend 			=> { Makefile => '$(VERSION_FROM)' },
     PREREQ_PM 		=> {
-		'Asm::Preproc'				=> 0.02,
+		'Asm::Preproc'				=> 0.04,
         'Class::Struct'				=> 0,
         'Data::Dump' 				=> 1.08,
         'File::Slurp' 				=> 9999.13,
