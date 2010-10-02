@@ -19,7 +19,7 @@ use CPU::Z80::Assembler::Parser;
 use Asm::Preproc::Stream;
 use Asm::Preproc::Token;
 
-our $VERSION = '2.11';
+our $VERSION = '2.12';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter

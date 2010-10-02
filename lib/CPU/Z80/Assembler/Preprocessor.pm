@@ -19,7 +19,7 @@ use Asm::Preproc;
 use Asm::Preproc::Line;
 use Asm::Preproc::Stream;
 
-our $VERSION = '2.11';
+our $VERSION = '2.12';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);

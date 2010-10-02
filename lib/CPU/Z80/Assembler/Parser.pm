@@ -17,7 +17,7 @@ use constant {
 };
 
 
-our $VERSION = "2.11";
+our $VERSION = "2.12";
 
 use CPU::Z80::Assembler::Expr;
 use CPU::Z80::Assembler::Opcode;
