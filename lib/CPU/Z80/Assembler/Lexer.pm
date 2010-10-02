@@ -21,7 +21,7 @@ use CPU::Z80::Assembler::Macro;
 use CPU::Z80::Assembler::Preprocessor;
 use Regexp::Trie;
 
-our $VERSION = '2.11';
+our $VERSION = '2.12';
 
 use vars qw(@EXPORT);
 use base qw(Exporter);
@@ -87,9 +87,10 @@ my $lexer = Asm::Preproc::Lexer->new(
 	NEWLINE	=> qr/ \n /ix,				sub {["\n", "\n"]},
 
 	# string - return without quotes
-	STRING	=> qr/ (?| ' ( [^']* ) '
-					 | " ( [^"]* ) " ) /ix,
-										sub {[$_[0], $1]},
+	# Sequence (?|...) not recognized in regex in Perl 5.8
+	STRING	=> qr/ (?: ' [^']* '
+					 | " [^"]* " ) /ix,	sub {[$_[0], 
+											substr($_[1], 1, length($_[1])-2)]},
 	
 	# numbers
 	NUMBER	=> qr/ ( \d [0-9a-f]+ ) h \b /ix,
