@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use CPU::Z80::Assembler;
 
-use Test::More tests => 9165;
+use Test::More;
 
 #$CPU::Z80::Assembler::verbose = 1;
 
@@ -30,3 +30,5 @@ while (<$fh>) {
 sub hexdump {
 	return join(' ', map { sprintf("0x%02X", ord($_)) } split(//, shift));
 }
+
+done_testing;
