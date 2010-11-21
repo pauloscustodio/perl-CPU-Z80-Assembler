@@ -31,10 +31,14 @@ sub build_input {
 	OUTPUT $obj_file~
 
 ";
-	# convert rst x --> rst x*8 (x in 1..7); remove '$' from labels
 	while(<$in>) {
+		# convert rst x --> rst x*8 (x in 1..7); remove '$' from labels
 		s/(rst\s+)(\d+)(\s\s)/ $2 < 8 && $2 > 0 ? $1."8*".$2 : $1.$2.$3 /gie;
 		s/\$(.)/$1/g;
+		
+		# convert 'jr po', etc to 'jp po'
+		s/\bjr(\s+(po|pe|p|m)\s*,)/jp$1/gim;		
+
 		print $out $_;
 	}
 }	
