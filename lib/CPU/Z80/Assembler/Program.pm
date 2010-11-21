@@ -15,7 +15,7 @@ CPU::Z80::Assembler::Program - Represents one assembly program
 use strict;
 use warnings;
 
-our $VERSION = '2.12';
+our $VERSION = '2.13';
 
 use CPU::Z80::Assembler::Parser;
 use CPU::Z80::Assembler::Segment;
@@ -98,7 +98,8 @@ Hash of macro names to L<CPU::Z80::Assembler::Macro|CPU::Z80::Assembler::Macro> 
   $program->parse($input);
 
 Parse the assembly program and collect the opcodes into the object. $input is
-a stream of tokens as retrieved by L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer> C<z80lexer>.
+a stream of tokens as retrieved by L<CPU::Z80::Assembler|CPU::Z80::Assembler>
+C<z80lexer>.
 
 =cut
 
