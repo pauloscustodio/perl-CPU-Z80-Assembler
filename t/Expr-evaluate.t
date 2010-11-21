@@ -5,10 +5,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 51;
+use Test::More tests => 57;
+use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'Asm::Preproc::Line';
-use_ok 'CPU::Z80::Assembler::Lexer';
 use_ok 'Asm::Preproc::Stream';
 require_ok 't/test_utils.pl';
 
@@ -85,6 +85,26 @@ ok 			$stream = $expr->parse($stream), "parse expr";
 eval {$expr->evaluate(0, \%symbols)};
 is			$@, "-(1) : error: Circular reference computing 'vc'\n",
 			"circular reference";
+
+# simulate bug:
+#	err equ 10
+#	y0  equ err
+#	ld a,(iy+err-y0) ; gives circular reference error, and should not
+isa_ok		my $err_expr = CPU::Z80::Assembler::Expr->new(line => $line),
+			'CPU::Z80::Assembler::Expr';
+$stream = z80lexer('10');
+ok 			$stream = $err_expr->parse($stream), "parse expr";
+$symbols{err} = $err_expr;
+
+isa_ok		my $y0_expr = CPU::Z80::Assembler::Expr->new(line => $line),
+			'CPU::Z80::Assembler::Expr';
+$stream = z80lexer('err');
+ok 			$stream = $y0_expr->parse($stream), "parse expr";
+$symbols{y0} = $y0_expr;
+
+$stream = z80lexer('err-y0');
+ok 			$stream = $expr->parse($stream), "parse expr";
+is			$expr->evaluate(0, \%symbols), 0, "eval";
 
 $stream = z80lexer('10+vd');
 ok 			$stream = $expr->parse($stream), "parse expr";
