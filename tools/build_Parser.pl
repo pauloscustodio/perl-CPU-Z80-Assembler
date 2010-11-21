@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 
-use AsmTable;
+use Asm::Z80::Table;
 use Data::Dump 'dump';
 use lib 'Parser';
 use ParserGenerator;
@@ -21,10 +21,12 @@ my($MODULE, $FILE) = @ARGV;
 # Load table with instructions
 my $g = ParserGenerator->new;
 
-$g->prolog('
-our $VERSION = "2.12";
+$g->prolog(q{
+our $VERSION = '2.13';
 
+use CPU::Z80::Assembler;
 use CPU::Z80::Assembler::Expr;
+use CPU::Z80::Assembler::Macro;
 use CPU::Z80::Assembler::Opcode;
 use CPU::Z80::Assembler::JumpOpcode;
 use Asm::Preproc::Token;
@@ -46,7 +48,8 @@ CPU::Z80::Assembler::Parser - Parser for the Z80 assembler
 =head1 DESCRIPTION
 
 This module converts an input stream of tokens returned by the
-L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer> to a binary object code that is returned in the
+L<CPU::Z80::Assembler|CPU::Z80::Assembler> C<z80lexer> to a binary object code
+that is returned in the
 passed L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program> object.
 
 =head1 EXPORTS
@@ -68,9 +71,9 @@ The assembly program is parsed and loaded into L<CPU::Z80::Assembler::Program|CP
 
 #------------------------------------------------------------------------------
 
-');
+});
 
-$g->epilog('
+$g->epilog(q{
 
 sub z80parser { parse(@_) }
 
@@ -112,7 +115,7 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =head1 SEE ALSO
 
-L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
+L<CPU::Z80::Assembler|CPU::Z80::Assembler>
 L<CPU::Z80::Assembler::Program|CPU::Z80::Assembler::Program>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
@@ -121,7 +124,7 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 
 =cut
 
-');
+});
 
 # end of statement
 $g->add_rule('end', 
@@ -314,12 +317,63 @@ $g->add_rule('expr_text',
 						}
 					}');
 					
+$g->add_rule('expr_textz',
+					'[expr_text]',
+					'sub {
+						my @bytes = ( @{ $_[ARGS][0] }, 0 );
+						return \@bytes;
+					}');
+					
+$g->add_rule('expr_text7',
+					'[expr_text]',
+					'sub {
+						my @bytes = ( @{ $_[ARGS][0] } );
+						my $last = pop(@bytes) || 0;
+						
+						if (ref $last) {		# is expression
+							push @bytes, $last->build("{} | 0x80");
+						}
+						else {					# is literal
+							push @bytes, $last | 0x80;
+						}
+						
+						return \@bytes;
+					}');
+					
 $g->add_rule('expr_text2
 					, [expr_text]',
 					'sub { $_[ARGS][1] }');
 					
+$g->add_rule('expr_textz_2
+					, [expr_textz]',
+					'sub { $_[ARGS][1] }');
+					
+$g->add_rule('expr_text7_2
+					, [expr_text7]',
+					'sub { $_[ARGS][1] }');
+					
 $g->add_rule('expr_list_text
 					[expr_text] [expr_text2]*',
+					'sub { 
+						my @bytes;
+						for (@{$_[ARGS]}) {
+							push @bytes, @$_;
+						}
+						return \@bytes;
+					}');
+
+$g->add_rule('expr_list_textz
+					[expr_textz] [expr_textz_2]*',
+					'sub { 
+						my @bytes;
+						for (@{$_[ARGS]}) {
+							push @bytes, @$_;
+						}
+						return \@bytes;
+					}');
+
+$g->add_rule('expr_list_text7
+					[expr_text7] [expr_text7_2]*',
 					'sub { 
 						my @bytes;
 						for (@{$_[ARGS]}) {
@@ -334,13 +388,13 @@ $g->add_rule('opcode
 					'sub {undef}');
 
 $g->add_rule('opcode',
-					['defb', 'db'], '[expr_list_N] [end]',
+					['defb'], '[expr_list_N] [end]',
 					'sub {
 						_add_opcode(@_, @{$_[ARGS][1]});
 					}');
 
 $g->add_rule('opcode',
-					['defw', 'dw'], '[expr_list_NN] [end]',
+					['defw'], '[expr_list_NN] [end]',
 					'sub {
 						_add_opcode(@_, @{$_[ARGS][1]});
 					}');
@@ -351,13 +405,25 @@ $g->add_rule('opcode',
 						_add_opcode(@_, @{$_[ARGS][1]});
 					}');
 
+$g->add_rule('opcode',
+					['defmz'], '[expr_list_textz] [end]',
+					'sub {
+						_add_opcode(@_, @{$_[ARGS][1]});
+					}');
+
+$g->add_rule('opcode',
+					['defm7'], '[expr_list_text7] [end]',
+					'sub {
+						_add_opcode(@_, @{$_[ARGS][1]});
+					}');
+
 $g->add_rule('opcode
 					org [expr_const]', 
 					'sub {$_[PROG]->org($_[ARGS][1])}');
 
 # labels
-$g->add_rule('def_label
-					= [expr_NN] [end]',
+$g->add_rule('def_label',
+					['=','equ'],'[expr_NN] [end]',
 					'sub { $_[ARGS][1] }');
 
 $g->add_rule('opcode
@@ -383,28 +449,24 @@ $g->add_rule('macro_arg
 					NAME 
 					',
 					'sub { 
-						#DEBUG
 						$_[ARGS][0]->value }');
 
 $g->add_rule('macro_arg2
 					, NAME 
 					',
 					'sub { 
-						#DEBUG
 						$_[ARGS][1]->value }');
 
 $g->add_rule('macro_args
 					[macro_arg] [macro_arg2]*
 					',
 					'sub { 
-						#DEBUG
 						$_[ARGS] }');
 
 $g->add_rule('macro_args_optional
 					[macro_args]?
 					',
 					'sub { 
-						#DEBUG
 						defined($_[ARGS][0]) ? $_[ARGS][0] : [] }');
 
 $g->add_rule('macro_body',
@@ -434,7 +496,7 @@ $g->add_rule('opcode
 					[macro] [end]',
 					'sub {undef}');
 
-load_table(asm_table->{asm});
+load_table(Asm::Z80::Table->asm_table);
 
 
 # program
@@ -470,8 +532,8 @@ sub add_parser_rules {
 	my %expr = (
 		"DIS"		=> 0,
 		"NDIS"		=> 0,
-		"DIS+0x01"	=> 1,
-		"NDIS+0x01"	=> 1,
+		"DIS+1"		=> 1,
+		"NDIS+1"	=> 1,
 	); 
 
 	@keys = grep {$_ ne ""} @keys;
@@ -494,13 +556,13 @@ sub add_parser_rules {
 			# DIS
 			$keys[$i] = '[expr_DIS]';
 			$expr{DIS} = '$_[ARGS]['.$i.']';
-			$expr{"DIS+0x01"} = '$_[ARGS]['.$i.']->build(\'{}+1\')';
+			$expr{"DIS+1"} = '$_[ARGS]['.$i.']->build(\'{}+1\')';
 		}
 		elsif ($keys[$i] eq "NDIS") {
 			# NDIS
 			$keys[$i] = '[expr_NDIS]';
 			$expr{NDIS} = '$_[ARGS]['.$i.']';
-			$expr{"NDIS+0x01"} = '$_[ARGS]['.$i.']->build(\'{}+1\')';
+			$expr{"NDIS+1"} = '$_[ARGS]['.$i.']->build(\'{}+1\')';
 		}
 		elsif ($keys[$i] =~ /^\d+$/) {
 			# inline const - insert parser to get expression, compute value and insert
@@ -514,28 +576,28 @@ sub add_parser_rules {
 	for ($keys[-1]) {
 		$_ = dump($_);
 		s/([\[\s,])(\d+)([\]\s,])/$1._hex($2).$3/ge;
-		s/"(DIS|DIS\+0x01|NDIS|NDIS\+0x01|N|NNl|NNh|NNo)"/$expr{$1}/g;
+		s/"(DIS|DIS\+1|NDIS|NDIS\+1|N|NNl|NNh|NNo)"/$expr{$1}/g;
 		s/^\[//; s/\]$//;		# transform array ref into array
 		
 		if ($keys[0] =~ /DJNZ/i) {
 			# jump opcode : short : DJNZ; long : DEC B:JP NZ
 			$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
 							'['.
-							_hex(asm_table->{asm}{dec}{b}{""}[0]).', '.
-							_hex(asm_table->{asm}{jp}{nz}{','}{NN}{""}[0]).', '.
+							_hex(Asm::Z80::Table->asm_table->{dec}{b}{""}[0]).', '.
+							_hex(Asm::Z80::Table->asm_table->{jp}{nz}{','}{NN}{""}[0]).', '.
 							$expr{NNl}.', '.$expr{NNh}.']); }';
 		}
 		elsif ($keys[0] =~ /JR/i) {
 			if ($keys[1] =~ /^\w+$/) {		# JR FLAG,NN
 				$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
 							'['.
-							_hex(asm_table->{asm}{jp}{$keys[1]}{','}{NN}{""}[0]).', '.
+							_hex(Asm::Z80::Table->asm_table->{jp}{$keys[1]}{','}{NN}{""}[0]).', '.
 							$expr{NNl}.', '.$expr{NNh}.']); }';
 			}
 			else {							# JR NN
 				$_ = 'sub {_add_jump_opcode(@_, ['.$_.'], '.
 							'['.
-							_hex(asm_table->{asm}{jp}{NN}{""}[0]).', '.
+							_hex(Asm::Z80::Table->asm_table->{jp}{NN}{""}[0]).', '.
 							$expr{NNl}.', '.$expr{NNh}.']); }';
 			}
 		}
