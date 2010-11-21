@@ -8,7 +8,7 @@
 use strict;
 use warnings;
 
-use AsmTable;
+use Asm::Z80::Table;
 
 #------------------------------------------------------------------------------
 # write all available instructions
@@ -78,7 +78,7 @@ sub show_instr {
 	# handle case of "ld (ix),a" -> need to define DIS
 	my @bytes_copy = @bytes;
 	for (@bytes_copy) {	
-		s/DIS\+0x01/1/g;
+		s/DIS\+1/1/g;
 		s/DIS/0/g;
 	}
 	
@@ -129,7 +129,7 @@ sub show_instrs {
 sub write_asm {
 	print "        org 0\n";
 	$address = 0;
-	show_instrs(asm_table->{asm});
+	show_instrs(Asm::Z80::Table->asm_table);
 }
 
 write_asm;
