@@ -9,7 +9,7 @@ use Test::More;
 use Data::Dump 'dump';
 
 use_ok 'Asm::Preproc::Line';
-use_ok 'CPU::Z80::Assembler::Preprocessor';
+use_ok 'CPU::Z80::Assembler';
 use_ok 'Asm::Preproc::Stream';
 
 require_ok 't/test_utils.pl';
@@ -55,4 +55,4 @@ test_line(	"NOP\n", 		2, 	't/data/include.z80');
 test_eof();
 
 
-done_testing;
+done_testing();

@@ -7,10 +7,10 @@ use warnings;
 
 use Test::More tests => 30;
 
+use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Segment';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Opcode';
-use_ok 'CPU::Z80::Assembler::Lexer';
 use_ok 'Asm::Preproc::Line';
 
 our $stream;

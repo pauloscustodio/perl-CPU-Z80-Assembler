@@ -7,12 +7,12 @@ use warnings;
 
 use Test::More tests => 44;
 
+use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Program';
 use_ok 'CPU::Z80::Assembler::Segment';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'CPU::Z80::Assembler::Opcode';
 use_ok 'Asm::Preproc::Line';
-use_ok 'CPU::Z80::Assembler::Lexer';
 
 require_ok 't/test_utils.pl';
 

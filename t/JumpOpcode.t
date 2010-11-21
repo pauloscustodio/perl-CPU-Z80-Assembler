@@ -10,8 +10,8 @@ use Test::More;
 use_ok 'CPU::Z80::Assembler::JumpOpcode';
 use_ok 'CPU::Z80::Assembler::Opcode';
 use_ok 'Asm::Preproc::Line';
+use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Expr';
-use_ok 'CPU::Z80::Assembler::Lexer';
 
 isa_ok		my $expr = CPU::Z80::Assembler::Expr->new(type => "sb"),
 			'CPU::Z80::Assembler::Expr';
@@ -71,4 +71,4 @@ is			$jump->long_jump->address,	3, 		"short address";
 is			$jump->line->text, 			3, 		"line text";
 is			$jump->line->line_nr, 		3, 		"line line_nr";
 
-done_testing;
+done_testing();

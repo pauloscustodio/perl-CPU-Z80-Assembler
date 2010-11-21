@@ -6,10 +6,10 @@ use strict;
 use warnings;
 
 use Test::More tests => 27;
+use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Opcode';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'Asm::Preproc::Line';
-use_ok 'CPU::Z80::Assembler::Lexer';
 
 our $stream;
 

@@ -7,7 +7,7 @@ use strict;
 
 use Test::More;
 
-use_ok	'CPU::Z80::Assembler::Lexer';
+use_ok	'CPU::Z80::Assembler';
 use_ok	'Asm::Preproc::Stream';
 
 require_ok 't/test_utils.pl';
@@ -40,4 +40,4 @@ is		z80lexer("#define 23\n")->get, undef, "end of input";
 is		z80lexer(" #define 23\n")->get, undef, "end of input";
 is		z80lexer(" # define 23\n")->get, undef, "end of input";
 
-done_testing;
+done_testing();
