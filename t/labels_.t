@@ -7,7 +7,7 @@ use strict;
 use CPU::Z80::Assembler;
 # $CPU::Z80::Assembler::verbose = 1;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 is_deeply(z80asm('
     ORG 0x08
@@ -34,3 +34,12 @@ is	z80asm('
 	_b = 3*_c
 	_c:	DEFW _a, _b, _c
 		'), "\x54\x00\x2A\x00\x0E\x00\x54\x00\x2A\x00\x0E\x00", "expression as foward reference";
+
+is	z80asm('
+		ORG 0x08
+		DEFW _a, _b, _c
+	_a equ 2*_b
+	_b equ 3*_c
+	_c:	DEFW _a, _b, _c
+		'), "\x54\x00\x2A\x00\x0E\x00\x54\x00\x2A\x00\x0E\x00", "expression as foward reference";
+
