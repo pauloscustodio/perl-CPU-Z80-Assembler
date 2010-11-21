@@ -15,9 +15,9 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 use strict;
 use warnings;
 
-our $VERSION = '2.12';
+our $VERSION = '2.13';
 
-use CPU::Z80::Assembler::Lexer;
+use CPU::Z80::Assembler;
 use CPU::Z80::Assembler::Parser;
 use Asm::Preproc::Stream;
 use Asm::Preproc::Line;
@@ -178,9 +178,11 @@ sub evaluate { my($self, $address, $symbol_table, $seen) = @_;
 				defined($expr) or
 					$self->line->error("Symbol '$value' not defined");
 				if (ref($expr)) {					# compute sub-expression first
-					$seen->{$value}++ and
+					$seen->{$value} and
 						$self->line->error("Circular reference computing '$value'");
-					$expr_value = $expr->evaluate($address, $symbol_table, $seen);
+					my %local_seen = (%$seen, $value => 1);
+					$expr_value = $expr->evaluate($address, $symbol_table, 
+												  \%local_seen);
 				}
 				else {
 					$expr_value = $expr;
@@ -227,7 +229,7 @@ sub evaluate { my($self, $address, $symbol_table, $seen) = @_;
   $new_expr = $expr->build($expr_text, @init_args)
 
 Build and return a new expresion object with an expression based on the current
-object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>.
+object. The expression is passed as a string and is lexed by L<CPU::Z80::Assembler|CPU::Z80::Assembler> C<z80lexer>.
 The special token '{}' is used to refer to this expression.
 
 For example, to return a new expression object that, when evaluated, gives the double
@@ -245,7 +247,7 @@ object.
 sub build {	my($self, $expr_text, @init_args) = @_;
 	my $line = $self->line;
 	my $new_expr = ref($self)->new(line => $line, type => $self->type, @init_args);
-	my $token_stream = CPU::Z80::Assembler::Lexer::z80lexer($expr_text);
+	my $token_stream = CPU::Z80::Assembler::z80lexer($expr_text);
 	while (defined(my $token = $token_stream->get)) {
 		if ($token->type eq '{') {
 			(defined($token_stream->head) && $token_stream->get->type eq '}')
