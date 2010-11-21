@@ -13,26 +13,13 @@ GLOB_PM =	$(shell $(GLOB) ../lib/CPU/Z80/*.pm ../lib/CPU/Z80/Assembler/*.pm)
 #PERL5LIB = 	..\blib\lib;$(PERL5LIB)
 
 #------------------------------------------------------------------------------
-# build AsmTable.pm
-all :	AsmTable.pm ..\lib\CPU\Z80\Assembler\AsmTable.pm
-
-AsmTable.pm : build_AsmTable.pl 
-	$(MAKE) RUN_TOOL TOOL="build_AsmTable.pl AsmTable" OUT="AsmTable.pm"
-
-..\lib\CPU\Z80\Assembler\AsmTable.pm : build_AsmTable.pl 
-	$(MAKE) RUN_TOOL TOOL="build_AsmTable.pl CPU::Z80::Assembler::AsmTable"  OUT="..\lib\CPU\Z80\Assembler\AsmTable.pm"
-
-clean::
-	-$(RM_F) AsmTable.pm
-
-#------------------------------------------------------------------------------
 # build test_z80.asm
 all :	..\t\data\test_z80.asm
 
-..\t\data\test_z80.asm : test_z80.asm ; 
+..\t\data\test_z80.asm : test_z80.asm
 	$(CP) test_z80.asm ..\t\data\test_z80.asm
 
-test_z80.asm : build_test_z80.pl AsmTable.pm 
+test_z80.asm : build_test_z80.pl
 	$(MAKE) RUN_TOOL TOOL="build_test_z80.pl" OUT="test_z80.asm"
 
 clean::
@@ -61,7 +48,7 @@ realclean::
 # build Parser.pm
 all : ..\lib\CPU\Z80\Assembler\Parser.pm
 
-..\lib\CPU\Z80\Assembler\Parser.pm : build_Parser.pl AsmTable.pm ParserGenerator.pm t\result.txt
+..\lib\CPU\Z80\Assembler\Parser.pm : build_Parser.pl ParserGenerator.pm t\result.txt
 	perl build_Parser.pl CPU::Z80::Assembler::Parser ..\lib\CPU\Z80\Assembler\Parser.pm
 
 t\result.txt : $(GLOB_T) ParserGenerator.pm
