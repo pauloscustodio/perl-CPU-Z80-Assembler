@@ -3,22 +3,18 @@ bin/z80masm
 CHANGES
 GPL2.txt
 lib/CPU/Z80/Assembler.pm
-lib/CPU/Z80/Assembler/AsmTable.pm
 lib/CPU/Z80/Assembler/Expr.pm
 lib/CPU/Z80/Assembler/JumpOpcode.pm
-lib/CPU/Z80/Assembler/Lexer.pm
 lib/CPU/Z80/Assembler/List.pm
 lib/CPU/Z80/Assembler/Macro.pm
 lib/CPU/Z80/Assembler/Opcode.pm
 lib/CPU/Z80/Assembler/Parser.pm
-lib/CPU/Z80/Assembler/Preprocessor.pm
 lib/CPU/Z80/Assembler/Program.pm
 lib/CPU/Z80/Assembler/Segment.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
-t/AsmTable.t
 t/assemble.t
 t/binmode.t
 t/data/include.z80
@@ -61,4 +57,3 @@ t/Program-segment.t
 t/Program-split_segment.t
 t/Segment.t
 t/test_utils.pl
-VERSION
