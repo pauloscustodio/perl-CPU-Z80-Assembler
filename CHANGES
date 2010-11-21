@@ -10,6 +10,7 @@ Revision history for CPU-Z80-Assembler
 
 	New Features
 	* Add defm, defmz, defm7, equ
+	* Add z80asm_file function.
 
 	Feature Changes
 	* Replace AsmTable by Asm::Z80::Table. This has the impacts:

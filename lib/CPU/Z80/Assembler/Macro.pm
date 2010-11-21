@@ -19,7 +19,7 @@ use CPU::Z80::Assembler::Parser;
 use Asm::Preproc::Stream;
 use Asm::Preproc::Token;
 
-our $VERSION = '2.12';
+our $VERSION = '2.13';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter
@@ -61,8 +61,7 @@ sub tokens { defined($_[1]) ? $_[0][3] = $_[1] : $_[0][3] }
 This module provides a macro pre-processor to parse macro definition statements,
 and expand macro calls in the token stream. Both the input and output streams
 are L<Asm::Preproc::Stream|Asm::Preproc::Stream> objects returning sequences 
-of tokens as defined 
-in L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>.
+of tokens.
 
 The object created by new() describes one macro. It is used during the parse phase
 to define the macro object while reading the input token stream.
@@ -399,7 +398,6 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 =head1 SEE ALSO
 
 L<CPU::Z80::Assembler|CPU::Z80::Assembler>
-L<CPU::Z80::Assembler::Lexer|CPU::Z80::Assembler::Lexer>
 L<Asm::Preproc::Stream|Asm::Preproc::Stream>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
