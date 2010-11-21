@@ -7,7 +7,7 @@ use strict;
 
 use Test::More;
 
-use_ok	'CPU::Z80::Assembler::Lexer';
+use_ok	'CPU::Z80::Assembler';
 use_ok	'Asm::Preproc::Stream';
 
 require_ok 't/test_utils.pl';
@@ -155,13 +155,15 @@ test_token(	"iyl", 		"iyl");
 test_token(	"f", 		"f");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"org stop defb defw deft defm\n", 9, "DATA");
+test_token_line(	"org stop defb defw deft defm defmz defm7\n", 9, "DATA");
 test_token(	"org", 		"org");
 test_token(	"stop",		"stop");
 test_token(	"defb",		"defb");
 test_token(	"defw",		"defw");
 test_token(	"deft",		"deft");
 test_token(	"defm",		"defm");
+test_token(	"defmz",	"defmz");
+test_token(	"defm7",	"defm7");
 test_token(	"\n", 		"\n");
 
 test_token_line(	"A ADC ADD AF AF' AF' AND B BC BIT C CALL CCF CP CPD CPDR CPI CPIR\n", 10, "DATA");
@@ -281,13 +283,15 @@ test_token(	"iyl", 		"iyl");
 test_token(	"f", 		"f");
 test_token(	"\n", 		"\n");
 
-test_token_line(	"ORG STOP DEFB DEFW DEFT DEFM\n", 17, "DATA");
+test_token_line(	"ORG STOP DEFB DEFW DEFT DEFM DEFMZ DEFM7\n", 17, "DATA");
 test_token(	"org", 		"org");
 test_token(	"stop",		"stop");
 test_token(	"defb",		"defb");
 test_token(	"defw",		"defw");
 test_token(	"deft",		"deft");
 test_token(	"defm",		"defm");
+test_token(	"defmz",	"defmz");
+test_token(	"defm7",	"defm7");
 test_token(	"\n", 		"\n");
 
 test_token_line(	"'unclosed string ;\n", 18, "DATA");
@@ -365,7 +369,7 @@ res ret reti retn rl rla rlc rlca rld rr rra rrc rrca rrd rst
 sbc scf set sla sp sra srl sub xor z
 << >> == != >= <= < > = ! ( ) + - * / % , :
 ixh ixl iyh iyl f
-org stop defb defw deft defm
+org stop defb defw deft defm defmz defm7
 A ADC ADD AF AF' AF' AND B BC BIT C CALL CCF CP CPD CPDR CPI CPIR 
 CPL D DAA DE DEC DI DJNZ E EI EX EXX H HALT HL I IM 
 IN INC IND INDR INI INIR IX IY JP JR L LD LDD LDDR LDI LDIR M 
@@ -373,7 +377,7 @@ NC NEG NOP NZ OR OTDR OTIR OUT OUTD OUTI P PE PO POP PUSH
 RES RET RETI RETN RL RLA RLC RLCA RLD RR RRA RRC RRCA RRD RST 
 SBC SCF SET SLA SP SRA SRL SUB XOR Z
 IXH IXL IYH IYL F
-ORG STOP DEFB DEFW DEFT DEFM
+ORG STOP DEFB DEFW DEFT DEFM DEFMZ DEFM7
 'unclosed string ; 
 "unclosed string ; 
 'clo;sed' "string" 'with''quote' "and""quote" ; comment '
