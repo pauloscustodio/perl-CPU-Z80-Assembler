@@ -17,20 +17,10 @@ is 	z80asm('DEFB 69'),         chr(0x45), 'dec  DEFB';
 is 	z80asm('DEFB 0b01000101'), chr(0x45), 'bin  DEFB';
 is 	z80asm('DEFB 68+1'),       chr(0x45), 'calc DEFB';
 
-is 	z80asm('DB 0x45'),       chr(0x45), 'hex  DEFB';
-is 	z80asm('DB 69'),         chr(0x45), 'dec  DEFB';
-is 	z80asm('DB 0b01000101'), chr(0x45), 'bin  DEFB';
-is 	z80asm('DB 68+1'),       chr(0x45), 'calc DEFB';
-
 is 	z80asm('DEFW 0x4645'),             	chr(0x45).chr(0x46), 'hex  DEFW';
 is 	z80asm('DEFW 17989'),              	chr(0x45).chr(0x46), 'dec  DEFW';
 is 	z80asm('DEFW 0b0100011001000101'), 	chr(0x45).chr(0x46), 'bin  DEFB';
 is 	z80asm('DEFW 17988+1'),            	chr(0x45).chr(0x46), 'calc DEFW';
-
-is 	z80asm('DW 0x4645'),             	chr(0x45).chr(0x46), 'hex  DEFW';
-is 	z80asm('DW 17989'),              	chr(0x45).chr(0x46), 'dec  DEFW';
-is 	z80asm('DW 0b0100011001000101'), 	chr(0x45).chr(0x46), 'bin  DEFB';
-is 	z80asm('DW 17988+1'),            	chr(0x45).chr(0x46), 'calc DEFW';
 
 is 	z80asm("DEFT ''\nDEFT 'text'"), 	"text", "DEFT ''";
 is 	z80asm("DEFT 'text'"), 				"text", "DEFT 'text'";
@@ -110,9 +100,15 @@ is 	z80asm("DEFB ('hello'*2) & 0xFF "), chr( ( ( ord('h') + (ord('e')<<8) ) * 2 
 is 	$warn, "-(1) : warning: Expression hello: extra bytes ignored\n", "warning";
 $warn = undef;
 
+is	z80asm("DEFM  'hello','worlc'+1"),		"helloworld",				"DEFM";
+is	$warn, undef, "no warnings";
+
+is	z80asm("DEFMZ 'hello','worlc'+1"),		"hello\0world\0",			"DEFMZ";
+is	$warn, undef, "no warnings";
+
+is	z80asm("DEFM7 'hello','worlc'+1"),		"hell".chr(ord('o')+128).
+											"worl".chr(ord('d')+128),	"DEFM7";
 is	$warn, undef, "no warnings";
 
 
-
-is $warn, undef, "no warnings";
 done_testing();
