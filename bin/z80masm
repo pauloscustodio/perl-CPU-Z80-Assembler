@@ -17,7 +17,7 @@ defined($infile) && @ARGV == 0
     or die "Usage: z80masm sourcefile [destfile]\n";
 $outfile ||= "$infile.o";
 
-my $code = z80asm("#include '$infile'");
+my $code = z80asm_file($infile);
 open(OUT, ">$outfile") || die("Can't open $outfile\n");
 binmode(OUT);
 print OUT $code;
