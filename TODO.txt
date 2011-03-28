@@ -1,3 +1,10 @@
+- BUGS:
+	* RST expr : not accepted
+
+- NEW FEATURES:
+	* High Level Assembly
+	* XSAccessor
+
 - Differentiate read-only and read-write labels; if label is redefined, check
   consistency with multiple usage before and after each re-definition
 - TASM compatibility:
