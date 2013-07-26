@@ -16,10 +16,10 @@ use strict;
 use warnings;
 
 use CPU::Z80::Assembler::Parser;
-use Asm::Preproc::Stream;
+use Iterator::Simple::Lookahead;
 use Asm::Preproc::Token;
 
-our $VERSION = '2.13';
+our $VERSION = '2.14';
 
 #------------------------------------------------------------------------------
 # Class::Struct cannot be used with Exporter
@@ -60,7 +60,7 @@ sub tokens { defined($_[1]) ? $_[0][3] = $_[1] : $_[0][3] }
 
 This module provides a macro pre-processor to parse macro definition statements,
 and expand macro calls in the token stream. Both the input and output streams
-are L<Asm::Preproc::Stream|Asm::Preproc::Stream> objects returning sequences 
+are L<Iterator::Simple::Lookahead|Iterator::Simple::Lookahead> objects returning sequences 
 of tokens.
 
 The object created by new() describes one macro. It is used during the parse phase
@@ -115,10 +115,10 @@ sub parse_body {
 	
 	# skip {
 	my $opened_brace;
-	defined($token = $input->head) 
+	defined($token = $input->peek) 
 		or Asm::Preproc::Token->error_at($token, "macro body not found");	
 	if ($token->type eq '{') {
-		$input->get;
+		$input->next;
 		$opened_brace++;
 	}
 	elsif ($token->type =~ /^[:\n]$/) {
@@ -138,40 +138,40 @@ sub parse_body {
 	my $last_stmt_end = 1;
 
 	my $parens = 0;
-	while (defined($token = $input->head)) {
+	while (defined($token = $input->peek)) {
 		my $type = $token->type;
 		if ($type eq "{") {
 			$parens++;
 			push @macro_tokens, $token;
-			$input->get;
+			$input->next;
 		}
 		elsif ($type eq "endm") {
 			$opened_brace 
 				and $token->error("expected \"}\"");
-			$input->get;							# skip delimiter
+			$input->next;							# skip delimiter
 			last;
 		}
 		elsif ($type eq "}") {
 			if ($parens > 0) {
 				$parens--;
 				push @macro_tokens, $token;
-				$input->get;
+				$input->next;
 			}
 			else {
-				$input->get if $opened_brace;		# skip delimiter
+				$input->next if $opened_brace;		# skip delimiter
 				last;
 			}
 		}
 		elsif ($type eq "NAME" && $last_stmt_end) {	# local label
 			$locals{$token->value}++;
 			push @macro_tokens, $token;
-			$input->get;
+			$input->next;
 		}
 		else {
 			push @macro_tokens, $token;
 			push @line_tokens,  $token if $type eq "\n";	
 											# save new-lines for listing
-			$input->get;
+			$input->next;
 		}
 		$last_stmt_end = ($type =~ /^[:\n]$/);
 	}
@@ -203,17 +203,17 @@ sub expand_macro {
 	my($self, $input) = @_;
 	our $instance++;									# unique ID for local labels
 	
-	my $start_token = $input->head;						# for error messages
+	my $start_token = $input->peek;						# for error messages
 	defined($start_token) or die;						# must have at least a "\n"
 	
 	my $args = $self->parse_macro_arguments($input);
 	
 	# compute token expansion
-	my $macro_stream  = Asm::Preproc::Stream->new(@{$self->tokens});
-	my $expand_stream = Asm::Preproc::Stream->new(
+	my $macro_stream  = Iterator::Simple::Lookahead->new(@{$self->tokens});
+	my $expand_stream = Iterator::Simple::Lookahead->new(
 		sub {
 			for(;;) {
-				my $token = $macro_stream->get;
+				my $token = $macro_stream->next;
 				defined($token) or return undef;		# end of expansion
 				
 				$token = $token->clone;					# make a copy
@@ -243,7 +243,7 @@ sub expand_macro {
 		});
 		
 	# prepend the expanded stream in the input
-	$input->unget($expand_stream->iterator);
+	$input->unget($expand_stream);
 }
 
 #------------------------------------------------------------------------------
@@ -271,7 +271,7 @@ sub parse_macro_arguments {
 	my @params = @{$self->params};						# formal parameters
 	for (my $i = 0; $i < @params; $i++) {
 		my $param = $params[$i];
-		$token = $input->head;
+		$token = $input->peek;
 		defined($token) && $token->type !~ /^[:\n,]$/
 			or Asm::Preproc::Token->error_at($token, 
 										"expected value for macro parameter $param");
@@ -279,16 +279,16 @@ sub parse_macro_arguments {
 		$args{$param} = \@arg;
 		
 		if ($i != $#params) {							# expect a comma
-			$token = $input->head;
+			$token = $input->peek;
 			defined($token) && $token->type eq ','
 				or Asm::Preproc::Token->error_at($token, 
 										"expected \",\" after macro parameter $param");
-			$input->get;
+			$input->next;
 		}
 	}
 	
 	# expect end of statement, keep input at end of statement marker
-	$token = $input->head;
+	$token = $input->peek;
 	(!defined($token) || $token->type =~ /^[:\n]$/)
 		or Asm::Preproc::Token->error_at($token, "too many macro arguments");
 	
@@ -307,7 +307,7 @@ sub _parse_argument {
 	my @tokens;
 	my $parens = 0;
 	my $opened_brace;
-	while (defined($token = $input->head)) {
+	while (defined($token = $input->peek)) {
 		my $type = $token->type;
 		if ($type =~ /^[:\n,]$/ && $parens == 0) {
 			last;
@@ -315,22 +315,22 @@ sub _parse_argument {
 		elsif ($type eq '{') {
 			$parens++;
 			push(@tokens, $token) if $opened_brace++;
-			$input->get;
+			$input->next;
 		}
 		elsif ($type eq '}') {
 			if ($parens > 0) {
 				$parens--;
 				push(@tokens, $token) if --$opened_brace;
-				$input->get;
+				$input->next;
 			}
 			else {
-				$input->get if $opened_brace;		# skip delimiter
+				$input->next if $opened_brace;		# skip delimiter
 				last;
 			}
 		}
 		else {
 			push(@tokens, $token);
-			$input->get;
+			$input->next;
 		}
 	}
 	Asm::Preproc::Token->error_at($token, "unmatched braces") 
@@ -398,7 +398,7 @@ See L<CPU::Z80::Assembler|CPU::Z80::Assembler>.
 =head1 SEE ALSO
 
 L<CPU::Z80::Assembler|CPU::Z80::Assembler>
-L<Asm::Preproc::Stream|Asm::Preproc::Stream>
+L<Iterator::Simple::Lookahead|Iterator::Simple::Lookahead>
 
 =head1 AUTHORS, COPYRIGHT and LICENCE
 

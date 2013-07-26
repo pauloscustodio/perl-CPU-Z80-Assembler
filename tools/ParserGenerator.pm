@@ -298,7 +298,7 @@ use strict;
 use warnings;
 
 use Data::Dump 'dump';
-use Asm::Preproc::Stream;
+use Iterator::Simple::Lookahead;
 use Asm::Preproc::Token;
 use Carp;
 
@@ -326,7 +326,7 @@ use constant {
 
   $result = parse($input, $user, $start_rule)
 
-This function receives the input token stream (L<Asm::Preproc::Stream|Asm::Preproc::Stream>), 
+This function receives the input token stream (L<Iterator::Simple::Lookahead|Iterator::Simple::Lookahead>), 
 a user pointer and an optional start rule number. 
 
 It parses the input stream, leaving the stream at the first unparsed
@@ -371,7 +371,7 @@ sub parse {
 	my @stack = ();					# store: [$state, @values]
 
 	# fetch token only after drop and after calling parser rules
-	my $token = $input->head;
+	my $token = $input->peek;
 	for(;;) {
 		my($entry, $found_else);
 		if ($entry =  $state_table[$state]{($token ? $token->type : "")}) {
@@ -394,13 +394,13 @@ sub parse {
 			
 			if (!$found_else) {
 				push(@values, $token) if $token;		# add token to values
-				$input->get;							# drop value
-				$token = $input->head;					# and get next token
+				$input->next;							# drop value
+				$token = $input->peek;					# and get next token
 			}
 
 			while (ref($state) eq 'CODE') {				# return from sub-rules 
 				my $value = $state->([@values], $user, $input);
-				$token = $input->head;					# in case $input was changed
+				$token = $input->peek;					# in case $input was changed
 
 				if ( ! @stack ) {						# END OF PARSE
 					return $value;

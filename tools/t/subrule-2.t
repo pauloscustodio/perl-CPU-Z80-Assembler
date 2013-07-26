@@ -7,7 +7,7 @@ use warnings;
 
 use Test::More tests => 25;
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
@@ -26,63 +26,63 @@ isa_ok my $line = Asm::Preproc::Line->new("text\n", "f1.asm", 3),
 		'Asm::Preproc::Line';
 
 my $input;
-isa_ok $input = Asm::Preproc::Stream->new(),
- 			'Asm::Preproc::Stream';
+isa_ok $input = Iterator::Simple::Lookahead->new(),
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected \"=\" at EOF\n", "parse error";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected one of (NAME NUMBER) at EOF\n", "parse error";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected \";\" at EOF\n", "parse error";
 			
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line),
 				Asm::Preproc::Token->new(";"	=> ";",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 			
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line),
 				Asm::Preproc::Token->new(";"	=> ";",	$line),
 				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected \"=\" at EOF\n", "parse error";
 			
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line),
 				Asm::Preproc::Token->new(";"	=> ";",	$line),
 				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected one of (NAME NUMBER) at EOF\n", "parse error";
 			
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line),
@@ -90,10 +90,10 @@ isa_ok $input = Asm::Preproc::Stream->new(
 				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NAME	=> "c",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [10, "c"], "parse OK";
 			
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line),
@@ -102,7 +102,7 @@ isa_ok $input = Asm::Preproc::Stream->new(
 				Asm::Preproc::Token->new("="	=> "=",	$line),
 				Asm::Preproc::Token->new(NAME	=> "c",	$line), 
 				Asm::Preproc::Token->new(NUMBER	=> 23,	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected EOF at NUMBER\n", "parse error";
 

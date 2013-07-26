@@ -8,7 +8,7 @@ use warnings;
 use Test::More tests => 19;
 use Data::Dump 'pp';
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
@@ -65,37 +65,37 @@ $g->start_rule('expr');
 $g->write('Parser', 'Parser.pm');
 use_ok 'Parser';
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new(NAME	=> "a",	$line),
 			], "parse ok";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			], "parse ok";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
 			], "parse ok";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
@@ -103,7 +103,7 @@ isa_ok $input = Asm::Preproc::Stream->new(
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
 			),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
@@ -113,19 +113,7 @@ is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
 			], "parse ok";
 
-isa_ok $input = Asm::Preproc::Stream->new(
-				Asm::Preproc::Token->new("+"	=> "+",	$line), 
-				Asm::Preproc::Token->new("-"	=> "-",	$line), 
-				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
-				Asm::Preproc::Token->new("+"	=> "+",	$line), 
-				Asm::Preproc::Token->new("-"	=> "-",	$line), 
-				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
-				Asm::Preproc::Token->new("*"	=> "*",	$line), 
-				Asm::Preproc::Token->new("-"	=> "-",	$line), 
-				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
-			),
- 			'Asm::Preproc::Stream';
-is_deeply Parser::parse($input), [
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new("+"	=> "+",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
@@ -135,9 +123,21 @@ is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new("*"	=> "*",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
+			),
+ 			'Iterator::Simple::Lookahead';
+is_deeply Parser::parse($input), [
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
+				Asm::Preproc::Token->new("+"	=> "+",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NUMBER	=> 1,	$line), 
+				Asm::Preproc::Token->new("*"	=> "*",	$line), 
+				Asm::Preproc::Token->new("-"	=> "-",	$line), 
+				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 			], "parse ok";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new("("	=> "(",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line), 
@@ -149,7 +149,7 @@ isa_ok $input = Asm::Preproc::Stream->new(
 				Asm::Preproc::Token->new(NAME	=> "b",	$line), 
 				Asm::Preproc::Token->new(")"	=> ")",	$line), 
 			),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new("("	=> "(",	$line), 
 				Asm::Preproc::Token->new("-"	=> "-",	$line), 

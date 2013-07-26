@@ -7,7 +7,7 @@ use warnings;
 
 use Test::More tests => 9;
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';

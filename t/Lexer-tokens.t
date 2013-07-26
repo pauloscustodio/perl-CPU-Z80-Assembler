@@ -8,13 +8,13 @@ use strict;
 use Test::More;
 
 use_ok	'CPU::Z80::Assembler';
-use_ok	'Asm::Preproc::Stream';
+use_ok	'Iterator::Simple::Lookahead';
 
 require_ok 't/test_utils.pl';
 our $stream;
 
 isa_ok	$stream = z80lexer("%line 1+1 DATA\n", sub {<DATA>}),
-		'Asm::Preproc::Stream';
+		'Iterator::Simple::Lookahead';
 
 test_token_line( 	"a adc add af af' af' and b bc bit c call ccf cp cpd cpdr cpi cpir\n", 1, "DATA");
 test_token(	"a",		"a");

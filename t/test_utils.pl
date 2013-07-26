@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'CPU::Z80::Assembler::Opcode';
 
@@ -31,7 +31,7 @@ sub test_line { my($text, $line_nr, $file) = @_;
 	our $stream;
 
 	my $caller_line = (caller)[2];
-	my $token = $stream->get;
+	my $token = $stream->next;
 	isa_ok $token, 'Asm::Preproc::Line';
 	is $text, 		$token->text, 		"[line $caller_line] text";
 	is $line_nr, 	$token->line_nr, 	"[line $caller_line] line_nr";
@@ -43,7 +43,7 @@ sub test_token_line { my($text, $line_nr, $file) = @_;
 	our $line;
 	
 	my $caller_line = (caller)[2];
-	ok my $token = $stream->head, "[line $caller_line] head";
+	ok my $token = $stream->peek, "[line $caller_line] peek";
 	isa_ok $line = $token->line, 'Asm::Preproc::Line';
 	
 	is $line->text, 	$text, 		"[line $caller_line] text";
@@ -56,7 +56,7 @@ sub test_token { my($type, $value) = @_;
 	our $line;
 	
 	my $caller_line = (caller)[2];
-	ok my $token = $stream->get, "[line $caller_line] drop";
+	ok my $token = $stream->next, "[line $caller_line] drop";
 	
 	is $token->type, 			$type,				"[line $caller_line] type";
 	is $token->value, 			$value,				"[line $caller_line] value";
@@ -70,8 +70,8 @@ sub test_eof {
 	our $stream;
 	
 	my $caller_line = (caller)[2];
-	is $stream->get, undef, "[line $caller_line] eof 1";	
-	is $stream->get, undef, "[line $caller_line] eof 2";	
+	is $stream->next, undef, "[line $caller_line] eof 1";	
+	is $stream->next, undef, "[line $caller_line] eof 2";	
 }
 
 1;

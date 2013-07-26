@@ -8,7 +8,7 @@ use strict;
 use Test::More;
 
 use_ok	'CPU::Z80::Assembler';
-use_ok	'Asm::Preproc::Stream';
+use_ok	'Iterator::Simple::Lookahead';
 
 require_ok 't/test_utils.pl';
 our $stream;
@@ -18,7 +18,7 @@ our $stream;
 # test handling of \r in Unix and Win systems
 #------------------------------------------------------------------------------
 isa_ok	$stream = z80lexer(" 1 \r 2 \r\n 3 \n 4"),
-		'Asm::Preproc::Stream';
+		'Iterator::Simple::Lookahead';
 
 test_token_line(	" 1 \r 2\n", 1, "-");
 test_token(	"NUMBER",  	1);

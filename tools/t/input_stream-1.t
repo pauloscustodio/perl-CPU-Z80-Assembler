@@ -7,7 +7,7 @@ use warnings;
 
 use Test::More tests => 13;
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
@@ -17,7 +17,7 @@ unlink 'Parser.pm';
 isa_ok my $g = ParserGenerator->new(), 'ParserGenerator';
 
 # insert the number just read in the input stream as name
-$g->prolog('use Asm::Preproc::Stream;');
+$g->prolog('use Iterator::Simple::Lookahead;');
 $g->add_rule('const
 					NUMBER',
 					'sub {
@@ -38,22 +38,22 @@ isa_ok my $line = Asm::Preproc::Line->new("text\n", "f1.asm", 3),
 		'Asm::Preproc::Line';
 
 my $input;
-isa_ok $input = Asm::Preproc::Stream->new(),
- 			'Asm::Preproc::Stream';
+isa_ok $input = Iterator::Simple::Lookahead->new(),
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected NUMBER at EOF\n", "parse error";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is_deeply Parser::parse($input), [
 				Asm::Preproc::Token->new(NAME	=> "v10",	$line), 
 			], "parse OK";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NUMBER	=> 10,	$line), 
 				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "f1.asm(3) : error: expected EOF at NAME\n", "parse error";
 

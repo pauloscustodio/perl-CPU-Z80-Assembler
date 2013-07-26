@@ -7,7 +7,7 @@ use warnings;
 
 use Test::More tests => 15;
 
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 use_ok 'Asm::Preproc::Line';
 use_ok 'Asm::Preproc::Token';
 use_ok 'ParserGenerator';
@@ -24,23 +24,23 @@ isa_ok my $line = Asm::Preproc::Line->new("text\n", "f1.asm", 3),
 		'Asm::Preproc::Line';
 
 my $input;
-isa_ok $input = Asm::Preproc::Stream->new(),
- 			'Asm::Preproc::Stream';
+isa_ok $input = Iterator::Simple::Lookahead->new(),
+ 			'Iterator::Simple::Lookahead';
 eval {Parser::parse($input)};
 is $@, "error: expected NAME at EOF\n", "parse error";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is Parser::parse($input), "a", "parse OK";
-is $input->head, undef, "empty stream";
+is $input->peek, undef, "empty stream";
 
-isa_ok $input = Asm::Preproc::Stream->new(
+isa_ok $input = Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "a",	$line),
 				Asm::Preproc::Token->new(NAME	=> "b",	$line)),
- 			'Asm::Preproc::Stream';
+ 			'Iterator::Simple::Lookahead';
 is Parser::parse($input), "a", "parse OK";
-is_deeply $input, Asm::Preproc::Stream->new(
+is_deeply $input, Iterator::Simple::Lookahead->new(
 				Asm::Preproc::Token->new(NAME	=> "b",	$line)), 
 			"not empty stream";
 

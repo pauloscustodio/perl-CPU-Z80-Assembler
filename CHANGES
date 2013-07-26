@@ -1,4 +1,7 @@
-Revision history for CPU-Z80-Assembler
+2.14	2013-07-26
+	Other
+	* Use Asm::Preproc 1.00, where Asm::Preproc::Stream is removed, and 
+	  Iterator::Simple::Lookahead is used instead
 
 2.13	2010-11-21
 	Bug Fixes

@@ -15,11 +15,11 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 use strict;
 use warnings;
 
-our $VERSION = '2.13';
+our $VERSION = '2.14';
 
 use CPU::Z80::Assembler;
 use CPU::Z80::Assembler::Parser;
-use Asm::Preproc::Stream;
+use Iterator::Simple::Lookahead;
 use Asm::Preproc::Line;
 use Asm::Preproc::Token;
 
@@ -122,7 +122,7 @@ Get/set the line - text, file name and line number where the token was read.
   $expr->parse($input);
 
 Parses an expression at the given $input stream 
-(L<Asm::Preproc::Stream|Asm::Preproc::Stream>), 
+(L<Iterator::Simple::Lookahead|Iterator::Simple::Lookahead>), 
 leaves the stream pointer after the expression and updates the expression object. 
 Dies if the expression cannot be parsed.
 
@@ -248,9 +248,9 @@ sub build {	my($self, $expr_text, @init_args) = @_;
 	my $line = $self->line;
 	my $new_expr = ref($self)->new(line => $line, type => $self->type, @init_args);
 	my $token_stream = CPU::Z80::Assembler::z80lexer($expr_text);
-	while (defined(my $token = $token_stream->get)) {
+	while (defined(my $token = $token_stream->next)) {
 		if ($token->type eq '{') {
-			(defined($token_stream->head) && $token_stream->get->type eq '}')
+			(defined($token_stream->peek) && $token_stream->next->type eq '}')
 				or die "unmatched {}";
 				
 			# refer to this expression

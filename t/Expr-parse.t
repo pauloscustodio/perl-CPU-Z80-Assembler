@@ -9,7 +9,7 @@ use Test::More tests => 205;
 use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'Asm::Preproc::Line';
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 require_ok 't/test_utils.pl';
 
 my $warn; 
@@ -39,8 +39,8 @@ is			$expr->line->text, 		"2+3:\n", 	"line text";
 is			$expr->line->line_nr, 	1,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(":", ":");
-isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(@{$expr->child}),
+			'Iterator::Simple::Lookahead';
 test_token('NUMBER', 2);
 test_token("+", "+");
 test_token('NUMBER', 3);
@@ -57,8 +57,8 @@ is			$expr->line->text, 		"4+5\n", 	"line text";
 is			$expr->line->line_nr, 	2,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token("\n", "\n");
-isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(@{$expr->child}),
+			'Iterator::Simple::Lookahead';
 test_token('NUMBER', 4);
 test_token("+", "+");
 test_token('NUMBER', 5);
@@ -75,8 +75,8 @@ is			$expr->line->text, 		"6+7)\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(")", ")");
-isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(@{$expr->child}),
+			'Iterator::Simple::Lookahead';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
@@ -93,8 +93,8 @@ is			$expr->line->text, 		"6+7]\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token("]", "]");
-isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(@{$expr->child}),
+			'Iterator::Simple::Lookahead';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
@@ -111,16 +111,16 @@ is			$expr->line->text, 		"6+7,\n", 	"line text";
 is			$expr->line->line_nr, 	3,	 		"line line_nr";
 is			$expr->line->file, 		"FILE", 	"line file";
 test_token(",", ",");
-isa_ok $stream = Asm::Preproc::Stream->new(@{$expr->child}),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(@{$expr->child}),
+			'Iterator::Simple::Lookahead';
 test_token('NUMBER', 6);
 test_token("+", "+");
 test_token('NUMBER', 7);
 test_eof();
 is			$expr->evaluate, 6+7,		"eval expression";
 
-isa_ok $stream = Asm::Preproc::Stream->new(),
-			'Asm::Preproc::Stream';
+isa_ok $stream = Iterator::Simple::Lookahead->new(),
+			'Iterator::Simple::Lookahead';
 eval {$expr->parse($stream)};
 is $@, "error: expected one of (\"(\" NAME NUMBER STRING) at EOF\n", "expression not found";
 is			$expr->evaluate, 0,			"eval expression";

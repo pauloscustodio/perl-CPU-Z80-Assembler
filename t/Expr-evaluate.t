@@ -9,7 +9,7 @@ use Test::More tests => 57;
 use_ok 'CPU::Z80::Assembler';
 use_ok 'CPU::Z80::Assembler::Expr';
 use_ok 'Asm::Preproc::Line';
-use_ok 'Asm::Preproc::Stream';
+use_ok 'Iterator::Simple::Lookahead';
 require_ok 't/test_utils.pl';
 
 our $stream;
