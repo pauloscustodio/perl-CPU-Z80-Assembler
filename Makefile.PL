@@ -1,9 +1,18 @@
-# $Id$
+#!perl
+
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
-use 5.008;
+use 5.010;
+my $mm_ver = $ExtUtils::MakeMaker::VERSION;
+if ($mm_ver =~ /_/) {
+    # developer release
+    $mm_ver = eval $mm_ver;
+    die $@ if $@;
+}
 
+# See lib/ExtUtils/MakeMaker.pm for details of how to influence
+# the contents of the Makefile that is written.
 WriteMakefile(
     NAME         	=> 'CPU::Z80::Assembler',
     VERSION_FROM 	=> 'lib/CPU/Z80/Assembler.pm',
@@ -24,7 +33,26 @@ WriteMakefile(
     EXE_FILES    	=> [qw(
         bin/z80masm
     )],
-    LICENSE			=> 'perl',
+    ($mm_ver >= 6.48
+        ? (MIN_PERL_VERSION => 5.010)
+        : ()
+    ),
+
+    ($mm_ver >= 6.31 ? (LICENSE => 'perl_5_16') : ()),
+
+    ($mm_ver <= 6.45
+        ? ()
+        : (META_MERGE => {
+            'meta-spec' => { version => 2 },
+            resources => {
+                repository  => {
+                    type => 'git',
+                    url  => 'git://github.com/pauloscustodio/perl-CPU-Z80-Assembler.git',
+                    web  => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler',
+                },
+            },
+          })
+    ),
 );
 
 
