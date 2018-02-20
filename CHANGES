@@ -1,6 +1,11 @@
-next release:
+2.16	2018-02-20
+
+	Bug Fixes
+	* https://rt.cpan.org/Public/Bug/Display.html?id=124499
+
 	Other
-	* Fix license value
+	* Fix license value in Makefile.PL
+	* Add Travis-CI control file
 
 2.15	2015-12-28
 	Other
