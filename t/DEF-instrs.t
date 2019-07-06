@@ -36,6 +36,24 @@ is 	z80asm('DEFM "text", 0x45'), 		"text".chr(0x45), 'DEFM "text", byte';
 is 	z80asm("DEFM 'text', 0x45"), 		"text".chr(0x45), "DEFM 'text', byte";
 is 	z80asm("DEFM 'te;xt'"), 			"te;xt", "DEFM 'te;xt'";
 
+my $Q = "'";
+my $QQ = '"';
+my $BS = '\\';
+my $A = "\a";
+my $B = "\b";
+my $E = "\e";
+my $F = "\f";
+my $N = "\n";
+my $R = "\r";
+my $T = "\t";
+
+is	z80asm("DEFM ${Q}${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${BS}${BS}${Q}${QQ}${BS}041${BS}x21${Q}"),
+			"${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${Q}${QQ}${BS}041${BS}x21",
+			"DEFM single-quote escapes";
+is	z80asm("DEFM ${QQ}${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${BS}${Q}${BS}${QQ}${BS}041${BS}x21${QQ}"),
+			"${A}${B}${E}${F}${N}${R}${T}${BS}${Q}${QQ}!!",
+			"DEFM double-quote escapes";
+
 is	z80asm("DEFM 0x12345678+0x12,0x12345678"), 
 										"\x12\x34\x56".chr(0x78+0x12)."\x12\x34\x56\x78", 
 										"DEFM long number";

@@ -243,10 +243,9 @@ $lexer->make_lexer(
 
 	# string - return without quotes
 	# Sequence (?|...) not recognized in regex in Perl 5.8
-	STRING	=> qr/ (?: ' [^']* '
-					 | " [^"]* " ) /ix,	sub {[$_[0], 
-											substr($_[1], 1, length($_[1])-2)]},
-	
+	STRING	=> qr/ (?: \" (?: \\. | [^\\\"] )* \" 
+					 | \' (?: \\. | [^\\\'] )* \' ) /ix,
+										sub {[$_[0], eval($_[1])]},	
 	# numbers
 	NUMBER	=> qr/ ( \d [0-9a-f]+ ) h \b /ix,
 										sub {[$_[0], oct("0x".$1)]},

@@ -105,6 +105,10 @@ The text bytes used in defm / deft are a string of bytes in big endian format, n
 A STRING value is encoded with the list of characters in the string. If the string is 
 used in an expression, then the expression applies to the last character of the string. This allows expressions like "CALL"+0x80 to invert bit 7 of the last character of the string.
 
+The Perl rules for strings apply, i.e. strings enclosed in double-quotes can have C-like
+escape sequences, strings enlosed in single-quotes only accept the escaped 
+single-quote character.
+
 =head2 child
 
 List of tokens composing the expression.
