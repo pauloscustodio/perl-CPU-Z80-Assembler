@@ -46,24 +46,65 @@ my $F = "\f";
 my $N = "\n";
 my $R = "\r";
 my $T = "\t";
+my $V = "\x0B";
+my $S = '$';
 
-is	z80asm("DEFM ${Q}${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${BS}${BS}${Q}${QQ}${BS}041${BS}x21${Q}"),
-			"${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${Q}${QQ}${BS}041${BS}x21",
-			"DEFM single-quote escapes";
-is	z80asm("DEFM ${QQ}${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}${BS}${Q}${BS}${QQ}${BS}041${BS}x21${QQ}"),
-			"${A}${B}${E}${F}${N}${R}${T}${BS}${Q}${QQ}!!",
-			"DEFM double-quote escapes";
+for my $q ($Q, $QQ) {
+	is	z80asm("DEFM ${q}${q}"),
+				"",
+				"DEFM empty string";
+				
+	is	z80asm("DEFM ${q}${q}+0x12,${q}${q}"),
+				chr(0x12), 
+				"DEFM compute empty strings";
+
+	is	z80asm("DEFM ${q}${BS}a${BS}b${BS}e${BS}f${BS}n${BS}r${BS}t${BS}v${q}"),
+				"${A}${B}${E}${F}${N}${R}${T}${V}",
+				"DEFM C-escapes";
+				
+	is	z80asm("DEFM ${q}${S}${q}"),
+				"${S}",
+				"DEFM dollar";
+				
+	is	z80asm("DEFM ${q}${BS}10${q}"),
+				"\x08",
+				"DEFM octal";
+				
+	is	z80asm("DEFM ${q}${BS}100${q}"),
+				"\x40",
+				"DEFM octal";
+				
+	is	z80asm("DEFM ${q}${BS}1000${q}"),
+				"\x40"."0",
+				"DEFM octal";
+				
+	is	z80asm("DEFM ${q}${BS}x1${q}"),
+				"\x01",
+				"DEFM hexadecimal";
+				
+	is	z80asm("DEFM ${q}${BS}x10${q}"),
+				"\x10",
+				"DEFM hexadecimal";
+				
+	is	z80asm("DEFM ${q}${BS}x100${q}"),
+				"\x10"."0",
+				"DEFM hexadecimal";
+
+	is	z80asm("DEFM ${q}hello${q}+0x12,${q}world${q}"),
+				"hell".chr(ord('o')+0x12)."world", 
+				"DEFM compute strings";
+
+	is 	z80asm("DEFM ${q}hd${q}+1,${q}k${q}+1,${q}k${q}+1,${q}o${q}"),
+				"hello", 
+				"multiple DEFM expressions";
+
+}
 
 is	z80asm("DEFM 0x12345678+0x12,0x12345678"), 
 										"\x12\x34\x56".chr(0x78+0x12)."\x12\x34\x56\x78", 
 										"DEFM long number";
 
-is	z80asm("DEFM 'hello'+0x12,'world'"), 	"hell".chr(ord('o')+0x12)."world", "DEFM compute strings";
-is	z80asm("DEFM ''+0x12,''"), 				chr(0x12), "DEFM compute empty strings";
-
 is	z80asm("ORG 0x1234 : DEFM 0x12345678+(\$ & 0xFF),0x12345678"), "\x12\x34\x56".chr(0x78+0x34)."\x12\x34\x56\x78", "DEFM long number with expression";
-
-is 	z80asm("DEFM 'hd'+1,'k'+1,'k'+1,'o'"),	"hello", "multiple DEFM expressions";
 
 is 	z80asm("ORG 0x1234\nDEFW \$"),
           chr(0x34).chr(0x12),
