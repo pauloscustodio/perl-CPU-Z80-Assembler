@@ -1,9 +1,10 @@
-#!perl
+#!/usr/bin/perl
 
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 use 5.010;
+
 my $mm_ver = $ExtUtils::MakeMaker::VERSION;
 if ($mm_ver =~ /_/) {
     # developer release
@@ -15,7 +16,10 @@ if ($mm_ver =~ /_/) {
 # the contents of the Makefile that is written.
 WriteMakefile(
     NAME         	=> 'CPU::Z80::Assembler',
+    AUTHOR          => 'Paulo Custodio <pscust@cpan.org>',
     VERSION_FROM 	=> 'lib/CPU/Z80/Assembler.pm',
+    ABSTRACT_FROM   => 'lib/CPU/Z80/Assembler.pm',
+    DISTNAME        => 'CPU-Z80-Assembler',
     depend 			=> { Makefile => '$(VERSION_FROM)' },
     PREREQ_PM 		=> {
 		'Asm::Preproc'					=> 1.00,	# no Asm::Preproc::Stream
@@ -33,13 +37,12 @@ WriteMakefile(
     EXE_FILES    	=> [qw(
         bin/z80masm
     )],
+    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     ($mm_ver >= 6.48
         ? (MIN_PERL_VERSION => 5.010)
         : ()
     ),
-
     ($mm_ver >= 6.31 ? (LICENSE => 'perl_5') : ()),
-
     ($mm_ver <= 6.45
         ? ()
         : (META_MERGE => {
@@ -47,12 +50,16 @@ WriteMakefile(
             resources => {
                 repository  => {
                     type => 'git',
-                    url  => 'git://github.com/pauloscustodio/perl-CPU-Z80-Assembler.git',
+                    url  => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler.git',
                     web  => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler',
                 },
+			},
+			bugtracker => {
+				web => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler/issues',
             },
           })
     ),
+    clean               => { FILES => 'CPU-Z80-Disassembler-*' },
 );
 
 
