@@ -1,3 +1,8 @@
+2.20	2023-05-23
+
+	Bug Fixes
+	* #1 Label addresses are incorrect after a second ORG
+
 2.19	2023-05-21
 
 	Bug Fixes

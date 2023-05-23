@@ -1,3 +1,4 @@
+.github/workflows/perltest.yml
 ARTISTIC.txt
 bin/z80masm
 CHANGES
@@ -31,6 +32,7 @@ t/Expr-bytes.t
 t/Expr-evaluate.t
 t/Expr-parse.t
 t/hash-comments_.t
+t/issue_1.t
 t/JumpOpcode.t
 t/labels_.t
 t/Lexer-comments.t
