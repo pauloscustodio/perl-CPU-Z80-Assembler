@@ -311,6 +311,10 @@ sub _locate_opcodes {
 								$address, $segment->address));
 				die; # NOT REACHED
 			}
+			# check for new address
+			elsif ($segment->address > $address) {
+				$address = $segment->address;
+			}
 		}
 		else {
 			$segment->address( $address ) if $final;

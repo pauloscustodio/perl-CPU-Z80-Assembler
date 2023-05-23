@@ -24,12 +24,14 @@ WriteMakefile(
     PREREQ_PM 		=> {
 		'Asm::Preproc'					=> 1.00,	# no Asm::Preproc::Stream
 		'Asm::Z80::Table'				=> 0.02,
+		'Capture::Tiny'					=> 0.48,
 		'Iterator::Array::Jagged'		=> 0.05,
 		'Iterator::Simple::Lookahead'	=> 0.04,
         'Class::Struct'					=> 0,
         'Data::Dump' 					=> 1.08,
         'File::Slurp' 					=> 9999.13,
         'File::Spec' 					=> 0,
+		'Path::Tiny'					=> 0.122,
         'Regexp::Trie' 					=> 0.02,
         'Test::More' 					=> 0.96,	# needs done_testing()
         'Text::Tabs' 					=> 2006.1117,
