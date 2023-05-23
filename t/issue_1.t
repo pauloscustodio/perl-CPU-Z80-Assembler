@@ -19,7 +19,7 @@ NOP
 END
 
 my($stdout, $stderr, $exit) = capture {
-	system("z80masm", "foo.asm", "foo.bin");
+	system("blib/script/z80masm", "foo.asm", "foo.bin");
 };
 
 is $stdout =~ s/\r\n/\n/gr, <<'END' =~ s/\r\n/\n/gr;
