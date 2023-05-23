@@ -1,15 +1,43 @@
-name: CI
-
+name: CI Makefile
+ 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
-
+    push:
+        branches: '*'
+    pull_request:
+        branches: '*'
+    schedule:
+        - cron: '42 5 * * 0'
+ 
 jobs:
-  build:
-    uses: davorg/github_workflows/.github/workflows/cpan-test.yml@main
-
-  coverage:
-    uses: davorg/github_workflows/.github/workflows/cpan-coverage.yml@main
+  perl-job:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        perl-version:
+          - '5.30'
+          - '5.32'
+          - 'latest'
+    container:
+      image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
+    name: Perl ${{ matrix.perl-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Regular tests
+        run: |
+            cpanm --installdeps --notest .
+            perl Makefile.PL
+            make
+            make test
+ 
+      - name: Prepare for release tests
+        run: |
+            cpanm --installdep .
+            cpanm --notest Test::CheckManifest Test::Pod::Coverage Pod::Coverage Test::Pod
+      - name: Release tests
+        env:
+          RELEASE_TESTING: 1
+        run: |
+            perl Makefile.PL
+            make
+            make test
