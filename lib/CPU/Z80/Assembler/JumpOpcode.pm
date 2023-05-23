@@ -16,7 +16,7 @@ computed at link time
 use strict;
 use warnings;
 
-our $VERSION = '2.20';
+our $VERSION = '2.21';
 
 use Asm::Preproc::Line;
 
