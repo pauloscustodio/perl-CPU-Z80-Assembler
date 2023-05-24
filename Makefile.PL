@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
-use 5.010;
+use 5.012;
 
 my $mm_ver = $ExtUtils::MakeMaker::VERSION;
 if ($mm_ver =~ /_/) {
