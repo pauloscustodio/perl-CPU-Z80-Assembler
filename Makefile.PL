@@ -31,7 +31,7 @@ WriteMakefile(
         'Data::Dump' 					=> 1.08,
         'File::Slurp' 					=> 9999.13,
         'File::Spec' 					=> 0,
-		'Path::Tiny'					=> 0.122,
+		'Path::Tiny'					=> 0.130,
         'Regexp::Trie' 					=> 0.02,
         'Test::More' 					=> 0.96,	# needs done_testing()
         'Text::Tabs' 					=> 2006.1117,
