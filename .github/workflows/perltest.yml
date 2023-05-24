@@ -30,8 +30,8 @@ jobs:
 
       - name: Regular tests
         run: |
-            cpanm --installdeps --notest .
             perl Makefile.PL
+            cpanm --installdeps --notest .
             make
             make test
             prove -Iblib/lib -lv t
