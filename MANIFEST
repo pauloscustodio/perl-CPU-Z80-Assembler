@@ -2,7 +2,6 @@
 ARTISTIC.txt
 bin/z80masm
 CHANGES
-GPL2.txt
 lib/CPU/Z80/Assembler.pm
 lib/CPU/Z80/Assembler/Expr.pm
 lib/CPU/Z80/Assembler/JumpOpcode.pm
