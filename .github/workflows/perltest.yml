@@ -30,17 +30,19 @@ jobs:
 
       - name: Regular tests
         run: |
+            perl Makefile.PL
+            make metafile
             ls -l
             cpanm --installdeps .
-            perl Makefile.PL
             make
-            make test
-            prove -Iblib/lib -lv t
+            make TEST_VERBOSE=1 test
  
       - name: Prepare for release tests
         run: |
+            perl Makefile.PL
+            make metafile
             cpanm --installdeps .
-            cpanm --notest Test::CheckManifest Test::Pod::Coverage Pod::Coverage Test::Pod
+            cpanm Test::CheckManifest Test::Pod::Coverage Pod::Coverage Test::Pod
       - name: Release tests
         env:
           RELEASE_TESTING: 1

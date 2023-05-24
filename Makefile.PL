@@ -61,7 +61,7 @@ WriteMakefile(
             },
           })
     ),
-    clean               => { FILES => 'CPU-Z80-Disassembler-*' },
+    clean               => { FILES => 'CPU-Z80-Assembler-*' },
 );
 
 
