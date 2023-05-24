@@ -19,10 +19,10 @@ NOP
 END
 
 my($stdout, $stderr, $exit) = capture {
-	system("blib/script/z80masm", "foo.asm", "foo.bin");
+	system(path("blib", "script", "z80masm"), "foo.asm", "foo.bin");
 };
 
-is $stdout =~ s/\r\n/\n/gr, <<'END' =~ s/\r\n/\n/gr;
+is norm($stdout), norm(<<'END');
 0x0000: ORG 0x0000                             | 
 0x0000: LD A, (foo)                            | 3A 00 10 
 0x0000:                                        | 
@@ -43,3 +43,9 @@ is unpack("H*", path("foo.bin")->slurp_raw),
 unlink "foo.asm", "foo.bin";
 
 done_testing;
+
+sub norm {
+	my($text) = @_;
+	$text =~ s/\r\n/\n/g;
+	return $text;
+}
