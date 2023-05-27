@@ -1,3 +1,8 @@
+2.23	2023-05-27
+
+	Bug Fixes
+	* #3: Can't locate Asm/Preproc.pm in @INC
+
 2.22	2023-05-24
 
 	Bug Fixes
