@@ -20,7 +20,7 @@ WriteMakefile(
     VERSION_FROM 	=> 'lib/CPU/Z80/Assembler.pm',
     ABSTRACT_FROM   => 'lib/CPU/Z80/Assembler.pm',
     DISTNAME        => 'CPU-Z80-Assembler',
-    depend 			=> { Makefile => '$(VERSION_FROM)' },
+    PL_FILES            => {},
     PREREQ_PM 		=> {
 		'Asm::Preproc'					=> 1.00,	# no Asm::Preproc::Stream
 		'Asm::Z80::Table'				=> 0.02,
