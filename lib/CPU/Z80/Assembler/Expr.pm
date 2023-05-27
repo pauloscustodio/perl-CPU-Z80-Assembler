@@ -15,7 +15,7 @@ CPU::Z80::Assembler::Expr - Represents one assembly expression to be computed at
 use strict;
 use warnings;
 
-our $VERSION = '2.24';
+our $VERSION = '2.25';
 
 use CPU::Z80::Assembler;
 use CPU::Z80::Assembler::Parser;
