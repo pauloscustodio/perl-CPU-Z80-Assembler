@@ -55,10 +55,10 @@ WriteMakefile(
                     url  => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler.git',
                     web  => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler',
                 },
+				bugtracker => {
+					web => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler/issues',
+				},
 			},
-			bugtracker => {
-				web => 'https://github.com/pauloscustodio/perl-CPU-Z80-Assembler/issues',
-            },
           })
     ),
     clean               => { FILES => 'CPU-Z80-Assembler-*' },
