@@ -25,7 +25,7 @@ use Regexp::Trie;
 
 use vars qw(@EXPORT $verbose);
 
-our $VERSION = '2.23';
+our $VERSION = '2.24';
 our $verbose;
 our $fill_byte = 0xFF;
 

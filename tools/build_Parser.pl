@@ -22,7 +22,7 @@ my($MODULE, $FILE) = @ARGV;
 my $g = ParserGenerator->new;
 
 $g->prolog(q{
-our $VERSION = '2.23';
+our $VERSION = '2.24';
 
 use CPU::Z80::Assembler;
 use CPU::Z80::Assembler::Expr;
